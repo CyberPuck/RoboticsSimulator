@@ -19,6 +19,7 @@ public class MainPanel extends Application {
                     ("mainPanel.fxml"));
             Scene myScene = new Scene(myPane);
             primaryStage.setScene(myScene);
+            primaryStage.setResizable(false);
             primaryStage.show();
         } catch(Exception e) {
             System.err.println("Error: " + e.getMessage());
