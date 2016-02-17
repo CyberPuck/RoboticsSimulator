@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -13,6 +14,11 @@
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
+         <children>
+            <Canvas fx:id="gridCanvas" height="720.0" width="360.0" />
+            <Canvas fx:id="robotCanvas" height="720.0" width="360.0" />
+            <Canvas height="720.0" width="360.0" />
+         </children>
       </Pane>
       <TabPane fx:id="controlPane" maxHeight="720.0" maxWidth="440.0" minHeight="720.0" minWidth="440.0" prefHeight="720.0" prefWidth="440.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
