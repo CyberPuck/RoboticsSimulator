@@ -2,9 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
@@ -17,14 +18,17 @@
          <children>
             <Canvas fx:id="gridCanvas" height="720.0" width="360.0" />
             <Canvas fx:id="robotCanvas" height="720.0" width="360.0" />
-            <Canvas height="720.0" width="360.0" />
+            <Canvas fx:id="pathCanvas" height="720.0" width="360.0" />
          </children>
       </Pane>
       <TabPane fx:id="controlPane" maxHeight="720.0" maxWidth="440.0" minHeight="720.0" minWidth="440.0" prefHeight="720.0" prefWidth="440.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Continous">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="testerButton" layoutX="83.0" layoutY="134.0" mnemonicParsing="false" text="Button" />
+                     </children></AnchorPane>
             </content>
           </Tab>
           <Tab text="Point">
@@ -34,11 +38,7 @@
           </Tab>
         </tabs>
       </TabPane>
-      <ScrollPane fx:id="outputPane" layoutX="440.0" layoutY="720.0" maxHeight="280.0" maxWidth="360.0" minHeight="280.0" minWidth="360.0" prefHeight="280.0" prefWidth="360.0">
-        <content>
-          <AnchorPane fx:id="outputPanel" maxHeight="280.0" maxWidth="360.0" minHeight="280.0" minWidth="360.0" prefHeight="280.0" prefWidth="360.0" />
-        </content>
-      </ScrollPane>
+      <TextArea fx:id="outputTextArea" layoutX="440.0" layoutY="720.0" maxHeight="280.0" maxWidth="360.0" minHeight="280.0" minWidth="360.0" prefHeight="280.0" prefWidth="360.0" />
       <Pane fx:id="systemStatePane" layoutY="720.0" maxHeight="280.0" maxWidth="440.0" minHeight="280.0" minWidth="440.0" prefHeight="280.0" prefWidth="440.0" />
    </children>
 </Pane>

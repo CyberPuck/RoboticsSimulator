@@ -1,6 +1,8 @@
 package UI;
 
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -13,6 +15,13 @@ import javafx.scene.paint.Color;
  * Created by CyberPuck on 2016-02-15.
  */
 public class DisplayPaneController {
+
+    @FXML
+    private Canvas gridCanvas;
+    @FXML
+    private Canvas robotCanvas;
+    @FXML
+    private Canvas pathCanvas;
 
     private Pane displayPane;
 
