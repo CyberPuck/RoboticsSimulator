@@ -63,7 +63,7 @@ public class SimulatorController implements Initializable {
         //displayPane.setBackground(test);
         systemStatePane.setBackground(test);
         // add in the individual controllers
-        DisplayPaneController displayControl = new DisplayPaneController(displayPane);
+        DisplayPaneController displayControl = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
         displayControl.initializePane();
     }
 }

@@ -1,5 +1,6 @@
 package UI;
 
+import UI.displayCanvases.GridCanvas;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
@@ -16,11 +17,8 @@ import javafx.scene.paint.Color;
  */
 public class DisplayPaneController {
 
-    @FXML
     private Canvas gridCanvas;
-    @FXML
     private Canvas robotCanvas;
-    @FXML
     private Canvas pathCanvas;
 
     private Pane displayPane;
@@ -29,8 +27,11 @@ public class DisplayPaneController {
      * Setup the displayPane.
      * @param displayPane
      */
-    public DisplayPaneController(Pane displayPane){
+    public DisplayPaneController(Pane displayPane, Canvas gridCanvas, Canvas robotCanvas, Canvas pathCanvas){
         this.displayPane = displayPane;
+        this.gridCanvas = gridCanvas;
+        this.robotCanvas = robotCanvas;
+        this.pathCanvas = pathCanvas;
     }
 
     /**
@@ -40,6 +41,8 @@ public class DisplayPaneController {
         // set the background color
         Background background = new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY));
         displayPane.setBackground(background);
+        GridCanvas grid = new GridCanvas(gridCanvas);
+        grid.init();
         // set the grid up
         double displayHeight = displayPane.getHeight();
         double displayWidth = displayPane.getWidth();
