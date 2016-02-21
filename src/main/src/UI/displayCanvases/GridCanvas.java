@@ -25,7 +25,7 @@ public class GridCanvas {
         double width = 360;
         double height = 720;
         gc.setLineWidth(1.0);
-        double numberOfPixelsPerInch = 1.0;
+        double numberOfPixelsPerInch = 2.0;
         // draw horizontal lines
         for(int i = 0; i < 30; i++) {
             double xPosition = i * (6*numberOfPixelsPerInch);

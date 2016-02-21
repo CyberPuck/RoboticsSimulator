@@ -1,6 +1,8 @@
 package UI;
 
 import UI.displayCanvases.GridCanvas;
+import UI.displayCanvases.PathCanvas;
+import UI.displayCanvases.RobotCanvas;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
@@ -39,13 +41,17 @@ public class DisplayPaneController {
      */
     public void initializePane() {
         // set the background color
-        Background background = new Background(new BackgroundFill(Color.BROWN, CornerRadii.EMPTY, Insets.EMPTY));
+        Background background = new Background(new BackgroundFill(Color.BURLYWOOD, CornerRadii.EMPTY, Insets.EMPTY));
         displayPane.setBackground(background);
         GridCanvas grid = new GridCanvas(gridCanvas);
+        // setup the grid
         grid.init();
-        // set the grid up
-        double displayHeight = displayPane.getHeight();
-        double displayWidth = displayPane.getWidth();
-        System.out.println("System height " + displayHeight + " width " + displayWidth);
+        // TODO: setup the robot
+        RobotCanvas robot = new RobotCanvas(robotCanvas);
+        robot.init();
+        // Setup the path stuff
+        // TODO: Path's are not drawing correctly, may only add paths from controls
+        PathCanvas path = new PathCanvas(pathCanvas);
+        path.init();
     }
 }

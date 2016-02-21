@@ -37,7 +37,7 @@ public class SimulatorController implements Initializable {
     @FXML
     private Pane systemStatePane;
 
-    // TODO: Can we move these?
+    // TODO: Should we move these?
     @FXML
     private Canvas gridCanvas;
     @FXML
