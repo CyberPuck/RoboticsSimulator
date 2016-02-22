@@ -65,5 +65,8 @@ public class SimulatorController implements Initializable {
         // add in the individual controllers
         DisplayPaneController displayControl = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
         displayControl.initializePane();
+        // add in the tab controller
+        TabController tabControl = new TabController(controlPane);
+        tabControl.init();
     }
 }

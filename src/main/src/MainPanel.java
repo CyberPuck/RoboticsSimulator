@@ -16,7 +16,7 @@ public class MainPanel extends Application {
         try {
             primaryStage.setTitle("Robot Simulator");
             Pane myPane = (Pane) FXMLLoader.load(getClass().getResource
-                    ("mainPanel.fxml"));
+                    ("UI/mainPanel.fxml"));
             Scene myScene = new Scene(myPane);
             primaryStage.setScene(myScene);
             primaryStage.setResizable(false);
