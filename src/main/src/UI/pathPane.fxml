@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="440.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="14.0" layoutY="5.0" text="Path Type:" />
+      <ChoiceBox fx:id="pathMode" layoutX="76.0" layoutY="1.0" prefWidth="150.0" />
+      <Label fx:id="radiusLabel" layoutX="14.0" layoutY="37.0" text="Radius (ft):" />
+      <Label fx:id="inclinationLabel" layoutX="14.0" layoutY="239.0" text="Inclination:" />
+      <TextField fx:id="circleRadius" layoutX="77.0" layoutY="33.0" />
+      <TextField fx:id="circleInclination" layoutX="100.0" layoutY="235.0" />
+      <Separator layoutY="218.0" prefHeight="6.0" prefWidth="440.0" />
+      <Label layoutX="15.0" layoutY="313.0" text="Speed (ft/sec):" />
+      <Label layoutX="14.0" layoutY="351.0" text="Time (sec):" />
+      <TextField fx:id="speed" layoutX="101.0" layoutY="309.0" />
+      <TextField fx:id="time" layoutX="101.0" layoutY="347.0" />
+      <Canvas fx:id="rectangleCanvas" height="100.0" layoutX="183.0" layoutY="74.0" width="75.0" />
+      <TextField fx:id="rectangleTop" layoutX="188.0" layoutY="41.0" prefHeight="25.0" prefWidth="65.0" />
+      <TextField fx:id="rectangleRight" layoutX="266.0" layoutY="112.0" prefHeight="25.0" prefWidth="65.0" />
+      <TextField fx:id="rectangleBottom" layoutX="188.0" layoutY="187.0" prefHeight="25.0" prefWidth="65.0" />
+      <TextField fx:id="rectangleLeft" layoutX="109.0" layoutY="112.0" prefHeight="25.0" prefWidth="65.0" />
+      <TextField fx:id="rotation" layoutX="101.0" layoutY="272.0" />
+      <Label layoutX="15.0" layoutY="276.0" text="Rotation:" />
+      <Label fx:id="closeRadiusLabel" layoutX="14.0" layoutY="37.0" text="Close Radius (ft):" />
+      <Label fx:id="farRadiusLabel" layoutX="14.0" layoutY="66.0" text="Far Radius (ft):" />
+      <TextField fx:id="closeRadius" layoutX="114.0" layoutY="33.0" />
+      <TextField fx:id="farRadius" layoutX="114.0" layoutY="62.0" />
+   </children>
+</Pane>

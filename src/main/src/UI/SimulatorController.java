@@ -45,20 +45,12 @@ public class SimulatorController implements Initializable {
     @FXML
     private Canvas pathCanvas;
     @FXML
-    private Button testerButton;
-    @FXML
     private TextArea outputTextArea;
 
     private int counter = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        testerButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                outputTextArea.setText(outputTextArea.getText() + (++counter) + ": This is a test!\n");
-            }
-        });
         Background test = new Background(new BackgroundFill(Color.BURLYWOOD, CornerRadii.EMPTY, Insets.EMPTY));
         //displayPane.setBackground(test);
         systemStatePane.setBackground(test);

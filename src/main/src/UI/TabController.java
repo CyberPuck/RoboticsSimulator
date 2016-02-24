@@ -21,28 +21,55 @@ public class TabController {
     }
 
     public void init() {
-        // create the tabs
-        Tab directionTab = new Tab();
-        directionTab.setText("ControlTest");
-
-        tabPane.getTabs().add(directionTab);
-
         // Add the control tab (part 1)
-        Tab tester = new Tab();
-        tester.setText("FXML test");
+        Tab controlTab = new Tab();
+        controlTab.setText("Control");
         // load the FXML
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controlPane.fxml"));
         try {
             Pane testPane = fxmlLoader.load();
-            tester.setContent(testPane);
-            tabPane.getTabs().add(tester);
+            controlTab.setContent(testPane);
+            tabPane.getTabs().add(controlTab);
         } catch (IOException e) {
             System.err.println("Failed to load control tab pane");
         }
 
         // TODO: Add Part 2
+        Tab pointTab = new Tab();
+        pointTab.setText("Point");
+        fxmlLoader = new FXMLLoader(getClass().getResource("pointPane.fxml"));
+        try {
+            Pane testPane = fxmlLoader.load();
+            pointTab.setContent(testPane);
+            tabPane.getTabs().add(pointTab);
+        } catch (IOException e) {
+            System.err.println("Failed to load point tab pane");
+        }
+
         // TODO: Add Part 3
+        Tab pathTab = new Tab();
+        pathTab.setText("Path");
+        fxmlLoader = new FXMLLoader(getClass().getResource("pathPane.fxml"));
+        try {
+            Pane testPane = fxmlLoader.load();
+            pathTab.setContent(testPane);
+            tabPane.getTabs().add(pathTab);
+        } catch (IOException e) {
+            System.err.println("Failed to load path tab pane");
+        }
+
         // TODO: Add Part 4
+        Tab wayPointTab = new Tab();
+        wayPointTab.setText("Way Points");
+        fxmlLoader = new FXMLLoader(getClass().getResource("wayPointPane.fxml"));
+        try {
+            Pane testPane = fxmlLoader.load();
+            wayPointTab.setContent(testPane);
+            tabPane.getTabs().add(wayPointTab);
+        } catch (IOException e) {
+            System.err.println("Failed to load way point tab pane");
+        }
+
         // TODO: Extra Credit?
     }
 }
