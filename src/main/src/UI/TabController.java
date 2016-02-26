@@ -79,11 +79,4 @@ public class TabController {
 
         // TODO: Extra Credit?
     }
-
-    /**
-     * Adds the primary controller to all of the tabs.
-     */
-    private void setupTabControllers() {
-        // TODO: Add the other tabs
-    }
 }
