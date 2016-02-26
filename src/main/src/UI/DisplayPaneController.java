@@ -41,7 +41,7 @@ public class DisplayPaneController {
      */
     public void initializePane() {
         // set the background color
-        Background background = new Background(new BackgroundFill(Color.BURLYWOOD, CornerRadii.EMPTY, Insets.EMPTY));
+        Background background = new Background(new BackgroundFill(Color.rgb(136, 84, 49), CornerRadii.EMPTY, Insets.EMPTY));
         displayPane.setBackground(background);
         GridCanvas grid = new GridCanvas(gridCanvas);
         // setup the grid

@@ -20,25 +20,29 @@ public class GridCanvas {
     public void init() {
         // TODO: Lines are being drawn incorrectly!
         GraphicsContext gc = gridCanvas.getGraphicsContext2D();
+
         // draw them lines
         // default width and height is:
         double width = 360;
         double height = 720;
-        gc.setLineWidth(1.0);
         double numberOfPixelsPerInch = 2.0;
         // draw horizontal lines
         for(int i = 0; i < 30; i++) {
             double xPosition = i * (6*numberOfPixelsPerInch);
-            gc.moveTo(xPosition, 0);
-            gc.lineTo(xPosition, height);
-            gc.stroke();
+//            gc.moveTo(xPosition, 0);
+//            gc.lineTo(xPosition, height);
+//            gc.stroke();
+            gc.setLineWidth(0.0);
+            gc.strokeLine(xPosition, 0, xPosition, height);
         }
         // draw vertical lines
         for(int i = 0; i < 60; i++) {
             double yPosition = i * (6*numberOfPixelsPerInch);
-            gc.moveTo(0, yPosition);
-            gc.lineTo(width, yPosition);
-            gc.stroke();
+//            gc.moveTo(0, yPosition);
+//            gc.lineTo(width, yPosition);
+//            gc.stroke();
+            gc.setLineWidth(0.0);
+            gc.strokeLine(0, yPosition, width, yPosition);
         }
     }
 }

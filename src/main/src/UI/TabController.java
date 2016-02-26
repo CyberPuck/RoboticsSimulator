@@ -1,6 +1,7 @@
 package UI;
 
 import UI.tabControls.ControlTab;
+import UI.tabControls.PathTab;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -61,6 +62,8 @@ public class TabController {
             Pane testPane = fxmlLoader.load();
             pathTab.setContent(testPane);
             tabPane.getTabs().add(pathTab);
+            // add the controller
+            fxmlLoader.<PathTab>getController().setController(controller);
         } catch (IOException e) {
             System.err.println("Failed to load path tab pane");
         }

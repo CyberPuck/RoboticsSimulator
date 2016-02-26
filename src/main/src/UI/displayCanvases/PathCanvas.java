@@ -5,6 +5,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import utilities.Path;
 
@@ -25,6 +26,9 @@ public class PathCanvas {
 
     public void init() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
+        gc.setLineWidth(0.0);
+        gc.setStroke(Color.LIME);
+        gc.strokeLine(100,0, 100, 100);
         pathCanvas.setOnMouseDragEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {

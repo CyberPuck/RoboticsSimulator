@@ -63,31 +63,21 @@ public class SimulatorController implements Initializable {
      * TODO: Should we return error values?
      */
     public void startSimulator() {
-        setNormalText("Error: Start Not Implemented");
+        printText("Error: Start Not Implemented");
     }
 
     /**
      * TODO: Should we return error values?
      */
     public void stopSimulator() {
-        setNormalText("Error: Stop Not Implemented");
+        printText("Error: Stop Not Implemented");
     }
 
     /**
-     * Prints out red text on the output pane.
-     * @param text string to print as error
-     */
-    private void setErrorText(String text) {
-        outputTextArea.setStyle("-fx-text-fill: red");
-        outputTextArea.setText(outputTextArea.getText() + text + "\n");
-    }
-
-    /**
-     * Prints out black text on the output pane.
+     * Prints out text on the output pane.
      * @param text string to print
      */
-    private void setNormalText(String text) {
-        outputTextArea.setStyle("-fx-text-fill: black");
+    public void printText(String text) {
         outputTextArea.setText(outputTextArea.getText() + text + "\n");
     }
 }

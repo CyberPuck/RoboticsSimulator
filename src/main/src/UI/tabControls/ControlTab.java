@@ -135,8 +135,7 @@ public class ControlTab implements Initializable {
         } else if(mode.equals(WHEEL_MODE)) {
             enableWheelFields();
         } else {
-            // TODO: Should this be reported in the output text area?
-            System.err.println("Error, this mode is not supported!");
+            controller.printText("Error: " + mode + " is not supported!");
         }
     }
 
