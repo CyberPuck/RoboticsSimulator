@@ -70,6 +70,7 @@ public class ControlTab implements Initializable {
     @FXML
     private Button startButton;
     // flag indicating if the simulator is running
+    // TODO: Should this be a flag in the simulator controller?
     private boolean simulatorRunning;
 
     // needed for simulator controls
@@ -101,7 +102,6 @@ public class ControlTab implements Initializable {
         modeBox.setValue(GENERAL_MODE);
         // enable and disable the fields
         enableGeneralFields();
-        disableWheelFields();
         // setup the canvas with the robot image
         File fileLocation = new File(ROBOT_IMAGE);
         Image robot = new Image("file:" + fileLocation.getAbsolutePath(), 128, 228, false, true);
@@ -132,10 +132,8 @@ public class ControlTab implements Initializable {
         // based on the mode update the UI elements
         if(mode.equals(GENERAL_MODE)) {
             enableGeneralFields();
-            disableWheelFields();
         } else if(mode.equals(WHEEL_MODE)) {
             enableWheelFields();
-            disableGeneralFields();
         } else {
             // TODO: Should this be reported in the output text area?
             System.err.println("Error, this mode is not supported!");
@@ -175,6 +173,8 @@ public class ControlTab implements Initializable {
         speedField.setVisible(true);
         rotationLabel.setVisible(true);
         rotationField.setVisible(true);
+        // disable the Wheel
+        disableWheelFields();
     }
 
     /**
@@ -202,5 +202,7 @@ public class ControlTab implements Initializable {
         wheelFourLabel.setVisible(true);
         wheelFourField.setVisible(true);
         robotImage.setVisible(true);
+        // disable general
+        disableGeneralFields();
     }
 }
