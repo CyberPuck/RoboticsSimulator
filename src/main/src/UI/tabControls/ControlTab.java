@@ -1,16 +1,19 @@
 package UI.tabControls;
 
+import UI.SimulatorController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 
 import java.io.File;
 import java.net.URL;
@@ -63,12 +66,32 @@ public class ControlTab implements Initializable {
     @FXML
     private Canvas robotImage;
 
+    // Fire up the simulation
+    @FXML
+    private Button startButton;
+    // flag indicating if the simulator is running
+    private boolean simulatorRunning;
+
+    // needed for simulator controls
+    private SimulatorController controller;
+
     private ArrayList<String> modes = new ArrayList<String>();
 
     public ControlTab() {
         // fill in the array, this is magically called
         modes.add(GENERAL_MODE);
         modes.add(WHEEL_MODE);
+        // simulator is not running on start up?
+        simulatorRunning = false;
+    }
+
+    /**
+     * Sets the primary controller.
+     * @param controller used to start/stop the simulator
+     */
+    public void setController(SimulatorController controller) {
+        // add the primary controller
+        this.controller = controller;
     }
 
     @Override
@@ -92,11 +115,18 @@ public class ControlTab implements Initializable {
                 updateTab(modes.get(newValue.intValue()));
             }
         });
+
+        startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                updateSimulator();
+            }
+        });
     }
 
     /**
      * Update the UI based on the mode the UI is in, this is only called when the choice box selection actually changes
-     * @param mode
+     * @param mode mode to switch to for the UI
      */
     private void updateTab(String mode) {
         // based on the mode update the UI elements
@@ -112,8 +142,22 @@ public class ControlTab implements Initializable {
         }
     }
 
+    private void updateSimulator() {
+        if(!simulatorRunning) {
+            // TODO: start the simulator
+            controller.startSimulator();
+            startButton.setText("Stop");
+            simulatorRunning = true;
+        } else {
+            // TODO: stop the simulator
+            controller.stopSimulator();
+            startButton.setText("Start");
+            simulatorRunning = false;
+        }
+    }
+
     /**
-     * General Mode fields
+     * General UI Mode fields
      */
     private void disableGeneralFields() {
         directionLabel.setVisible(false);
@@ -134,7 +178,7 @@ public class ControlTab implements Initializable {
     }
 
     /**
-     * Wheel Mode fields
+     * Wheel  UI Mode fields
      */
     private void disableWheelFields() {
         wheelOneLabel.setVisible(false);

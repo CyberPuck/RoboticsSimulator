@@ -32,9 +32,6 @@ public class SimulatorController implements Initializable {
     private TabPane controlPane;
 
     @FXML
-    private ScrollPane outputPane;
-
-    @FXML
     private Pane systemStatePane;
 
     // TODO: Should we move these?
@@ -58,7 +55,39 @@ public class SimulatorController implements Initializable {
         DisplayPaneController displayControl = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
         displayControl.initializePane();
         // add in the tab controller
-        TabController tabControl = new TabController(controlPane);
+        TabController tabControl = new TabController(controlPane, this);
         tabControl.init();
+    }
+
+    /**
+     * TODO: Should we return error values?
+     */
+    public void startSimulator() {
+        setNormalText("Error: Start Not Implemented");
+    }
+
+    /**
+     * TODO: Should we return error values?
+     */
+    public void stopSimulator() {
+        setNormalText("Error: Stop Not Implemented");
+    }
+
+    /**
+     * Prints out red text on the output pane.
+     * @param text string to print as error
+     */
+    private void setErrorText(String text) {
+        outputTextArea.setStyle("-fx-text-fill: red");
+        outputTextArea.setText(outputTextArea.getText() + text + "\n");
+    }
+
+    /**
+     * Prints out black text on the output pane.
+     * @param text string to print
+     */
+    private void setNormalText(String text) {
+        outputTextArea.setStyle("-fx-text-fill: black");
+        outputTextArea.setText(outputTextArea.getText() + text + "\n");
     }
 }

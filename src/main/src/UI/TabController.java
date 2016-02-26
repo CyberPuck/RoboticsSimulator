@@ -15,12 +15,17 @@ import java.io.IOException;
  */
 public class TabController {
     private TabPane tabPane;
+    // needed for getting UI to startup simulator
+    private SimulatorController controller;
 
-    public TabController(TabPane tabPane) {
+    public TabController(TabPane tabPane, SimulatorController controller) {
         this.tabPane = tabPane;
+        this.controller = controller;
     }
 
     public void init() {
+        // add the controller
+//        setupTabControllers();
         // Add the control tab (part 1)
         Tab controlTab = new Tab();
         controlTab.setText("Control");
@@ -30,6 +35,8 @@ public class TabController {
             Pane testPane = fxmlLoader.load();
             controlTab.setContent(testPane);
             tabPane.getTabs().add(controlTab);
+            // add the controller
+            fxmlLoader.<ControlTab>getController().setController(controller);
         } catch (IOException e) {
             System.err.println("Failed to load control tab pane");
         }
@@ -71,5 +78,12 @@ public class TabController {
         }
 
         // TODO: Extra Credit?
+    }
+
+    /**
+     * Adds the primary controller to all of the tabs.
+     */
+    private void setupTabControllers() {
+        // TODO: Add the other tabs
     }
 }
