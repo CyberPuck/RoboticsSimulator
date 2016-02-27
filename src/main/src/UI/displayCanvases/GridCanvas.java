@@ -32,9 +32,6 @@ public class GridCanvas {
             System.out.println("Old x: " + xPosition);
             xPosition += 0.5;
             System.out.println("New x: " + xPosition);
-//            gc.moveTo(xPosition, 0);
-//            gc.lineTo(xPosition, height);
-//            gc.stroke();
             gc.setLineWidth(0.0);
             gc.strokeLine(xPosition, 0, xPosition, height);
         }
@@ -44,9 +41,6 @@ public class GridCanvas {
             System.out.println("Old y: " + yPosition);
             yPosition += 0.5;
             System.out.println("New Y: " + yPosition);
-//            gc.moveTo(0, yPosition);
-//            gc.lineTo(width, yPosition);
-//            gc.stroke();
             gc.setLineWidth(0.0);
             gc.strokeLine(0, yPosition, width, yPosition);
         }
