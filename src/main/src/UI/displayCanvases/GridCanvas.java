@@ -29,6 +29,9 @@ public class GridCanvas {
         // draw horizontal lines
         for(int i = 0; i < 30; i++) {
             double xPosition = i * (6*numberOfPixelsPerInch);
+            System.out.println("Old x: " + xPosition);
+            xPosition += 0.5;
+            System.out.println("New x: " + xPosition);
 //            gc.moveTo(xPosition, 0);
 //            gc.lineTo(xPosition, height);
 //            gc.stroke();
@@ -38,6 +41,9 @@ public class GridCanvas {
         // draw vertical lines
         for(int i = 0; i < 60; i++) {
             double yPosition = i * (6*numberOfPixelsPerInch);
+            System.out.println("Old y: " + yPosition);
+            yPosition += 0.5;
+            System.out.println("New Y: " + yPosition);
 //            gc.moveTo(0, yPosition);
 //            gc.lineTo(width, yPosition);
 //            gc.stroke();
