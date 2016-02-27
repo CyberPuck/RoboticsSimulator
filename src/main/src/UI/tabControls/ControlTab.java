@@ -104,7 +104,7 @@ public class ControlTab implements Initializable {
         enableGeneralFields();
         // setup the canvas with the robot image
         File fileLocation = new File(ROBOT_IMAGE);
-        Image robot = new Image("file:" + fileLocation.getAbsolutePath(), 128, 228, false, true);
+        Image robot = new Image("file:" + fileLocation.getAbsolutePath(), 128, 256, false, true);
         GraphicsContext gc = robotImage.getGraphicsContext2D();
         gc.drawImage(robot, 0,0);
 

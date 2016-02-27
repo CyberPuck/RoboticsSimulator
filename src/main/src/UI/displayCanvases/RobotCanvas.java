@@ -21,7 +21,7 @@ public class RobotCanvas {
 
     public RobotCanvas(Canvas robotCanvas) {
         this.robotCanvas = robotCanvas;
-        this.robotLocation = new Point(0, 606);
+        this.robotLocation = new Point(0, 600);
         this.robotAngle = 0;
     }
 
@@ -31,7 +31,7 @@ public class RobotCanvas {
     public void init() {
         File test = new File(ROBOT_IMAGE);
         System.out.println(test.isFile());
-        Image robot = new Image("file:" + test.getAbsolutePath(), 64.0, 114.0, false, true);
+        Image robot = new Image("file:" + test.getAbsolutePath(), 48.0, 96.0, false, true);
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
         // draw the robot
         gc.drawImage(robot, robotLocation.getX(), robotLocation.getY());
