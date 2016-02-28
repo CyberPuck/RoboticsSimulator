@@ -16,7 +16,7 @@ public class WayPointTab {
     @FXML
     private TextField yEndPoint;
     @FXML
-    private TextArea wayPoint;
+    private TextArea wayPoints;
     @FXML
     private TextField rotation;
     @FXML

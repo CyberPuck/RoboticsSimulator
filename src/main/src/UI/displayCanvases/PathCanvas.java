@@ -25,50 +25,9 @@ public class PathCanvas {
     }
 
     public void init() {
-        GraphicsContext gc = pathCanvas.getGraphicsContext2D();
-        gc.setLineWidth(0.0);
-        gc.setStroke(Color.LIME);
-        gc.strokeLine(100,0, 100, 100);
-        pathCanvas.setOnMouseDragEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(!createPathMode) {
-                    System.out.println("Trying to draw line");
-                    createPathMode = true;
-                    // start creating the path
-//                    System.out.println(event.getX() + ", " + event.getY());
-                    userPath = new Path(event.getX(), event.getY());
-                    drawPath.setStartX(event.getX());
-                    drawPath.setStartY(event.getY());
-                } else {
-                    // error?
-                }
-            }
-        });
-
-        pathCanvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(createPathMode) {
-                    drawPath.setEndX(event.getX());
-                    drawPath.setEndY(event.getY());
-                } else {
-                    System.out.println("Not doing nuttin");
-                }
-            }
-        });
-
-        pathCanvas.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
-            @Override
-            public void handle(MouseDragEvent event) {
-                if(createPathMode) {
-                    createPathMode = false;
-                    drawPath.setEndX(event.getX());
-                    drawPath.setEndY(event.getY());
-                    userPath.addEndPoint(event.getX(), event.getY());
-                    System.out.println("Path complete:" + userPath.toString());
-                }
-            }
-        });
+//        GraphicsContext gc = pathCanvas.getGraphicsContext2D();
+//        gc.setLineWidth(0.0);
+//        gc.setStroke(Color.LIME);
+//        gc.strokeLine(100,0, 100, 100);
     }
 }
