@@ -25,6 +25,10 @@ public class DisplayPaneController {
 
     private Pane displayPane;
 
+    // Controllers
+    private RobotCanvas robot;
+    private PathCanvas path;
+
     /**
      * Setup the displayPane.
      * @param displayPane
@@ -47,11 +51,14 @@ public class DisplayPaneController {
         // setup the grid
         grid.init();
         // TODO: setup the robot
-        RobotCanvas robot = new RobotCanvas(robotCanvas);
+        robot = new RobotCanvas(robotCanvas);
         robot.init();
         // Setup the path stuff
-        // TODO: Path's are not drawing correctly, may only add paths from controls
-        PathCanvas path = new PathCanvas(pathCanvas);
+        path = new PathCanvas(pathCanvas);
         path.init();
+    }
+
+    public RobotCanvas getRobotCanvas() {
+        return this.robot;
     }
 }

@@ -30,4 +30,11 @@ public class PathCanvas {
 //        gc.setStroke(Color.LIME);
 //        gc.strokeLine(100,0, 100, 100);
     }
+
+    /**
+     * Function to draw a path on the canvas
+     */
+    public void drawPath() {
+        // TODO: fill this in, take into account relocation if the boundary is hit
+    }
 }

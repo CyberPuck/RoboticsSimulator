@@ -1,5 +1,6 @@
 package UI;
 
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import utilities.Point;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -45,6 +47,9 @@ public class SimulatorController implements Initializable {
     private TextArea outputTextArea;
 
     private int counter = 0;
+    // controller for the simulation display
+    private DisplayPaneController displayController;
+    private AnimationTimer timer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -52,8 +57,8 @@ public class SimulatorController implements Initializable {
         //displayPane.setBackground(test);
         systemStatePane.setBackground(test);
         // add in the individual controllers
-        DisplayPaneController displayControl = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
-        displayControl.initializePane();
+        displayController = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
+        displayController.initializePane();
         // add in the tab controller
         TabController tabControl = new TabController(controlPane, this);
         tabControl.init();
@@ -63,14 +68,32 @@ public class SimulatorController implements Initializable {
      * TODO: Should we return error values?
      */
     public void startSimulator() {
-        printText("Error: Start Not Implemented");
+        printText("Starting simulation");
+        timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                Point currentLocation = displayController.getRobotCanvas().getRobotLocation();
+                // make the robot move forward
+                currentLocation.setY(currentLocation.getY() + 10.0);
+                double angle = displayController.getRobotCanvas().getRobotAngle() + 10;
+                displayController.getRobotCanvas().setRobotAngle(angle);
+                displayController.getRobotCanvas().setRobotLocation(currentLocation);
+                displayController.getRobotCanvas().redrawRobot();
+            }
+        };
+        timer.start();
     }
 
     /**
      * TODO: Should we return error values?
      */
     public void stopSimulator() {
-        printText("Error: Stop Not Implemented");
+        printText("Stopping Simulator");
+        if(timer != null) {
+            timer.stop();
+            // clean out this bad boy
+            timer = null;
+        }
     }
 
     /**
