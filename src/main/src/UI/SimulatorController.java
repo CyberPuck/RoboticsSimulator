@@ -16,7 +16,10 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import simulator.RobotInput;
+import simulator.Simulator;
 import utilities.Point;
+import utilities.Position;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -67,17 +70,16 @@ public class SimulatorController implements Initializable {
     /**
      * TODO: Should we return error values?
      */
-    public void startSimulator() {
+    public void startSimulator(RobotInput input) {
         printText("Starting simulation");
+        final Simulator sim = new Simulator(input);
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                Point currentLocation = displayController.getRobotCanvas().getRobotLocation();
-                // make the robot move forward
-                currentLocation.setY(currentLocation.getY() + 10.0);
-                double angle = displayController.getRobotCanvas().getRobotAngle() + 10;
-                displayController.getRobotCanvas().setRobotAngle(angle);
-                displayController.getRobotCanvas().setRobotLocation(currentLocation);
+                // update the robot position
+                Position currentLocation = displayController.getRobotCanvas().getRobotPosition();
+                Position newLoc = sim.calculateNewPosition(currentLocation);
+                displayController.getRobotCanvas().setRobotPosition(newLoc);
                 displayController.getRobotCanvas().redrawRobot();
             }
         };

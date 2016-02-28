@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
 import utilities.Point;
+import utilities.Position;
 
 import java.io.File;
 
@@ -23,16 +24,13 @@ public class RobotCanvas {
 
     private Canvas robotCanvas;
     // location of robot, center of image
-    private Point robotLocation;
-    // angle of robot, from center of image
-    private double robotAngle;
+    private Position robotPosition;
     // image of the robot
     private Image robot;
 
     public RobotCanvas(Canvas robotCanvas) {
         this.robotCanvas = robotCanvas;
-        this.robotLocation = new Point(300, 600);
-        this.robotAngle = 0;
+        this.robotPosition = new Position(new Point(300, 600), 0.0);
         File robotImage = new File(ROBOT_IMAGE);
         this.robot = new Image("file:" + robotImage.getAbsolutePath(), 48.0, 96.0, false, true);
     }
@@ -51,24 +49,24 @@ public class RobotCanvas {
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
         // clear the field first
         gc.clearRect(0,0,X_LENGTH, Y_LENGTH);
-        double x = this.robotLocation.getX();
-        double y = this.robotLocation.getY();
+        double x = this.robotPosition.getPosition().getX();
+        double y = this.robotPosition.getPosition().getY();
         // make sure we don't going running out of the boundary
         if(x + robot.getWidth()/2 < BOUNDARY_LENGTH || x + robot.getWidth()/2 > X_LENGTH - BOUNDARY_LENGTH) {
-            this.robotLocation.setX(X_LENGTH/2);
-            x = this.robotLocation.getX();
-            this.robotLocation.setY(Y_LENGTH/2);
-            y = this.robotLocation.getY();
+            this.robotPosition.getPosition().setX(X_LENGTH/2);
+            x = this.robotPosition.getPosition().getX();
+            this.robotPosition.getPosition().setY(Y_LENGTH/2);
+            y = this.robotPosition.getPosition().getY();
         }
         if(y + robot.getHeight()/2 < BOUNDARY_LENGTH || y + robot.getHeight()/2 > Y_LENGTH - BOUNDARY_LENGTH) {
-            this.robotLocation.setX(X_LENGTH/2);
-            x = this.robotLocation.getX();
-            this.robotLocation.setY(Y_LENGTH/2);
-            y = this.robotLocation.getY();
+            this.robotPosition.getPosition().setX(X_LENGTH/2);
+            x = this.robotPosition.getPosition().getX();
+            this.robotPosition.getPosition().setY(Y_LENGTH/2);
+            y = this.robotPosition.getPosition().getY();
         }
         // draw the robot
         gc.save();
-        rotate(gc, robotAngle, x + robot.getWidth()/2, y + robot.getHeight()/2);
+        rotate(gc, this.robotPosition.getAngle(), x + robot.getWidth()/2, y + robot.getHeight()/2);
         gc.drawImage(robot, x, y);
         gc.restore();
     }
@@ -85,19 +83,11 @@ public class RobotCanvas {
         gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
     }
 
-    public double getRobotAngle() {
-        return robotAngle;
+    public Position getRobotPosition() {
+        return this.robotPosition;
     }
 
-    public void setRobotAngle(double robotAngle) {
-        this.robotAngle = robotAngle;
-    }
-
-    public Point getRobotLocation() {
-        return robotLocation;
-    }
-
-    public void setRobotLocation(Point robotLocation) {
-        this.robotLocation = robotLocation;
+    public void setRobotPosition(Position newPosition) {
+        this.robotPosition = newPosition;
     }
 }

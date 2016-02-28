@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import simulator.RobotInput;
+import simulator.WheelInput;
 
 import java.io.File;
 import java.net.URL;
@@ -142,7 +144,9 @@ public class ControlTab implements Initializable {
     private void updateSimulator() {
         if(!simulatorRunning) {
             // TODO: start the simulator
-            controller.startSimulator();
+            // setup the input
+            RobotInput input = setupInput();
+            controller.startSimulator(input);
             startButton.setText("Stop");
             simulatorRunning = true;
         } else {
@@ -151,6 +155,19 @@ public class ControlTab implements Initializable {
             startButton.setText("Start");
             simulatorRunning = false;
         }
+    }
+
+    /**
+     * Reads the text fields to create the input.
+     * @return Wheeled input
+     */
+    private RobotInput setupInput() {
+        double one = Double.parseDouble(wheelOneField.getText());
+        double two = Double.parseDouble(wheelTwoField.getText());
+        double three = Double.parseDouble(wheelThreeField.getText());
+        double four = Double.parseDouble(wheelFourField.getText());
+        WheelInput input = new WheelInput(one, two, three, four);
+        return input;
     }
 
     /**

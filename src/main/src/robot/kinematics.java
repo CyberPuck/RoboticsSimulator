@@ -5,7 +5,7 @@ package robot;
  * <p/>
  * Created by CyberPuck on 2016-02-27.
  */
-public class kinematics {
+public class Kinematics {
 
     /**
      * Given four wheel rotation rates calculate the Y velocity of the robot.
