@@ -29,18 +29,16 @@ public class GridCanvas {
         // draw horizontal lines
         for(int i = 0; i < 30; i++) {
             double xPosition = i * (6*numberOfPixelsPerInch);
-            System.out.println("Old x: " + xPosition);
+            // Add fudge factor to make 1 pixel wide lines
             xPosition += 0.5;
-            System.out.println("New x: " + xPosition);
             gc.setLineWidth(0.0);
             gc.strokeLine(xPosition, 0, xPosition, height);
         }
         // draw vertical lines
         for(int i = 0; i < 60; i++) {
             double yPosition = i * (6*numberOfPixelsPerInch);
-            System.out.println("Old y: " + yPosition);
+            // Add fudge factor to make 1 pixel wide lines
             yPosition += 0.5;
-            System.out.println("New Y: " + yPosition);
             gc.setLineWidth(0.0);
             gc.strokeLine(0, yPosition, width, yPosition);
         }
