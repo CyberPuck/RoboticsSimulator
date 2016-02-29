@@ -11,6 +11,8 @@ public class Position {
     private double angle;
 
     public Position() {
+        position = new Point(0, 0);
+        angle = 0;
     }
 
     public Position(Point position, double angle) {
@@ -32,5 +34,13 @@ public class Position {
 
     public void setAngle(double angle) {
         this.angle = angle;
+    }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "position=" + position +
+                ", angle=" + angle +
+                '}';
     }
 }

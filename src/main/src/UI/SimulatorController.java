@@ -11,7 +11,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
 import robot.Robot;
-import robot.VelocityEquations;
 import simulator.RobotInput;
 import simulator.Simulator;
 import utilities.Point;
@@ -61,7 +60,7 @@ public class SimulatorController implements Initializable {
     @FXML
     private TextArea outputTextArea;
 
-    private int counter = 0;
+    private long previousTime = 0;
     // controller for the simulation display
     private DisplayPaneController displayController;
     private AnimationTimer timer;
@@ -91,7 +90,7 @@ public class SimulatorController implements Initializable {
      */
     public void startSimulator(RobotInput input) {
         // first get the current robot position and orientation
-        Position startPos = displayController.getRobotCanvas().getRobotPosition();
+        Position startPos = displayController.getRobotCanvas().convertLocationToFeet();
         Robot robot = new Robot(WHEEL_RADIUS);
         robot.setLocation(startPos.getPosition());
         robot.setAngle(startPos.getAngle());
@@ -101,21 +100,29 @@ public class SimulatorController implements Initializable {
         // start the simulator
         printText("Starting simulation");
         final Simulator sim = new Simulator(input, robot);
+        previousTime = 0;
+//        final long previousTime = 0;
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                // Calculate the delta between this frame and the last
+                double deltaTime = 0;
+                if (previousTime != 0) {
+                    deltaTime = now - previousTime;
+                    // convert to seconds
+                    deltaTime = deltaTime / 1000000000.0;
+                }
+                previousTime = now;
                 // Debug code, need to add logic to only update every x frames
 //                printText("Now: " + now);
                 // TODO: Need to convert the Y position into the canvas coordinates
                 // update the robot position
-                Position currentLocation = displayController.getRobotCanvas().getRobotPosition();
-                Position newLoc = sim.calculateNewPosition(currentLocation);
+                sim.calculateNewPosition(deltaTime);
                 // update the robot data
                 updateSystemState(sim.getRobot());
                 // update the position based on the global reference frame
-                Position globalPos = VelocityEquations.convertYawToGlobalFrame(newLoc);
-                displayController.getRobotCanvas().setRobotPosition(globalPos);
-                displayController.getRobotCanvas().redrawRobot();
+//                displayController.getRobotCanvas().setRobotPosition(sim.getRobot());
+                displayController.getRobotCanvas().redrawRobot(sim.getRobot());
             }
         };
         timer.start();
@@ -151,7 +158,7 @@ public class SimulatorController implements Initializable {
         velocityX.setText("Velocity X: " + df.format(robot.getVelocity().getX()));
         rotation.setText("Rotation: " + df.format(robot.getAngle()));
         position.setText("Position: (" + df.format(robot.getLocation().getX()) + ", "
-                + df.format(robot.getLocation().getY()) + ")");
+                + df.format(robot.getLocation().getY()) + ")" + " @ " + df.format(robot.getRotationRate()));
         double[] wheelRates = robot.getWheelRates();
         wheels.setText("Wheel One: " + df.format(wheelRates[0]) + ", Wheel Two: "
                 + df.format(wheelRates[1]) + ", Wheel Three: " + df.format(wheelRates[2])

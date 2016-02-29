@@ -63,6 +63,14 @@ public class Robot {
         this.angle = angle;
     }
 
+    public double getRotationRate() {
+        return rotationRate;
+    }
+
+    public void setRotationRate(double rotationRate) {
+        this.rotationRate = rotationRate;
+    }
+
     /**
      * Converts the velocity to the current wheel rates of the vehicle.
      *

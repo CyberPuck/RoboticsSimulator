@@ -3,7 +3,6 @@ package simulator;
 import robot.Kinematics;
 import robot.Robot;
 import utilities.Point;
-import utilities.Position;
 
 /**
  * This is the simulator class, like highlander there can be only one.
@@ -30,6 +29,10 @@ public class Simulator {
         this.robot = robot;
     }
 
+    public void setRobot(Robot robot) {
+        this.robot = robot;
+    }
+
     /**
      * Used to get the current robot information.
      *
@@ -42,23 +45,25 @@ public class Simulator {
     /**
      * Given the defined input, calculate the new position of the robot.
      *
-     * @param currentPosition Current position and orientation of the robot
-     * @return New position of the robot
+     * @param timeDelta Time difference between this calculation and the last one
      */
-    public Position calculateNewPosition(Position currentPosition) {
-        Position pos;
+    public void calculateNewPosition(double timeDelta) {
         switch (input.getMode()) {
             case CONTROL_WHEELS:
-                pos = calculateWheelPosition(input, currentPosition);
+                calculateWheelPosition(input, timeDelta);
                 break;
             default:
                 System.err.println("Not implemented");
-                pos = currentPosition;
         }
-        return pos;
     }
 
-    private Position calculateWheelPosition(RobotInput input, Position currentPosition) {
+    /**
+     * Based on user input and the time difference calculate the new location, Vs, and angle.
+     *
+     * @param input     User input for wheel rotations
+     * @param timeDelta Difference between last calculation
+     */
+    private void calculateWheelPosition(RobotInput input, double timeDelta) {
         WheelInput wInput = (WheelInput) input;
         // Get the wheel rates
         double w1 = wInput.getWheelOne();
@@ -66,14 +71,17 @@ public class Simulator {
         double w3 = wInput.getWheelThree();
         double w4 = wInput.getWheelFour();
         // calculate the velocity and angle rate
-        double angle = Kinematics.calculateVehicleRotation(WHEEL_RADIUS, ROBOT_LENGTH, ROBOT_HEIGHT, w1, w2, w3, w4);
-        double x = Kinematics.calculateVelocityX(WHEEL_RADIUS, w1, w2, w3, w4);
-        double y = Kinematics.calculateVelocityY(WHEEL_RADIUS, w1, w2, w3, w4);
-        // apply velocity and angle rates
-        // TODO: Handle Velocity Command Equations
-        double newX = x + currentPosition.getPosition().getX();
-        double newY = y + currentPosition.getPosition().getY();
-        double newAngle = currentPosition.getAngle() + angle;
-        return new Position(new Point(newX, newY), newAngle);
+        double rotationRate = Kinematics.calculateVehicleRotation(WHEEL_RADIUS, ROBOT_LENGTH, ROBOT_HEIGHT, w1, w2, w3, w4);
+        double xVel = Kinematics.calculateVelocityX(WHEEL_RADIUS, w1, w2, w3, w4);
+        double yVel = Kinematics.calculateVelocityY(WHEEL_RADIUS, w1, w2, w3, w4);
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(rotationRate);
+        // calculate the new angle based on rate and time difference between last calculation
+        double newAngle = rotationRate * timeDelta + robot.getAngle();
+        robot.setAngle(newAngle);
+        // calculate the new position data
+        double newX = xVel * timeDelta + robot.getLocation().getX();
+        double newY = yVel * timeDelta + robot.getLocation().getY();
+        robot.setLocation(new Point(newX, newY));
     }
 }
