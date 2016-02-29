@@ -90,6 +90,7 @@ public class ControlTab implements Initializable {
 
     /**
      * Sets the primary controller.
+     *
      * @param controller used to start/stop the simulator
      */
     public void setController(SimulatorController controller) {
@@ -102,13 +103,15 @@ public class ControlTab implements Initializable {
         // add the array
         modeBox.getItems().setAll(modes);
         modeBox.setValue(GENERAL_MODE);
+        // add in default values
+        initDefaults();
         // enable and disable the fields
         enableGeneralFields();
         // setup the canvas with the robot image
         File fileLocation = new File(ROBOT_IMAGE);
         Image robot = new Image("file:" + fileLocation.getAbsolutePath(), 128, 256, false, true);
         GraphicsContext gc = robotImage.getGraphicsContext2D();
-        gc.drawImage(robot, 0,0);
+        gc.drawImage(robot, 0, 0);
 
         // Check for an update in the selection
         modeBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -128,13 +131,14 @@ public class ControlTab implements Initializable {
 
     /**
      * Update the UI based on the mode the UI is in, this is only called when the choice box selection actually changes
+     *
      * @param mode mode to switch to for the UI
      */
     private void updateTab(String mode) {
         // based on the mode update the UI elements
-        if(mode.equals(GENERAL_MODE)) {
+        if (mode.equals(GENERAL_MODE)) {
             enableGeneralFields();
-        } else if(mode.equals(WHEEL_MODE)) {
+        } else if (mode.equals(WHEEL_MODE)) {
             enableWheelFields();
         } else {
             controller.printText("Error: " + mode + " is not supported!");
@@ -142,7 +146,7 @@ public class ControlTab implements Initializable {
     }
 
     private void updateSimulator() {
-        if(!simulatorRunning) {
+        if (!simulatorRunning) {
             // TODO: start the simulator
             // setup the input
             RobotInput input = setupInput();
@@ -159,6 +163,7 @@ public class ControlTab implements Initializable {
 
     /**
      * Reads the text fields to create the input.
+     *
      * @return Wheeled input
      */
     private RobotInput setupInput() {
@@ -220,5 +225,20 @@ public class ControlTab implements Initializable {
         robotImage.setVisible(true);
         // disable general
         disableGeneralFields();
+    }
+
+    /**
+     * Setup initial variables so things don't blow up.
+     */
+    private void initDefaults() {
+        // Wheel mode
+        wheelOneField.setText("0.0");
+        wheelTwoField.setText("0.0");
+        wheelThreeField.setText("0.0");
+        wheelFourField.setText("0.0");
+        // General Mode
+        directionField.setText("0.0");
+        speedField.setText("0.0");
+        rotationField.setText("0.0");
     }
 }

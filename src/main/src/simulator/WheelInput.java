@@ -2,10 +2,10 @@ package simulator;
 
 /**
  * Handles the wheel input mode from the UI.
- *
+ * <p/>
  * Created by CyberPuck on 2016-02-28.
  */
-public class WheelInput implements RobotInput{
+public class WheelInput implements RobotInput {
     private InputMode mode;
 
     private double wheelOne;

@@ -2,14 +2,16 @@ package utilities;
 
 /**
  * Has both a location as well as a rotation.
- *
+ * TODO: Is position necessary?
+ * <p/>
  * Created by CyberPuck on 2016-02-28.
  */
 public class Position {
     private Point position;
     private double angle;
 
-    public Position() {}
+    public Position() {
+    }
 
     public Position(Point position, double angle) {
         this.position = position;

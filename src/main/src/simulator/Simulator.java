@@ -1,6 +1,7 @@
 package simulator;
 
 import robot.Kinematics;
+import robot.Robot;
 import utilities.Point;
 import utilities.Position;
 
@@ -12,7 +13,7 @@ import utilities.Position;
  * Add draw loop
  * Determine wheel radius
  * Determine recalculation rate
- *
+ * <p/>
  * Created by CyberPuck on 2016-02-26.
  */
 public class Simulator {
@@ -21,20 +22,32 @@ public class Simulator {
     private double ROBOT_LENGTH = 2;
     private double ROBOT_HEIGHT = 4;
     // handle on the data to move the robot
+    private Robot robot;
     private RobotInput input;
 
-    public Simulator(RobotInput input) {
+    public Simulator(RobotInput input, Robot robot) {
         this.input = input;
+        this.robot = robot;
+    }
+
+    /**
+     * Used to get the current robot information.
+     *
+     * @return Current robot state in reference to the robot frame
+     */
+    public Robot getRobot() {
+        return robot;
     }
 
     /**
      * Given the defined input, calculate the new position of the robot.
+     *
      * @param currentPosition Current position and orientation of the robot
      * @return New position of the robot
      */
     public Position calculateNewPosition(Position currentPosition) {
         Position pos;
-        switch(input.getMode()) {
+        switch (input.getMode()) {
             case CONTROL_WHEELS:
                 pos = calculateWheelPosition(input, currentPosition);
                 break;
@@ -46,7 +59,7 @@ public class Simulator {
     }
 
     private Position calculateWheelPosition(RobotInput input, Position currentPosition) {
-        WheelInput wInput = (WheelInput)input;
+        WheelInput wInput = (WheelInput) input;
         // Get the wheel rates
         double w1 = wInput.getWheelOne();
         double w2 = wInput.getWheelTwo();
@@ -57,8 +70,9 @@ public class Simulator {
         double x = Kinematics.calculateVelocityX(WHEEL_RADIUS, w1, w2, w3, w4);
         double y = Kinematics.calculateVelocityY(WHEEL_RADIUS, w1, w2, w3, w4);
         // apply velocity and angle rates
-        double newX = currentPosition.getPosition().getX() + x;
-        double newY = currentPosition.getPosition().getY() + y;
+        // TODO: Handle Velocity Command Equations
+        double newX = x + currentPosition.getPosition().getX();
+        double newY = y + currentPosition.getPosition().getY();
         double newAngle = currentPosition.getAngle() + angle;
         return new Position(new Point(newX, newY), newAngle);
     }

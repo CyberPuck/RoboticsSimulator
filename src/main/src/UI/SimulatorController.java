@@ -1,27 +1,25 @@
 package UI;
 
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import robot.Robot;
+import robot.VelocityEquations;
 import simulator.RobotInput;
 import simulator.Simulator;
 import utilities.Point;
 import utilities.Position;
 
+import java.math.RoundingMode;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 /**
@@ -30,14 +28,28 @@ import java.util.ResourceBundle;
  * Created by CyberPuck on 2016-02-15.
  */
 public class SimulatorController implements Initializable {
+    // TODO: Should this be configurable? in feet
+    private static double WHEEL_RADIUS = 0.25;
+
     @FXML
     private Pane displayPane;
 
     @FXML
     private TabPane controlPane;
 
+    // System state variables
     @FXML
     private Pane systemStatePane;
+    @FXML
+    private Label velocityY;
+    @FXML
+    private Label velocityX;
+    @FXML
+    private Label rotation;
+    @FXML
+    private Label position;
+    @FXML
+    private Label wheels;
 
     // TODO: Should we move these?
     @FXML
@@ -56,30 +68,53 @@ public class SimulatorController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Background test = new Background(new BackgroundFill(Color.BURLYWOOD, CornerRadii.EMPTY, Insets.EMPTY));
+//        Background test = new Background(new BackgroundFill(Color.BURLYWOOD, CornerRadii.EMPTY, Insets.EMPTY));
         //displayPane.setBackground(test);
-        systemStatePane.setBackground(test);
+//        systemStatePane.setBackground(test);
         // add in the individual controllers
         displayController = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
         displayController.initializePane();
         // add in the tab controller
         TabController tabControl = new TabController(controlPane, this);
         tabControl.init();
+        // force the text area to auto scroll
+        outputTextArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                outputTextArea.setScrollTop(Double.MAX_VALUE);
+            }
+        });
     }
 
     /**
      * TODO: Should we return error values?
      */
     public void startSimulator(RobotInput input) {
+        // first get the current robot position and orientation
+        Position startPos = displayController.getRobotCanvas().getRobotPosition();
+        Robot robot = new Robot(WHEEL_RADIUS);
+        robot.setLocation(startPos.getPosition());
+        robot.setAngle(startPos.getAngle());
+        robot.setVelocity(new Point(0, 0));
+        // update the robot stats
+        updateSystemState(robot);
+        // start the simulator
         printText("Starting simulation");
-        final Simulator sim = new Simulator(input);
+        final Simulator sim = new Simulator(input, robot);
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                // Debug code, need to add logic to only update every x frames
+//                printText("Now: " + now);
+                // TODO: Need to convert the Y position into the canvas coordinates
                 // update the robot position
                 Position currentLocation = displayController.getRobotCanvas().getRobotPosition();
                 Position newLoc = sim.calculateNewPosition(currentLocation);
-                displayController.getRobotCanvas().setRobotPosition(newLoc);
+                // update the robot data
+                updateSystemState(sim.getRobot());
+                // update the position based on the global reference frame
+                Position globalPos = VelocityEquations.convertYawToGlobalFrame(newLoc);
+                displayController.getRobotCanvas().setRobotPosition(globalPos);
                 displayController.getRobotCanvas().redrawRobot();
             }
         };
@@ -91,7 +126,7 @@ public class SimulatorController implements Initializable {
      */
     public void stopSimulator() {
         printText("Stopping Simulator");
-        if(timer != null) {
+        if (timer != null) {
             timer.stop();
             // clean out this bad boy
             timer = null;
@@ -100,9 +135,26 @@ public class SimulatorController implements Initializable {
 
     /**
      * Prints out text on the output pane.
+     *
      * @param text string to print
      */
     public void printText(String text) {
         outputTextArea.setText(outputTextArea.getText() + text + "\n");
+        outputTextArea.appendText("");
+    }
+
+    private void updateSystemState(Robot robot) {
+        // update the velocity components
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        velocityY.setText("Velocity Y: " + df.format(robot.getVelocity().getY()));
+        velocityX.setText("Velocity X: " + df.format(robot.getVelocity().getX()));
+        rotation.setText("Rotation: " + df.format(robot.getAngle()));
+        position.setText("Position: (" + df.format(robot.getLocation().getX()) + ", "
+                + df.format(robot.getLocation().getY()) + ")");
+        double[] wheelRates = robot.getWheelRates();
+        wheels.setText("Wheel One: " + df.format(wheelRates[0]) + ", Wheel Two: "
+                + df.format(wheelRates[1]) + ", Wheel Three: " + df.format(wheelRates[2])
+                + ", Wheel Four: " + df.format(wheelRates[3]));
     }
 }

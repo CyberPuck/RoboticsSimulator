@@ -11,8 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,10 +18,10 @@ import java.util.ResourceBundle;
 
 /**
  * Handles the path tab UI.
- *
+ * <p/>
  * Created by CyberPuck on 2016-02-24.
  */
-public class PathTab implements Initializable{
+public class PathTab implements Initializable {
     // Modes as strings
     private static String CIRCLE = "Circle";
     private static String RECTANGLE = "Rectangle";
@@ -112,11 +110,11 @@ public class PathTab implements Initializable{
 
     private void updateTab(String mode) {
         // update UI based on mode selected
-        if(mode.equals(CIRCLE)) {
+        if (mode.equals(CIRCLE)) {
             enableCircle();
-        } else if(mode.equals(RECTANGLE)) {
+        } else if (mode.equals(RECTANGLE)) {
             enableRectangle();
-        } else if(mode.equals(FIGURE_EIGHT)) {
+        } else if (mode.equals(FIGURE_EIGHT)) {
             enableFigureEight();
         } else {
             controller.printText("Error: " + mode + " is not supported!");

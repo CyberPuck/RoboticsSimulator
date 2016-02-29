@@ -3,7 +3,6 @@ package UI;
 import UI.displayCanvases.GridCanvas;
 import UI.displayCanvases.PathCanvas;
 import UI.displayCanvases.RobotCanvas;
-import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Background;
@@ -14,7 +13,7 @@ import javafx.scene.paint.Color;
 
 /**
  * Handles calls to the DisplayPaneController.  This will show the robot in motion along with the defaults and paths.
- *
+ * <p/>
  * Created by CyberPuck on 2016-02-15.
  */
 public class DisplayPaneController {
@@ -31,9 +30,10 @@ public class DisplayPaneController {
 
     /**
      * Setup the displayPane.
+     *
      * @param displayPane
      */
-    public DisplayPaneController(Pane displayPane, Canvas gridCanvas, Canvas robotCanvas, Canvas pathCanvas){
+    public DisplayPaneController(Pane displayPane, Canvas gridCanvas, Canvas robotCanvas, Canvas pathCanvas) {
         this.displayPane = displayPane;
         this.gridCanvas = gridCanvas;
         this.robotCanvas = robotCanvas;

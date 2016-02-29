@@ -2,7 +2,7 @@ package simulator;
 
 /**
  * Simple enum with the modes the robot can be in.
- *
+ * <p/>
  * Created by CyberPuck on 2016-02-28.
  */
 public enum InputMode {

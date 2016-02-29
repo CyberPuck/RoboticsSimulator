@@ -11,7 +11,7 @@ import java.io.IOException;
 
 /**
  * Initializes the tab pane and all UI controls.
- *
+ * <p/>
  * Created by CyberPuck on 2016-02-21.
  */
 public class TabController {

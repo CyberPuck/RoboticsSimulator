@@ -48,35 +48,36 @@ public class RobotCanvas {
     public void redrawRobot() {
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
         // clear the field first
-        gc.clearRect(0,0,X_LENGTH, Y_LENGTH);
+        gc.clearRect(0, 0, X_LENGTH, Y_LENGTH);
         double x = this.robotPosition.getPosition().getX();
         double y = this.robotPosition.getPosition().getY();
         // make sure we don't going running out of the boundary
-        if(x + robot.getWidth()/2 < BOUNDARY_LENGTH || x + robot.getWidth()/2 > X_LENGTH - BOUNDARY_LENGTH) {
-            this.robotPosition.getPosition().setX(X_LENGTH/2);
+        if (x + robot.getWidth() / 2 < BOUNDARY_LENGTH || x + robot.getWidth() / 2 > X_LENGTH - BOUNDARY_LENGTH) {
+            this.robotPosition.getPosition().setX(X_LENGTH / 2);
             x = this.robotPosition.getPosition().getX();
-            this.robotPosition.getPosition().setY(Y_LENGTH/2);
+            this.robotPosition.getPosition().setY(Y_LENGTH / 2);
             y = this.robotPosition.getPosition().getY();
         }
-        if(y + robot.getHeight()/2 < BOUNDARY_LENGTH || y + robot.getHeight()/2 > Y_LENGTH - BOUNDARY_LENGTH) {
-            this.robotPosition.getPosition().setX(X_LENGTH/2);
+        if (y + robot.getHeight() / 2 < BOUNDARY_LENGTH || y + robot.getHeight() / 2 > Y_LENGTH - BOUNDARY_LENGTH) {
+            this.robotPosition.getPosition().setX(X_LENGTH / 2);
             x = this.robotPosition.getPosition().getX();
-            this.robotPosition.getPosition().setY(Y_LENGTH/2);
+            this.robotPosition.getPosition().setY(Y_LENGTH / 2);
             y = this.robotPosition.getPosition().getY();
         }
         // draw the robot
         gc.save();
-        rotate(gc, this.robotPosition.getAngle(), x + robot.getWidth()/2, y + robot.getHeight()/2);
+        rotate(gc, this.robotPosition.getAngle(), x + robot.getWidth() / 2, y + robot.getHeight() / 2);
         gc.drawImage(robot, x, y);
         gc.restore();
     }
 
     /**
      * Transform the given "graphics plane" at the given angle around the image (robot).
-     * @param gc graphics context to draw the robot
+     *
+     * @param gc    graphics context to draw the robot
      * @param angle angle to rotate
-     * @param x position of the center of the robot image
-     * @param y position of the center of the robot image
+     * @param x     position of the center of the robot image
+     * @param y     position of the center of the robot image
      */
     private void rotate(GraphicsContext gc, double angle, double x, double y) {
         Rotate rotate = new Rotate(angle, x, y);

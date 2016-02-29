@@ -15,7 +15,7 @@ public class GridCanvas {
     }
 
     /**
-     *  Setup the grid canvas, one time thing.
+     * Setup the grid canvas, one time thing.
      */
     public void init() {
         // TODO: Lines are being drawn incorrectly!
@@ -27,16 +27,16 @@ public class GridCanvas {
         double height = 720;
         double numberOfPixelsPerInch = 2.0;
         // draw horizontal lines
-        for(int i = 0; i < 30; i++) {
-            double xPosition = i * (6*numberOfPixelsPerInch);
+        for (int i = 0; i < 30; i++) {
+            double xPosition = i * (6 * numberOfPixelsPerInch);
             // Add fudge factor to make 1 pixel wide lines
             xPosition += 0.5;
             gc.setLineWidth(0.0);
             gc.strokeLine(xPosition, 0, xPosition, height);
         }
         // draw vertical lines
-        for(int i = 0; i < 60; i++) {
-            double yPosition = i * (6*numberOfPixelsPerInch);
+        for (int i = 0; i < 60; i++) {
+            double yPosition = i * (6 * numberOfPixelsPerInch);
             // Add fudge factor to make 1 pixel wide lines
             yPosition += 0.5;
             gc.setLineWidth(0.0);

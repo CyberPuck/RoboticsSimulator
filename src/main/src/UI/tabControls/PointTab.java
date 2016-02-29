@@ -3,11 +3,10 @@ package UI.tabControls;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 
 /**
  * Handles the point tab UI.
- *
+ * <p/>
  * Created by CyberPuck on 2016-02-24.
  */
 public class PointTab {
@@ -24,5 +23,6 @@ public class PointTab {
     @FXML
     private Button startButton;
 
-    public PointTab() {}
+    public PointTab() {
+    }
 }

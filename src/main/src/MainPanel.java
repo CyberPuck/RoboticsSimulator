@@ -21,7 +21,7 @@ public class MainPanel extends Application {
             primaryStage.setScene(myScene);
             primaryStage.setResizable(false);
             primaryStage.show();
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.err.println("Error: " + e);
         }
     }

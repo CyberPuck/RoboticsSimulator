@@ -7,7 +7,7 @@ import javafx.scene.control.TextField;
 
 /**
  * Handles the way point tab UI.
- *
+ * <p/>
  * Created by CyberPuck on 2016-02-24.
  */
 public class WayPointTab {
@@ -26,5 +26,6 @@ public class WayPointTab {
     @FXML
     private Button startButton;
 
-    public WayPointTab() {}
+    public WayPointTab() {
+    }
 }
