@@ -47,7 +47,7 @@ public class RobotCanvas {
      */
     public void init() {
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
-        gc.drawImage(robot, 180, 360);
+        gc.drawImage(robot, 180 - robot.getWidth() / 2, 360 - robot.getHeight() / 2);
     }
 
     /**
