@@ -1,5 +1,6 @@
 package robot;
 
+import utilities.Point;
 import utilities.Position;
 
 /**
@@ -17,13 +18,14 @@ public class VelocityEquations {
      * @param robotPos Current position based on robot reference frame
      * @return Current position based on the inertial reference frame
      */
-    public static Position convertYawToGlobalFrame(Position robotPos) {
-        Position pos = new Position(robotPos.getPosition(), robotPos.getAngle());
-        double gamma = robotPos.getAngle();
+    public static Point convertYawToGlobalFrame(Position robotPos) {
+        Point pos = new Point(robotPos.getPosition().getX(), robotPos.getPosition().getY());
+        // convert angle to radians
+        double gamma = Math.toRadians(robotPos.getAngle());
         double robotX = robotPos.getPosition().getX();
         double robotY = robotPos.getPosition().getY();
-        pos.getPosition().setX(Math.cos(gamma) * robotX - Math.sin(gamma) * robotY);
-        pos.getPosition().setY(Math.sin(gamma) * robotX + Math.cos(gamma) * robotY);
+        pos.setX((Math.cos(gamma) * robotX) - (Math.sin(gamma) * robotY));
+        pos.setY((Math.sin(gamma) * robotX) + (Math.cos(gamma) * robotY));
         return pos;
     }
 }

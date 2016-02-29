@@ -2,7 +2,9 @@ package simulator;
 
 import robot.Kinematics;
 import robot.Robot;
+import robot.VelocityEquations;
 import utilities.Point;
+import utilities.Position;
 
 /**
  * This is the simulator class, like highlander there can be only one.
@@ -55,6 +57,8 @@ public class Simulator {
             default:
                 System.err.println("Not implemented");
         }
+        // update the position based on the orientation of the robot
+        robot.setLocation(VelocityEquations.convertYawToGlobalFrame(new Position(robot.getLocation(), robot.getAngle())));
     }
 
     /**

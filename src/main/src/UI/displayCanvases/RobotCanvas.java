@@ -63,12 +63,14 @@ public class RobotCanvas {
         checkBoundaries(newPosition.getPosition());
         double paneX = newPosition.getPosition().getX() - (this.canvasCenter.getX() - 180);
         double paneY = newPosition.getPosition().getY() - (this.canvasCenter.getY() - 360);
+        // set the robot position and angle
         this.robotPosition.setPosition(new Point(paneX, paneY));
+        this.robotPosition.setAngle(simRobot.getAngle());
         // draw the robot
         gc.save();
         // Update the robot location
         System.out.println("ROBOT:" + this.robotPosition.toString());
-        rotate(gc, simRobot.getAngle(), paneX, paneY);
+        rotate(gc, this.robotPosition.getAngle(), paneX, paneY);
         // convert coordinates to upper left of image, not robot center to draw it
         gc.drawImage(robot, paneX - robot.getWidth() / 2, paneY - robot.getHeight() / 2);
         gc.restore();
