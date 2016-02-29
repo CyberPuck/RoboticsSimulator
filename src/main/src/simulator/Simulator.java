@@ -57,8 +57,6 @@ public class Simulator {
             default:
                 System.err.println("Not implemented");
         }
-        // update the position based on the orientation of the robot
-        robot.setLocation(VelocityEquations.convertYawToGlobalFrame(new Position(robot.getLocation(), robot.getAngle())));
     }
 
     /**
@@ -83,9 +81,11 @@ public class Simulator {
         // calculate the new angle based on rate and time difference between last calculation
         double newAngle = rotationRate * timeDelta + robot.getAngle();
         robot.setAngle(newAngle);
+        // update velocities based on vehicle angle
+        robot.setVelocity(VelocityEquations.convertYawToGlobalFrame(new Position(robot.getVelocity(), robot.getAngle())));
         // calculate the new position data
-        double newX = xVel * timeDelta + robot.getLocation().getX();
-        double newY = yVel * timeDelta + robot.getLocation().getY();
+        double newX = robot.getVelocity().getX() * timeDelta + robot.getLocation().getX();
+        double newY = robot.getVelocity().getY() * timeDelta + robot.getLocation().getY();
         robot.setLocation(new Point(newX, newY));
     }
 }
