@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import simulator.GeneralInput;
 import simulator.RobotInput;
 import simulator.WheelInput;
 
@@ -149,7 +150,12 @@ public class ControlTab implements Initializable {
         if (!simulatorRunning) {
             // TODO: start the simulator
             // setup the input
-            RobotInput input = setupInput();
+            RobotInput input;
+            if (modes.equals(GENERAL_MODE)) {
+                input = setupGeneralInput();
+            } else { // assume wheel mode
+                input = setupWheelInput();
+            }
             controller.startSimulator(input);
             startButton.setText("Stop");
             simulatorRunning = true;
@@ -166,13 +172,21 @@ public class ControlTab implements Initializable {
      *
      * @return Wheeled input
      */
-    private RobotInput setupInput() {
+    private RobotInput setupWheelInput() {
         double one = Double.parseDouble(wheelOneField.getText());
         double two = Double.parseDouble(wheelTwoField.getText());
         double three = Double.parseDouble(wheelThreeField.getText());
         double four = Double.parseDouble(wheelFourField.getText());
         WheelInput input = new WheelInput(one, two, three, four);
         return input;
+    }
+
+    private RobotInput setupGeneralInput() {
+        double direction = Double.parseDouble(rotationField.getText());
+        double speed = Double.parseDouble(speedField.getText());
+        double rotation = Double.parseDouble(rotationField.getText());
+        GeneralInput gi = new GeneralInput(direction, speed, rotation);
+        return gi;
     }
 
     /**
