@@ -63,17 +63,18 @@ public class RobotCanvas {
         // make sure we don't going running out of the boundary
         checkBoundaries(newPosition.getPosition());
         double paneX = newPosition.getPosition().getX() - (this.canvasCenter.getX() - 180);
-        double paneY = (this.canvasCenter.getY() + 360) - newPosition.getPosition().getY();
+        double paneY = newPosition.getPosition().getY() - (this.canvasCenter.getY() - 360);
+        // convert to the pane reference frame
+        paneY = 720 - paneY;
         // invert the y coordinate it is flipped went drawing
-//        double difference = paneY - canvasCenter.getY();
-//        paneY = canvasCenter.getY() - difference;
+
         // set the robot position and angle
         this.robotPosition.setPosition(new Point(paneX, paneY));
         this.robotPosition.setAngle(simRobot.getAngle());
         // draw the robot
         gc.save();
         // Update the robot location
-        System.out.println("New position: " + newPosition.toString());
+        System.out.println("Pixel Position: " + newPosition.toString());
         System.out.println("ROBOT: " + this.robotPosition.toString());
         System.out.println("Canvas Center: " + this.canvasCenter.toString());
         rotate(gc, this.robotPosition.getAngle(), paneX, paneY);
@@ -108,6 +109,8 @@ public class RobotCanvas {
     public Position convertLocationToFeet() {
         double trueX = this.canvasCenter.getX() - 180 + this.robotPosition.getPosition().getX();
         double trueY = this.canvasCenter.getY() - 360 + this.robotPosition.getPosition().getY();
+        // convert back to the global reference frame
+        trueY = 720 - trueY;
         return new Position(new Point((trueX / (12 * 2)), (trueY / (12 * 2))), this.robotPosition.getAngle());
     }
 
@@ -118,9 +121,8 @@ public class RobotCanvas {
      * @param currentLocation Current pixel location of the robot.
      */
     private void checkBoundaries(Point currentLocation) {
-        Point location = new Point(currentLocation.getX(), currentLocation.getY());
-        double x = location.getX();
-        double y = location.getY();
+        double x = currentLocation.getX();
+        double y = currentLocation.getY();
         if (x > BOUNDARY_LENGTH_X + canvasCenter.getX() || x < canvasCenter.getX() - BOUNDARY_LENGTH_X) {
             System.out.println("Updating center, X");
             centerCanvas(currentLocation);

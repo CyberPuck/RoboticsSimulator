@@ -99,6 +99,7 @@ public class SimulatorController implements Initializable {
         updateSystemState(robot);
         // start the simulator
         printText("Starting simulation");
+        System.out.println("Starting Simulator");
         final Simulator sim = new Simulator(input, robot);
         previousTime = 0;
 //        final long previousTime = 0;
