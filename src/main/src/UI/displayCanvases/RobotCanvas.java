@@ -107,6 +107,7 @@ public class RobotCanvas {
      * @return The position of the robot in feet
      */
     public Position convertLocationToFeet() {
+        System.out.println("Pixel Location: " + this.robotPosition.getPosition().toString());
         double trueX = this.canvasCenter.getX() - 180 + this.robotPosition.getPosition().getX();
         double trueY = this.canvasCenter.getY() - 360 + this.robotPosition.getPosition().getY();
         // convert back to the global reference frame

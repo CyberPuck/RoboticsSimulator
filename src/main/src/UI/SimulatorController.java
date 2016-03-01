@@ -64,6 +64,8 @@ public class SimulatorController implements Initializable {
     // controller for the simulation display
     private DisplayPaneController displayController;
     private AnimationTimer timer;
+    // Location of the robot in the global reference frame
+    private Position robotPosition;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -83,6 +85,8 @@ public class SimulatorController implements Initializable {
                 outputTextArea.setScrollTop(Double.MAX_VALUE);
             }
         });
+        // robot always starts in the middle
+        robotPosition = new Position(new Point(7.5, 15), 0.0);
     }
 
     /**
@@ -91,9 +95,9 @@ public class SimulatorController implements Initializable {
     public void startSimulator(RobotInput input) {
         // first get the current robot position and orientation
         Position startPos = displayController.getRobotCanvas().convertLocationToFeet();
-        Robot robot = new Robot(WHEEL_RADIUS);
-        robot.setLocation(startPos.getPosition());
-        robot.setAngle(startPos.getAngle());
+        final Robot robot = new Robot(WHEEL_RADIUS);
+        robot.setLocation(robotPosition.getPosition());
+        robot.setAngle(robotPosition.getAngle());
         robot.setVelocity(new Point(0, 0));
         // update the robot stats
         updateSystemState(robot);
@@ -119,6 +123,8 @@ public class SimulatorController implements Initializable {
                 // TODO: Need to convert the Y position into the canvas coordinates
                 // update the robot position
                 sim.calculateNewPosition(deltaTime);
+                // update the reference position
+                robotPosition = new Position(sim.getRobot().getLocation(), robot.getAngle());
                 // update the robot data
                 updateSystemState(sim.getRobot());
                 // update the position based on the global reference frame
