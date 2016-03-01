@@ -16,7 +16,7 @@ import java.io.File;
  */
 public class RobotCanvas {
     // robot file
-    private static String ROBOT_IMAGE = "./assets/mecanum_robot_center.png";
+    private static String ROBOT_IMAGE = "./src/main/src/assets/mecanum_robot_center.png";
     // static height of the view pane
     private static double X_LENGTH = 360;
     private static double Y_LENGTH = 720;
@@ -36,6 +36,7 @@ public class RobotCanvas {
     public RobotCanvas(Canvas robotCanvas) {
         this.robotCanvas = robotCanvas;
         this.robotPosition = new Position(new Point(180, 360), 0.0);
+
         File robotImage = new File(ROBOT_IMAGE);
         this.robot = new Image("file:" + robotImage.getAbsolutePath(), 48.0, 96.0, false, true);
         // Make the current center of the pane
@@ -62,14 +63,19 @@ public class RobotCanvas {
         // make sure we don't going running out of the boundary
         checkBoundaries(newPosition.getPosition());
         double paneX = newPosition.getPosition().getX() - (this.canvasCenter.getX() - 180);
-        double paneY = newPosition.getPosition().getY() - (this.canvasCenter.getY() - 360);
+        double paneY = (this.canvasCenter.getY() + 360) - newPosition.getPosition().getY();
+        // invert the y coordinate it is flipped went drawing
+//        double difference = paneY - canvasCenter.getY();
+//        paneY = canvasCenter.getY() - difference;
         // set the robot position and angle
         this.robotPosition.setPosition(new Point(paneX, paneY));
         this.robotPosition.setAngle(simRobot.getAngle());
         // draw the robot
         gc.save();
         // Update the robot location
-        System.out.println("ROBOT:" + this.robotPosition.toString());
+        System.out.println("New position: " + newPosition.toString());
+        System.out.println("ROBOT: " + this.robotPosition.toString());
+        System.out.println("Canvas Center: " + this.canvasCenter.toString());
         rotate(gc, this.robotPosition.getAngle(), paneX, paneY);
         // convert coordinates to upper left of image, not robot center to draw it
         gc.drawImage(robot, paneX - robot.getWidth() / 2, paneY - robot.getHeight() / 2);
@@ -85,10 +91,11 @@ public class RobotCanvas {
      */
     private Position convertLocationToPixels(Robot simRobot) {
         Position pixelLocation = new Position();
+        // set the location
         pixelLocation.getPosition().setX(simRobot.getLocation().getX() * 12 * 2);
         pixelLocation.getPosition().setY(simRobot.getLocation().getY() * 12 * 2);
+        // set the angle
         pixelLocation.setAngle(simRobot.getAngle());
-        System.out.println(pixelLocation.toString());
         return pixelLocation;
     }
 
@@ -115,9 +122,11 @@ public class RobotCanvas {
         double x = location.getX();
         double y = location.getY();
         if (x > BOUNDARY_LENGTH_X + canvasCenter.getX() || x < canvasCenter.getX() - BOUNDARY_LENGTH_X) {
+            System.out.println("Updating center, X");
             centerCanvas(currentLocation);
         }
         if (y > BOUNDARY_LENGTH_Y + canvasCenter.getY() || y < canvasCenter.getY() - BOUNDARY_LENGTH_Y) {
+            System.out.println("Updating center, Y");
             centerCanvas(currentLocation);
         }
     }

@@ -28,7 +28,7 @@ import java.util.ResourceBundle;
  * Created by CyberPuck on 2016-02-21.
  */
 public class ControlTab implements Initializable {
-    private static String ROBOT_IMAGE = "./assets/mecanum_robot_ui.png";
+    private static String ROBOT_IMAGE = "./src/main/src/assets/mecanum_robot_ui.png";
 
     private static String GENERAL_MODE = "generalMode";
     private static String WHEEL_MODE = "wheelRotationMode";
@@ -110,6 +110,7 @@ public class ControlTab implements Initializable {
         enableGeneralFields();
         // setup the canvas with the robot image
         File fileLocation = new File(ROBOT_IMAGE);
+        System.out.println(fileLocation.getAbsoluteFile());
         Image robot = new Image("file:" + fileLocation.getAbsolutePath(), 128, 256, false, true);
         GraphicsContext gc = robotImage.getGraphicsContext2D();
         gc.drawImage(robot, 0, 0);
