@@ -4,8 +4,8 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.Pane?>
-<Pane fx:id="mainPane" maxHeight="1000.0" maxWidth="800.0" minHeight="1000.0" minWidth="800.0" prefHeight="1000.0"
-      prefWidth="800.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
+<Pane fx:id="mainPane" maxHeight="720.0" maxWidth="1240.0" minHeight="720.0" minWidth="1240.0" prefHeight="720"
+      prefWidth="1240" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="UI.SimulatorController">
     <children>
         <Pane fx:id="displayPane" layoutX="440.0" maxHeight="720.0" maxWidth="360.0" minHeight="720.0" minWidth="360.0"
@@ -20,10 +20,8 @@
             </children>
         </Pane>
         <TabPane fx:id="controlPane" prefHeight="720.0" prefWidth="440.0" tabClosingPolicy="UNAVAILABLE"/>
-        <TextArea fx:id="outputTextArea" layoutX="440.0" layoutY="720.0" maxHeight="280.0" maxWidth="360.0"
-                  minHeight="280.0" minWidth="360.0" prefHeight="280.0" prefWidth="360.0"/>
-        <Pane fx:id="systemStatePane" layoutY="720.0" maxHeight="280.0" maxWidth="440.0" minHeight="280.0"
-              minWidth="440.0" prefHeight="280.0" prefWidth="440.0">
+        <TextArea fx:id="outputTextArea" layoutX="800.0" layoutY="0.0" prefHeight="600.0" prefWidth="440.0"/>
+        <Pane fx:id="systemStatePane" layoutX="800.0" layoutY="600.0" prefHeight="120.0" prefWidth="440.0">
             <children>
                 <Label fx:id="velocityY" layoutX="14.0" layoutY="14.0" text="Velocity Y: 0.0"/>
                 <Label fx:id="velocityX" layoutX="114.0" layoutY="14.0" text="Velocity X: 0.0"/>
