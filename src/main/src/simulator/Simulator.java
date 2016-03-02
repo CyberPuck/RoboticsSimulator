@@ -1,5 +1,6 @@
 package simulator;
 
+import inputs.GeneralInput;
 import inputs.RobotInput;
 import inputs.WheelInput;
 import robot.Kinematics;
@@ -54,11 +55,32 @@ public class Simulator {
     public void calculateNewPosition(double timeDelta) {
         switch (input.getMode()) {
             case CONTROL_WHEELS:
-                calculateWheelPosition(input, timeDelta);
+                calculateWheelMovement(input, timeDelta);
+                break;
+            case CONTROL_GENERAL:
+                calculateGeneralMovement(input, timeDelta);
                 break;
             default:
                 System.err.println("Not implemented");
         }
+    }
+
+    /**
+     * Based on the direction, speed, and rotation rate calculate the wheel rates and new location.
+     *
+     * @param input     General input
+     * @param timeDelta difference between last calculations
+     */
+    private void calculateGeneralMovement(RobotInput input, double timeDelta) {
+        GeneralInput gInput = (GeneralInput) input;
+        // TODO: based on the current location calculate if a course correction is required
+        // Given the direction get the x and y component velocities
+        double yVel = Math.cos(Math.toRadians(gInput.getDirection())) * gInput.getSpeed();
+        double xVel = Math.sin(Math.toRadians(gInput.getDirection())) * gInput.getSpeed();
+        // get the new robot angle
+        double newAngle = gInput.getRotation() * timeDelta + robot.getAngle();
+        // update the robot
+        updateRobot(xVel, yVel, newAngle, robot.getRotationRate(), timeDelta, robot);
     }
 
     /**
@@ -67,7 +89,7 @@ public class Simulator {
      * @param input     User input for wheel rotations
      * @param timeDelta Difference between last calculation
      */
-    private void calculateWheelPosition(RobotInput input, double timeDelta) {
+    private void calculateWheelMovement(RobotInput input, double timeDelta) {
         WheelInput wInput = (WheelInput) input;
         // Get the wheel rates
         double w1 = wInput.getWheelOne();
@@ -78,10 +100,16 @@ public class Simulator {
         double rotationRate = Kinematics.calculateVehicleRotation(WHEEL_RADIUS, ROBOT_LENGTH, ROBOT_HEIGHT, w1, w2, w3, w4);
         double xVel = Kinematics.calculateVelocityX(WHEEL_RADIUS, w1, w2, w3, w4);
         double yVel = Kinematics.calculateVelocityY(WHEEL_RADIUS, w1, w2, w3, w4);
-        robot.setVelocity(new Point(xVel, yVel));
-        robot.setRotationRate(rotationRate);
+
         // calculate the new angle based on rate and time difference between last calculation
         double newAngle = rotationRate * timeDelta + robot.getAngle();
+        // update the robot
+        updateRobot(xVel, yVel, newAngle, rotationRate, timeDelta, robot);
+    }
+
+    private void updateRobot(double xVel, double yVel, double newAngle, double rotationRate, double timeDelta, Robot robot) {
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(rotationRate);
         robot.setAngle(newAngle);
         // update velocities based on vehicle angle
         robot.setVelocity(VelocityEquations.convertYawToGlobalFrame(new Position(robot.getVelocity(), robot.getAngle())));

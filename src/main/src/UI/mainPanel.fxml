@@ -25,7 +25,8 @@
             <children>
                 <Label fx:id="velocityY" layoutX="14.0" layoutY="14.0" text="Velocity Y: 0.0"/>
                 <Label fx:id="velocityX" layoutX="114.0" layoutY="14.0" text="Velocity X: 0.0"/>
-                <Label fx:id="rotation" layoutX="14.0" layoutY="34.0" text="Rotation: 0.0"/>
+                <Label fx:id="rotationRate" layoutX="214.0" layoutY="14.0" text="Rotation Rate: 0.0"/>
+                <Label fx:id="direction" layoutX="14.0" layoutY="34.0" text="Direction: 0.0"/>
                 <Label fx:id="position" layoutX="14.0" layoutY="54.0" text="Position: (0, 0)"/>
                 <Label fx:id="wheels" layoutX="14.0" layoutY="74.0"
                        text="Wheel One: 0.0, Wheel Two: 0.0, Wheel Three: 0.0, Wheel Four: 0.0"/>

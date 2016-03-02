@@ -44,11 +44,13 @@ public class SimulatorController implements Initializable {
     @FXML
     private Label velocityX;
     @FXML
-    private Label rotation;
+    private Label direction;
     @FXML
     private Label position;
     @FXML
     private Label wheels;
+    @FXML
+    private Label rotationRate;
 
     // TODO: Should we move these?
     @FXML
@@ -140,6 +142,8 @@ public class SimulatorController implements Initializable {
      */
     public void stopSimulator() {
         printText("Stopping Simulator");
+        // zero out velocities on the system display
+        stopSystemState();
         if (timer != null) {
             timer.stop();
             // clean out this bad boy
@@ -163,12 +167,26 @@ public class SimulatorController implements Initializable {
         df.setRoundingMode(RoundingMode.HALF_UP);
         velocityY.setText("Velocity Y: " + df.format(robot.getVelocity().getY()));
         velocityX.setText("Velocity X: " + df.format(robot.getVelocity().getX()));
-        rotation.setText("Rotation: " + df.format(robot.getAngle()));
+        rotationRate.setText("Rotation Rate: " + df.format(robot.getRotationRate()));
+        direction.setText("Direction: " + df.format(robot.getAngle()));
         position.setText("Position: (" + df.format(robot.getLocation().getX()) + ", "
-                + df.format(robot.getLocation().getY()) + ")" + " @ " + df.format(robot.getRotationRate()));
+                + df.format(robot.getLocation().getY()) + ")");
         double[] wheelRates = robot.getWheelRates();
         wheels.setText("Wheel One: " + df.format(wheelRates[0]) + ", Wheel Two: "
                 + df.format(wheelRates[1]) + ", Wheel Three: " + df.format(wheelRates[2])
                 + ", Wheel Four: " + df.format(wheelRates[3]));
+    }
+
+    private void stopSystemState() {
+        velocityY.setText("Velocity Y: 0.0");
+        velocityX.setText("Velocity X: 0.0");
+        rotationRate.setText("Rotation Rate: 0.0");
+        wheels.setText("Wheel One: " + 0.0 + ", Wheel Two: "
+                + 0.0 + ", Wheel Three: " + 0.0
+                + ", Wheel Four: " + 0.0);
+    }
+
+    public Position getRobotPosition() {
+        return robotPosition;
     }
 }

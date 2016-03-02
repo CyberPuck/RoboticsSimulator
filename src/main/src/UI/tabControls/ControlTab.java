@@ -152,7 +152,7 @@ public class ControlTab implements Initializable {
             // TODO: start the simulator
             // setup the input
             RobotInput input;
-            if (modes.equals(GENERAL_MODE)) {
+            if (modeBox.getValue().equals(GENERAL_MODE)) {
                 input = setupGeneralInput();
             } else { // assume wheel mode
                 input = setupWheelInput();
@@ -178,15 +178,21 @@ public class ControlTab implements Initializable {
         double two = Double.parseDouble(wheelTwoField.getText());
         double three = Double.parseDouble(wheelThreeField.getText());
         double four = Double.parseDouble(wheelFourField.getText());
-        WheelInput input = new WheelInput(one, two, three, four);
-        return input;
+        WheelInput wi = new WheelInput(one, two, three, four);
+        return wi;
     }
 
+    /**
+     * Reads the text fields to create the input.
+     *
+     * @return General input
+     */
     private RobotInput setupGeneralInput() {
-        double direction = Double.parseDouble(rotationField.getText());
+        double direction = Double.parseDouble(directionField.getText());
         double speed = Double.parseDouble(speedField.getText());
         double rotation = Double.parseDouble(rotationField.getText());
         GeneralInput gi = new GeneralInput(direction, speed, rotation);
+        gi.setStartLocation(controller.getRobotPosition().getPosition());
         return gi;
     }
 
