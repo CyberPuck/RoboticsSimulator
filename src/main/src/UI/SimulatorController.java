@@ -95,6 +95,8 @@ public class SimulatorController implements Initializable {
      * TODO: Should we return error values?
      */
     public void startSimulator(RobotInput input) {
+        // clear the robot path
+        displayController.getPathCanvas().restartCanvas();
         // first get the current robot position and orientation
         Position startPos = displayController.getRobotCanvas().convertLocationToFeet();
         final Robot robot = new Robot(WHEEL_RADIUS);
@@ -144,8 +146,7 @@ public class SimulatorController implements Initializable {
         printText("Stopping Simulator");
         // zero out velocities on the system display
         stopSystemState();
-        // clear the robot path
-        displayController.getPathCanvas().restartCanvas();
+        // Kill the timer
         if (timer != null) {
             timer.stop();
             // clean out this bad boy
