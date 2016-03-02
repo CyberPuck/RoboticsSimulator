@@ -32,8 +32,10 @@ public class RobotCanvas {
     private Image robot;
     // the center of the pane (need to keep track so we know where the robot can move to)
     private Point canvasCenter;
+    // Since this class handles shift the boundaries it handles the path canvas
+    private PathCanvas pathCanvas;
 
-    public RobotCanvas(Canvas robotCanvas) {
+    public RobotCanvas(Canvas robotCanvas, PathCanvas pathCanvas) {
         this.robotCanvas = robotCanvas;
         this.robotPosition = new Position(new Point(180, 360), 0.0);
 
@@ -41,6 +43,8 @@ public class RobotCanvas {
         this.robot = new Image("file:" + robotImage.getAbsolutePath(), 48.0, 96.0, false, true);
         // Make the current center of the pane
         canvasCenter = new Point(360 / 2, 720 / 2);
+        // setup the path canvas
+        this.pathCanvas = pathCanvas;
     }
 
     /**
@@ -49,6 +53,8 @@ public class RobotCanvas {
     public void init() {
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
         gc.drawImage(robot, 180 - robot.getWidth() / 2, 360 - robot.getHeight() / 2);
+        // initialize the path
+        pathCanvas.init(new Point(180, 360));
     }
 
     /**
@@ -81,6 +87,7 @@ public class RobotCanvas {
         // convert coordinates to upper left of image, not robot center to draw it
         gc.drawImage(robot, paneX - robot.getWidth() / 2, paneY - robot.getHeight() / 2);
         gc.restore();
+        pathCanvas.updateRobotPath(newPosition.getPosition());
     }
 
     /**
@@ -132,6 +139,7 @@ public class RobotCanvas {
             System.out.println("Updating center, Y");
             centerCanvas(currentLocation);
         }
+
     }
 
     /**
@@ -143,6 +151,8 @@ public class RobotCanvas {
      */
     private void centerCanvas(Point currentLocation) {
         this.canvasCenter = currentLocation;
+        // update the path canvas
+        pathCanvas.updateCenter(this.canvasCenter);
     }
 
     /**

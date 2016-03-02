@@ -50,15 +50,19 @@ public class DisplayPaneController {
         GridCanvas grid = new GridCanvas(gridCanvas);
         // setup the grid
         grid.init();
-        // TODO: setup the robot
-        robot = new RobotCanvas(robotCanvas);
-        robot.init();
         // Setup the path stuff
         path = new PathCanvas(pathCanvas);
-        path.init();
+        // setup the robot
+        robot = new RobotCanvas(robotCanvas, path);
+        robot.init();
+
     }
 
     public RobotCanvas getRobotCanvas() {
         return this.robot;
+    }
+
+    public PathCanvas getPathCanvas() {
+        return path;
     }
 }

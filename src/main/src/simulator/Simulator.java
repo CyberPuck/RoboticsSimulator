@@ -22,9 +22,12 @@ import utilities.Position;
  */
 public class Simulator {
     // TODO: Should this be hard coded?
-    private double WHEEL_RADIUS = 0.5;
-    private double ROBOT_LENGTH = 2;
-    private double ROBOT_HEIGHT = 4;
+    private static double WHEEL_RADIUS = 0.5;
+    private static double ROBOT_LENGTH = 2;
+    private static double ROBOT_HEIGHT = 4;
+    // every 100 ms recalculate the course to take
+    private static double RECALCULATE_COURSE = 0.1;
+    private double lastRecalculation;
     // handle on the data to move the robot
     private Robot robot;
     private RobotInput input;
@@ -35,6 +38,7 @@ public class Simulator {
     }
 
     public void setRobot(Robot robot) {
+        lastRecalculation = 0.0;
         this.robot = robot;
     }
 
@@ -53,16 +57,45 @@ public class Simulator {
      * @param timeDelta Time difference between this calculation and the last one
      */
     public void calculateNewPosition(double timeDelta) {
+        boolean recalculateFlag = false;
+        if (lastRecalculation > RECALCULATE_COURSE) {
+            recalculateFlag = true;
+            lastRecalculation = 0.0;
+        }
+        lastRecalculation += timeDelta;
+//        System.out.println("Last recalc: " + lastRecalculation);
+        // calculate the course
         switch (input.getMode()) {
             case CONTROL_WHEELS:
                 calculateWheelMovement(input, timeDelta);
                 break;
             case CONTROL_GENERAL:
+                if (recalculateFlag) {
+                    recalculateGeneralCourse(input, timeDelta);
+                    recalculateFlag = false;
+                }
                 calculateGeneralMovement(input, timeDelta);
                 break;
             default:
                 System.err.println("Not implemented");
         }
+    }
+
+    private void recalculateGeneralCourse(RobotInput input, double timeDelta) {
+        // find out how far off course the robot is
+        GeneralInput gi = (GeneralInput) input;
+        double robotY = robot.getLocation().getY();
+        double robotX = robot.getLocation().getX();
+        double startPointX = gi.getStartLocation().getX();
+        double startPointY = gi.getStartLocation().getY();
+        double endPointY = robotY;
+        double endPointX = robotY / Math.tan(Math.toRadians(gi.getDirection()));
+        double yTwoMinusYOne = endPointY - startPointY;
+        double xTwoMinusXOne = endPointX - startPointX;
+        double nominator = Math.abs(yTwoMinusYOne * robotX - xTwoMinusXOne * robotY + endPointX * startPointY - endPointY * startPointX);
+        double denominator = Math.sqrt(Math.pow((endPointY - startPointY), 2) + Math.pow((endPointX - startPointX), 2));
+        double distance = nominator / denominator;
+        System.out.println("Distance from line: " + distance);
     }
 
     /**

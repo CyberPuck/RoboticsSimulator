@@ -144,6 +144,8 @@ public class SimulatorController implements Initializable {
         printText("Stopping Simulator");
         // zero out velocities on the system display
         stopSystemState();
+        // clear the robot path
+        displayController.getPathCanvas().restartCanvas();
         if (timer != null) {
             timer.stop();
             // clean out this bad boy
