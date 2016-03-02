@@ -34,4 +34,14 @@ public class GeneralInput implements RobotInput {
     public double getRotation() {
         return rotation;
     }
+
+    @Override
+    public String toString() {
+        return "GeneralInput{" +
+                "mode=" + mode +
+                ", direction=" + direction +
+                ", speed=" + speed +
+                ", rotation=" + rotation +
+                '}';
+    }
 }
