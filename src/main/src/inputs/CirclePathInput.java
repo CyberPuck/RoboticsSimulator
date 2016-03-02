@@ -1,4 +1,4 @@
-package simulator;
+package inputs;
 
 /**
  * Created by CyberPuck on 2016-03-01.

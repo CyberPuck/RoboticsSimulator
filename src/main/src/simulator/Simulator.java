@@ -1,5 +1,7 @@
 package simulator;
 
+import inputs.RobotInput;
+import inputs.WheelInput;
 import robot.Kinematics;
 import robot.Robot;
 import robot.VelocityEquations;

@@ -1,5 +1,6 @@
 package UI;
 
+import inputs.RobotInput;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -11,7 +12,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
 import robot.Robot;
-import simulator.RobotInput;
 import simulator.Simulator;
 import utilities.Point;
 import utilities.Position;

@@ -1,4 +1,4 @@
-package simulator;
+package inputs;
 
 /**
  * Interface enabling handling of all inputs from the UI.  Its pretty simple just

@@ -1,6 +1,9 @@
 package UI.tabControls;
 
 import UI.SimulatorController;
+import inputs.GeneralInput;
+import inputs.RobotInput;
+import inputs.WheelInput;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -14,9 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import simulator.GeneralInput;
-import simulator.RobotInput;
-import simulator.WheelInput;
 
 import java.io.File;
 import java.net.URL;

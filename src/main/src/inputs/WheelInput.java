@@ -1,4 +1,4 @@
-package simulator;
+package inputs;
 
 /**
  * Handles the wheel input mode from the UI.

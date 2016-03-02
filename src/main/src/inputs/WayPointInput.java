@@ -1,4 +1,4 @@
-package simulator;
+package inputs;
 
 import utilities.Point;
 

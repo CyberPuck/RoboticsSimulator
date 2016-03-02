@@ -1,4 +1,4 @@
-package simulator;
+package inputs;
 
 /**
  * This class handles the general inputs.

@@ -1,4 +1,4 @@
-package simulator;
+package inputs;
 
 /**
  * Simple enum with the modes the robot can be in.
