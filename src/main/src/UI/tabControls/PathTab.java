@@ -40,11 +40,7 @@ public class PathTab implements Initializable {
     @FXML
     private TextField rectangleTop;
     @FXML
-    private TextField rectangleLeft;
-    @FXML
-    private TextField rectangleBottom;
-    @FXML
-    private TextField rectangleRight;
+    private TextField rectangleSide;
     @FXML
     private Canvas rectangleCanvas;
 
@@ -136,9 +132,7 @@ public class PathTab implements Initializable {
 
     private void enableRectangle() {
         rectangleTop.setVisible(true);
-        rectangleLeft.setVisible(true);
-        rectangleBottom.setVisible(true);
-        rectangleRight.setVisible(true);
+        rectangleSide.setVisible(true);
         rectangleCanvas.setVisible(true);
         disableCircle();
         disableFigureEight();
@@ -146,9 +140,7 @@ public class PathTab implements Initializable {
 
     private void disableRectangle() {
         rectangleTop.setVisible(false);
-        rectangleLeft.setVisible(false);
-        rectangleBottom.setVisible(false);
-        rectangleRight.setVisible(false);
+        rectangleSide.setVisible(false);
         rectangleCanvas.setVisible(false);
     }
 

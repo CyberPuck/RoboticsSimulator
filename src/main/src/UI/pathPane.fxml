@@ -21,9 +21,7 @@
         <TextField fx:id="time" layoutX="101.0" layoutY="347.0"/>
         <Canvas fx:id="rectangleCanvas" height="100.0" layoutX="183.0" layoutY="74.0" width="75.0"/>
         <TextField fx:id="rectangleTop" layoutX="188.0" layoutY="41.0" prefHeight="25.0" prefWidth="65.0"/>
-        <TextField fx:id="rectangleRight" layoutX="266.0" layoutY="112.0" prefHeight="25.0" prefWidth="65.0"/>
-        <TextField fx:id="rectangleBottom" layoutX="188.0" layoutY="187.0" prefHeight="25.0" prefWidth="65.0"/>
-        <TextField fx:id="rectangleLeft" layoutX="109.0" layoutY="112.0" prefHeight="25.0" prefWidth="65.0"/>
+        <TextField fx:id="rectangleSide" layoutX="109.0" layoutY="112.0" prefHeight="25.0" prefWidth="65.0"/>
         <TextField fx:id="rotation" layoutX="101.0" layoutY="272.0"/>
         <Label layoutX="15.0" layoutY="276.0" text="Rotation:"/>
         <Label fx:id="closeRadiusLabel" layoutX="14.0" layoutY="37.0" text="Close Radius (ft):"/>
