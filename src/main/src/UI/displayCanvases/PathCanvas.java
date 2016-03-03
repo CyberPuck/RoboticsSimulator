@@ -20,6 +20,8 @@ public class PathCanvas {
     private ArrayList<Point> robotPath = new ArrayList<>();
     private Point previousPosition;
     private Point canvasCenter;
+    // origin of the display area, new requirement
+    private Point origin = new Point(0, 0);
 
     public PathCanvas(Canvas pathCanvas) {
         this.pathCanvas = pathCanvas;
@@ -29,6 +31,8 @@ public class PathCanvas {
         previousPosition = position;
         robotPath.add(position);
         canvasCenter = position;
+
+        redrawOrigin();
     }
 
     public void drawPath(RobotInput input) {
@@ -58,6 +62,7 @@ public class PathCanvas {
     public void clearCanvas() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, WIDTH, HEIGHT);
+        redrawOrigin();
     }
 
     public void updateCenter(Point newCenter) {
@@ -65,6 +70,18 @@ public class PathCanvas {
         clearCanvas();
         // redraw the path, need to only draw lines inside the canvas
         redrawPath();
+        // try to redraw origin if visible
+        redrawOrigin();
+    }
+
+    private void redrawOrigin() {
+        GraphicsContext gc = pathCanvas.getGraphicsContext2D();
+        if (isInsideCanvas(origin)) {
+            Point paneLocation = convertToPaneCoordinates(origin);
+            gc.setFill(Color.ORANGE);
+            gc.fillOval(paneLocation.getX(), paneLocation.getY(), 15, 15);
+//            gc.strokeOval(paneLocation.getX(), paneLocation.getY(), 15, 15);
+        }
     }
 
     private void redrawPath() {
@@ -83,7 +100,7 @@ public class PathCanvas {
 
     private boolean isInsideCanvas(Point point) {
         if (point.getX() > this.canvasCenter.getX() - 180 && point.getX() < this.canvasCenter.getX() + 180 &&
-                point.getY() > this.canvasCenter.getX() - 360 && point.getY() < this.canvasCenter.getY()) {
+                point.getY() > this.canvasCenter.getX() - 360 && point.getY() < this.canvasCenter.getY() + 360) {
             return true;
         }
         return false;
