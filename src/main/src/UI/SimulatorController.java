@@ -1,6 +1,8 @@
 package UI;
 
+import inputs.InputMode;
 import inputs.RobotInput;
+import inputs.WheelInput;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -121,7 +123,7 @@ public class SimulatorController implements Initializable {
     /**
      * TODO: Should we return error values?
      */
-    public void startSimulator(RobotInput input) {
+    public void startSimulator(final RobotInput input) {
         simulatorRunning = true;
         // clear the robot path
         displayController.getPathCanvas().restartCanvas();
@@ -133,6 +135,10 @@ public class SimulatorController implements Initializable {
         robot.setVelocity(new Point(0, 0));
         // update the robot stats
         updateSystemState(robot);
+        // check if the wheel rotation is static
+        if (input.getMode() == InputMode.CONTROL_WHEELS) {
+            updateWheeledState((WheelInput) input);
+        }
         // start the simulator
         printText("Starting simulation");
         System.out.println("Starting Simulator");
@@ -159,6 +165,10 @@ public class SimulatorController implements Initializable {
                 robotPosition = new Position(sim.getRobot().getLocation(), robot.getAngle());
                 // update the robot data
                 updateSystemState(sim.getRobot());
+                // check if the wheel rotation is static
+                if (input.getMode() == InputMode.CONTROL_WHEELS) {
+                    updateWheeledState((WheelInput) input);
+                }
                 // update the position based on the global reference frame
 //                displayController.getRobotCanvas().setRobotPosition(sim.getRobot());
                 displayController.getRobotCanvas().redrawRobot(sim.getRobot());
@@ -193,6 +203,11 @@ public class SimulatorController implements Initializable {
         outputTextArea.appendText("");
     }
 
+    /**
+     * Updates the system state by reading the current robot status.
+     *
+     * @param robot Status
+     */
     private void updateSystemState(Robot robot) {
         // update the velocity components
         DecimalFormat df = new DecimalFormat("#.###");
@@ -209,6 +224,22 @@ public class SimulatorController implements Initializable {
                 + ", Four: " + df.format(wheelRates[3]));
     }
 
+    /**
+     * Makes sure the wheel rates are what the input was proved, only for InputMode.CONTROL_WHEELS.
+     *
+     * @param wi Wheel Input
+     */
+    private void updateWheeledState(WheelInput wi) {
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        wheels.setText("Wheels= One: " + df.format(wi.getWheelOne()) + ", Two: "
+                + df.format(wi.getWheelTwo()) + ", Three: " + df.format(wi.getWheelThree())
+                + ", Four: " + df.format(wi.getWheelFour()));
+    }
+
+    /**
+     * Resets the system velocity and movement statuses to zero.
+     */
     private void stopSystemState() {
         velocityY.setText("Velocity Y: 0.0");
         velocityX.setText("Velocity X: 0.0");
