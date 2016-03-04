@@ -53,6 +53,7 @@ public class RobotCanvas {
      */
     public void init() {
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
+        rotate(gc, 0, 180, 360);
         gc.drawImage(robot, 180 - robot.getWidth() / 2, 360 - robot.getHeight() / 2);
         // initialize the path
         pathCanvas.init(new Point(180, 360));
@@ -66,29 +67,28 @@ public class RobotCanvas {
         // clear the field first
         gc.clearRect(0, 0, X_LENGTH, Y_LENGTH);
         // calculate the new location of the robot
-        Position newPosition = Utils.convertLocationToPixels(simRobot);
+        Point newPosition = Utils.convertLocationToPixels(simRobot.getLocation());
         // make sure we don't going running out of the boundary
-        checkBoundaries(newPosition.getPosition());
-        double paneX = newPosition.getPosition().getX() - (this.canvasCenter.getX() - 180);
-        double paneY = newPosition.getPosition().getY() - (this.canvasCenter.getY() - 360);
+        checkBoundaries(newPosition);
+        double paneX = newPosition.getX() - (this.canvasCenter.getX() - 180);
+        double paneY = newPosition.getY() - (this.canvasCenter.getY() - 360);
         // convert to the pane reference frame
         paneY = 720 - paneY;
-        // invert the y coordinate it is flipped went drawing
-
         // set the robot position and angle
         this.robotPosition.setPosition(new Point(paneX, paneY));
         this.robotPosition.setAngle(simRobot.getAngle());
         // draw the robot
         gc.save();
         // Update the robot location
-        System.out.println("Pixel Position: " + newPosition.toString());
-        System.out.println("ROBOT: " + this.robotPosition.toString());
-        System.out.println("Canvas Center: " + this.canvasCenter.toString());
+        // TODO: Remove these
+//        System.out.println("Pixel Position: " + newPosition.toString());
+//        System.out.println("ROBOT: " + this.robotPosition.toString());
+//        System.out.println("Canvas Center: " + this.canvasCenter.toString());
         rotate(gc, this.robotPosition.getAngle(), paneX, paneY);
         // convert coordinates to upper left of image, not robot center to draw it
         gc.drawImage(robot, paneX - robot.getWidth() / 2, paneY - robot.getHeight() / 2);
         gc.restore();
-        pathCanvas.updateRobotPath(newPosition.getPosition());
+        pathCanvas.updateRobotPath(newPosition);
     }
 
 
@@ -135,6 +135,7 @@ public class RobotCanvas {
      * @param y     position of the center of the robot image
      */
     private void rotate(GraphicsContext gc, double angle, double x, double y) {
+//        angle += 180;
         Rotate rotate = new Rotate(angle, x, y);
         gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
     }

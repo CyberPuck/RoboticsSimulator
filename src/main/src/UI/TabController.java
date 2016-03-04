@@ -2,6 +2,7 @@ package UI;
 
 import UI.tabControls.ControlTab;
 import UI.tabControls.PathTab;
+import UI.tabControls.PointTab;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -50,6 +51,7 @@ public class TabController {
             Pane testPane = fxmlLoader.load();
             pointTab.setContent(testPane);
             tabPane.getTabs().add(pointTab);
+            fxmlLoader.<PointTab>getController().setController(controller);
         } catch (IOException e) {
             System.err.println("Failed to load point tab pane");
         }

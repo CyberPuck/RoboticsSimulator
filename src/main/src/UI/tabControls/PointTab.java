@@ -27,7 +27,7 @@ public class PointTab implements Initializable {
     @FXML
     private TextField endOrientation;
     @FXML
-    private TextField speed;
+    private TextField speedField;
     @FXML
     private TextField timeToFinish;
     @FXML
@@ -35,7 +35,10 @@ public class PointTab implements Initializable {
 
     private SimulatorController controller;
 
-    public PointTab(SimulatorController controller) {
+    public PointTab() {
+    }
+
+    public void setController(SimulatorController controller) {
         this.controller = controller;
     }
 
@@ -66,10 +69,11 @@ public class PointTab implements Initializable {
     private void setDefaults() {
         xEndPoint.setText("0.0");
         yEndPoint.setText("0.0");
-        speed.setText("0.0");
+        speedField.setText("0.0");
         endOrientation.setText("0.0");
         timeToFinish.setText("0.0");
     }
+
 
     /**
      * Formats the UI inputs.
@@ -80,7 +84,7 @@ public class PointTab implements Initializable {
         double x = Double.parseDouble(this.xEndPoint.getText());
         double y = Double.parseDouble(this.yEndPoint.getText());
         double endOrientation = Double.parseDouble(this.endOrientation.getText());
-        double speed = Double.parseDouble(this.speed.getText());
+        double speed = Double.parseDouble(this.speedField.getText());
         double time = Double.parseDouble(this.timeToFinish.getText());
         return new PointInput(new Point(x, y), speed, endOrientation, time);
     }

@@ -20,6 +20,7 @@ import robot.Robot;
 import simulator.Simulator;
 import utilities.Point;
 import utilities.Position;
+import utilities.Utils;
 
 import java.math.RoundingMode;
 import java.net.URL;
@@ -76,8 +77,6 @@ public class SimulatorController implements Initializable {
     private AnimationTimer timer;
     // Location of the robot in the global reference frame
     private Position robotPosition;
-    // Starting location of robot, reference point for drawing input path
-    private Position startPosition;
     // flag indicating if the simulator is running
     private boolean simulatorRunning = false;
 
@@ -127,14 +126,17 @@ public class SimulatorController implements Initializable {
      */
     public void startSimulator(final RobotInput input) {
         simulatorRunning = true;
-        // clear the robot path
-        displayController.getPathCanvas().restartCanvas();
-        // first get the current robot position and orientation
-        startPosition = displayController.getRobotCanvas().getGlobalPosition();
+        // setup the robot object
         final Robot robot = new Robot(WHEEL_RADIUS);
         robot.setLocation(robotPosition.getPosition());
         robot.setAngle(robotPosition.getAngle());
         robot.setVelocity(new Point(0, 0));
+        // clear the robot path
+        displayController.getPathCanvas().restartCanvas();
+        // draw the input path
+        displayController.getPathCanvas().setInput(input);
+        displayController.getPathCanvas().setStartingLocation(Utils.convertLocationToPixels(robot.getLocation()));
+        displayController.getPathCanvas().redrawInputPath();
         // update the robot stats
         updateSystemState(robot);
         // check if the wheel rotation is static
@@ -257,9 +259,5 @@ public class SimulatorController implements Initializable {
 
     public boolean isSimulatorRunning() {
         return simulatorRunning;
-    }
-
-    public Position getStartPosition() {
-        return startPosition;
     }
 }

@@ -1,10 +1,15 @@
 package UI.displayCanvases;
 
+import inputs.GeneralInput;
+import inputs.InputMode;
+import inputs.PointInput;
 import inputs.RobotInput;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 import utilities.Point;
+import utilities.Utils;
 
 import java.util.ArrayList;
 
@@ -22,6 +27,9 @@ public class PathCanvas {
     private Point canvasCenter;
     // origin of the display area, new requirement
     private Point origin = new Point(0, 0);
+    // needed to draw the input path
+    private Point startingLocation;
+    private RobotInput input;
 
     public PathCanvas(Canvas pathCanvas) {
         this.pathCanvas = pathCanvas;
@@ -33,11 +41,16 @@ public class PathCanvas {
      * @param position Canvas center in canvas reference frame
      */
     public void init(Point position) {
+        startingLocation = position;
         previousPosition = position;
         robotPath.add(position);
         canvasCenter = position;
         // Make sure to try and draw the origin
         redrawOrigin();
+    }
+
+    public void setInput(RobotInput input) {
+        this.input = input;
     }
 
     /**
@@ -89,8 +102,10 @@ public class PathCanvas {
     public void updateCenter(Point newCenter) {
         canvasCenter = newCenter;
         clearCanvas();
+        // redraw the input path
+        redrawInputPath();
         // redraw the path, need to only draw lines inside the canvas
-        redrawPath();
+        redrawRobotPath();
         // try to redraw origin if visible
         redrawOrigin();
     }
@@ -108,14 +123,13 @@ public class PathCanvas {
             Point paneLocation = convertToPaneCoordinates(origin);
             gc.setFill(Color.ORANGE);
             gc.fillOval(paneLocation.getX() - 7.5, paneLocation.getY() - 7.5, 15, 15);
-//            gc.strokeOval(paneLocation.getX(), paneLocation.getY(), 15, 15);
         }
     }
 
     /**
      * Redraws the robot path, useful if the canvas center was moved.
      */
-    private void redrawPath() {
+    private void redrawRobotPath() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
         for (int i = 1; i < robotPath.size(); i++) {
             if (isInsideCanvas(robotPath.get(i))) {
@@ -127,6 +141,69 @@ public class PathCanvas {
                 gc.strokeLine(oldPoint.getX(), oldPoint.getY(), newPoint.getX(), newPoint.getY());
             }
         }
+    }
+
+    /**
+     * Redraws the input defined path.  Make sure to draw BEFORE the robot path
+     */
+    public void redrawInputPath() {
+        if (input.getMode() != InputMode.CONTROL_WHEELS) {
+            switch (input.getMode()) {
+                case CONTROL_GENERAL:
+                    drawGeneralPath((GeneralInput) input);
+                    break;
+                case POINT:
+                    drawPointPath((PointInput) input);
+                    break;
+                case PATH_CIRCLE:
+                    break;
+                case PATH_RECTANGLE:
+                    break;
+                case PATH_FIGURE_EIGHT:
+                    break;
+                default:
+                    System.err.println(input.getMode() + " is not supported");
+            }
+        }
+    }
+
+    /**
+     * Draws the general path, which is a straight line starting at the robot
+     * starting going and going to infinity.
+     *
+     * @param gi General Input, provides data on the line slope
+     */
+    private void drawGeneralPath(GeneralInput gi) {
+        GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
+        gc.save();
+        double angle = gi.getDirection() + 180;
+        Point paneStartingPoint = convertToPaneCoordinates(startingLocation);
+        Point temp = new Point(paneStartingPoint.getX(), canvasCenter.getY() - 1000000);
+        System.out.println("New end point: " + temp.toString());
+        Point paneEndPoint = convertToPaneCoordinates(temp);
+        Rotate rotate = new Rotate(angle, paneStartingPoint.getX(), paneStartingPoint.getY());
+        gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
+        gc.setLineWidth(4.0);
+        gc.setStroke(Color.BLUE);
+        gc.setFill(Color.BLUE);
+        if (gi.getSpeed() != 0) {
+            gc.strokeLine(paneStartingPoint.getX(), paneStartingPoint.getY(), paneEndPoint.getX(), paneEndPoint.getY());
+        } else {
+            gc.fillOval(paneStartingPoint.getX() - 2, paneStartingPoint.getY() - 2, 4, 4);
+        }
+        gc.strokeLine(-15, -15, 745, 745);
+        gc.restore();
+    }
+
+    private void drawPointPath(PointInput pi) {
+        GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
+        gc.save();
+        Point paneStartingPoint = convertToPaneCoordinates(startingLocation);
+        Point pixelPos = Utils.convertLocationToPixels(pi.getEndPoint());
+        Point endPoint = convertToPaneCoordinates(pixelPos);
+        gc.setLineWidth(4.0);
+        gc.setStroke(Color.BLUE);
+        gc.strokeLine(paneStartingPoint.getX(), paneStartingPoint.getY(), endPoint.getX(), endPoint.getY());
     }
 
     /**
@@ -144,9 +221,9 @@ public class PathCanvas {
     }
 
     /**
-     * Given a Global reference frame, convert it to the canvas reference frame.
+     * Given a GRF based pixel coordinate, convert it to the canvas reference frame.
      *
-     * @param globalLocation Global reference frame point
+     * @param globalLocation Global reference frame point (pixel coordinates)
      * @return Point in the canvas reference frame
      */
     private Point convertToPaneCoordinates(Point globalLocation) {
@@ -154,5 +231,9 @@ public class PathCanvas {
         double paneY = globalLocation.getY() - (this.canvasCenter.getY() - 360);
         paneY = 720 - paneY;
         return new Point(paneX, paneY);
+    }
+
+    public void setStartingLocation(Point startingLocation) {
+        this.startingLocation = startingLocation;
     }
 }

@@ -1,7 +1,5 @@
 package utilities;
 
-import robot.Robot;
-
 /**
  * General functions that are used by multiple classes.
  * <p/>
@@ -12,16 +10,14 @@ public class Utils {
      * Convert the simulation robot position (in feet), to the pane robot in pixels.
      * NOTE: 2 pixels = 1", 12 pixels = 6", 24 pixels = 1'
      *
-     * @param simRobot Robot corrdinates in feet
+     * @param grfPosition Robot coordinates in feet (GRF)
      * @return Position in pixels
      */
-    public static Position convertLocationToPixels(Robot simRobot) {
-        Position pixelLocation = new Position();
+    public static Point convertLocationToPixels(Point grfPosition) {
+        Point pixelLocation = new Point();
         // set the location
-        pixelLocation.getPosition().setX(simRobot.getLocation().getX() * 12 * 2);
-        pixelLocation.getPosition().setY(simRobot.getLocation().getY() * 12 * 2);
-        // set the angle
-        pixelLocation.setAngle(simRobot.getAngle());
+        pixelLocation.setX(grfPosition.getX() * 12 * 2);
+        pixelLocation.setY(grfPosition.getY() * 12 * 2);
         return pixelLocation;
     }
 

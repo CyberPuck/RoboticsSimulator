@@ -114,7 +114,7 @@ public class Simulator {
         double nominator = Math.abs(yTwoMinusYOne * robotX - xTwoMinusXOne * robotY + endPointX * startPointY - endPointY * startPointX);
         double denominator = Math.sqrt(Math.pow((endPointY - startPointY), 2) + Math.pow((endPointX - startPointX), 2));
         double distance = nominator / denominator;
-        System.out.println("Distance from line: " + distance);
+//        System.out.println("Distance from line: " + distance);
     }
 
     /**
