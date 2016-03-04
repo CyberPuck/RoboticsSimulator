@@ -1,6 +1,7 @@
 package simulator;
 
 import inputs.GeneralInput;
+import inputs.PointInput;
 import inputs.RobotInput;
 import inputs.WheelInput;
 import robot.Kinematics;
@@ -95,6 +96,13 @@ public class Simulator {
                 }
                 calculateGeneralMovement(input, timeDelta);
                 break;
+            case POINT:
+                if (recalculateFlag) {
+                    //recalculatePointCourse(input, timeDelta);
+                    recalculateFlag = false;
+                }
+                calculatePointMovement(input, timeDelta);
+                break;
             default:
                 System.err.println("Not implemented");
         }
@@ -159,6 +167,26 @@ public class Simulator {
         updateRobot(xVel, yVel, newAngle, rotationRate, timeDelta, robot);
     }
 
+    private void calculatePointMovement(RobotInput input, double timeDelta) {
+        PointInput pi = (PointInput) input;
+        double yVel = Math.cos(Math.toRadians(robot.getAngle())) * pi.getSpeed();
+        double xVel = Math.sin(Math.toRadians(robot.getAngle())) * pi.getSpeed();
+        // get the new robot angle
+        double newAngle = pi.getRotationRate() * timeDelta + robot.getAngle();
+        // update the robot position
+        updateRobot(xVel, yVel, newAngle, pi.getRotationRate(), timeDelta, robot);
+    }
+
+    /**
+     * Updates the robots current location to a new one based on velocity and heading.
+     *
+     * @param xVel         GRF X-axis velocity
+     * @param yVel         GRF Y-axis velocity
+     * @param newAngle     GRF angle of robot
+     * @param rotationRate Rotation rate of robot
+     * @param timeDelta    Time difference between this and last frame
+     * @param robot        Robot
+     */
     private void updateRobot(double xVel, double yVel, double newAngle, double rotationRate, double timeDelta, Robot robot) {
         robot.setVelocity(new Point(xVel, yVel));
         robot.setRotationRate(rotationRate);

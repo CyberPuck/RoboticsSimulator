@@ -14,12 +14,16 @@ public class PointInput implements RobotInput {
     // speed in feet/sec
     private double speed;
     private double endOrientation;
+    // based on the end orientation and time to complete
+    private double rotationRate;
     private double time;
 
-    public PointInput(Point endPoint, double speed, double endOrientation, double time) {
+    public PointInput(Point endPoint, double speed, double endOrientation, double time, double rotationRate) {
         this.endPoint = endPoint;
         this.endOrientation = endOrientation;
+        this.speed = speed;
         this.time = time;
+        this.rotationRate = rotationRate;
     }
 
     @Override
@@ -41,6 +45,10 @@ public class PointInput implements RobotInput {
 
     public double getTime() {
         return time;
+    }
+
+    public double getRotationRate() {
+        return rotationRate;
     }
 
     @Override

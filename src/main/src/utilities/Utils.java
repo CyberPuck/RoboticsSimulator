@@ -36,4 +36,15 @@ public class Utils {
         trueY = 720 - trueY;
         return new Position(new Point((trueX / (12 * 2)), (trueY / (12 * 2))), robotPosition.getAngle());
     }
+
+    /**
+     * Simple Euclidean distance between two points.
+     *
+     * @param p1 first point
+     * @param p2 second point
+     * @return distance between p1 and p2
+     */
+    public static double distanceBetweenPoints(Point p1, Point p2) {
+        return Math.sqrt(Math.pow(p1.getX() + p2.getX(), 2) + Math.pow(p1.getY() + p2.getY(), 2));
+    }
 }

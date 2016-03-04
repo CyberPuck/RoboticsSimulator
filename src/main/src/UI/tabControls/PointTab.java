@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import utilities.Point;
+import utilities.Utils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -83,9 +84,20 @@ public class PointTab implements Initializable {
     private RobotInput formatInput() {
         double x = Double.parseDouble(this.xEndPoint.getText());
         double y = Double.parseDouble(this.yEndPoint.getText());
+        Point endPoint = new Point(x, y);
         double endOrientation = Double.parseDouble(this.endOrientation.getText());
         double speed = Double.parseDouble(this.speedField.getText());
         double time = Double.parseDouble(this.timeToFinish.getText());
-        return new PointInput(new Point(x, y), speed, endOrientation, time);
+        // get distance between the two points
+        double distance = Utils.distanceBetweenPoints(controller.getRobotPosition().getPosition(), endPoint);
+        // calculate how long the trip will take (approximately)
+        double timeTaken = distance / speed;
+        // calculate the rate the robot should rotate
+        double rotationRate = 0;
+        if (speed != 0) {
+            rotationRate = (endOrientation - controller.getRobotPosition().getAngle()) / timeTaken;
+        }
+        PointInput pi = new PointInput(endPoint, speed, endOrientation, time, rotationRate);
+        return pi;
     }
 }

@@ -137,7 +137,7 @@ public class PathCanvas {
                 Point newPoint = convertToPaneCoordinates(robotPath.get(i));
                 // draw the line
                 gc.setStroke(Color.LIME);
-                gc.setLineWidth(0);
+                gc.setLineWidth(0.0);
                 gc.strokeLine(oldPoint.getX(), oldPoint.getY(), newPoint.getX(), newPoint.getY());
             }
         }
@@ -201,9 +201,11 @@ public class PathCanvas {
         Point paneStartingPoint = convertToPaneCoordinates(startingLocation);
         Point pixelPos = Utils.convertLocationToPixels(pi.getEndPoint());
         Point endPoint = convertToPaneCoordinates(pixelPos);
+        gc.save();
         gc.setLineWidth(4.0);
         gc.setStroke(Color.BLUE);
         gc.strokeLine(paneStartingPoint.getX(), paneStartingPoint.getY(), endPoint.getX(), endPoint.getY());
+        gc.restore();
     }
 
     /**
