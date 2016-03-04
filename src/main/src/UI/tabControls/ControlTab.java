@@ -181,8 +181,7 @@ public class ControlTab implements Initializable {
         double two = Double.parseDouble(wheelTwoField.getText());
         double three = Double.parseDouble(wheelThreeField.getText());
         double four = Double.parseDouble(wheelFourField.getText());
-        WheelInput wi = new WheelInput(one, two, three, four);
-        return wi;
+        return new WheelInput(one, two, three, four);
     }
 
     /**
