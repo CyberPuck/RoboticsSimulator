@@ -221,4 +221,8 @@ public class SimulatorController implements Initializable {
     public Position getRobotPosition() {
         return robotPosition;
     }
+
+    public boolean isSimulatorRunning() {
+        return simulatorRunning;
+    }
 }

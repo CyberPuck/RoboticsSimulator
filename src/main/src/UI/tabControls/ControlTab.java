@@ -72,9 +72,6 @@ public class ControlTab implements Initializable {
     // Fire up the simulation
     @FXML
     private Button startButton;
-    // flag indicating if the simulator is running
-    // TODO: Should this be a flag in the simulator controller?
-    private boolean simulatorRunning;
 
     // needed for simulator controls
     private SimulatorController controller;
@@ -85,8 +82,6 @@ public class ControlTab implements Initializable {
         // fill in the array, this is magically called
         modes.add(GENERAL_MODE);
         modes.add(WHEEL_MODE);
-        // simulator is not running on start up?
-        simulatorRunning = false;
     }
 
     private void setDefaults() {
@@ -160,8 +155,7 @@ public class ControlTab implements Initializable {
     }
 
     private void updateSimulator() {
-        if (!simulatorRunning) {
-            // TODO: start the simulator
+        if (!this.controller.isSimulatorRunning()) {
             // setup the input
             RobotInput input;
             if (modeBox.getValue().equals(GENERAL_MODE)) {
@@ -171,12 +165,9 @@ public class ControlTab implements Initializable {
             }
             controller.startSimulator(input);
             startButton.setText("Stop");
-            simulatorRunning = true;
         } else {
-            // TODO: stop the simulator
             controller.stopSimulator();
             startButton.setText("Start");
-            simulatorRunning = false;
         }
     }
 
