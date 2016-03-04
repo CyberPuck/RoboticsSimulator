@@ -30,8 +30,8 @@ import java.util.ResourceBundle;
 public class ControlTab implements Initializable {
     private static String ROBOT_IMAGE = "./src/main/src/assets/mecanum_robot_ui.png";
 
-    private static String GENERAL_MODE = "generalMode";
-    private static String WHEEL_MODE = "wheelRotationMode";
+    private static String GENERAL_MODE = "General";
+    private static String WHEEL_MODE = "Wheel Rotation";
 
     // General movement controls (default)
     @FXML
@@ -89,6 +89,16 @@ public class ControlTab implements Initializable {
         simulatorRunning = false;
     }
 
+    private void setDefaults() {
+        this.directionField.setText("0.0");
+        this.rotationField.setText("0.0");
+        this.speedField.setText("0.0");
+        this.wheelOneField.setText("0.0");
+        this.wheelTwoField.setText("0.0");
+        this.wheelThreeField.setText("0.0");
+        this.wheelFourField.setText("0.0");
+    }
+
     /**
      * Sets the primary controller.
      *
@@ -129,6 +139,8 @@ public class ControlTab implements Initializable {
                 updateSimulator();
             }
         });
+        // set default values
+        setDefaults();
     }
 
     /**
