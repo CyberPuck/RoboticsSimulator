@@ -4,12 +4,15 @@ import inputs.RobotInput;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import robot.Robot;
 import simulator.Simulator;
@@ -51,6 +54,9 @@ public class SimulatorController implements Initializable {
     private Label wheels;
     @FXML
     private Label rotationRate;
+    // Reset the veiw
+    @FXML
+    private Button resetButton;
 
     // TODO: Should we move these?
     @FXML
@@ -68,6 +74,8 @@ public class SimulatorController implements Initializable {
     private AnimationTimer timer;
     // Location of the robot in the global reference frame
     private Position robotPosition;
+    // flag indicating if the simulator is running
+    private boolean simulatorRunning = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -89,12 +97,32 @@ public class SimulatorController implements Initializable {
         });
         // robot always starts in the middle
         robotPosition = new Position(new Point(7.5, 15), 0.0);
+        // setup the reset button
+        resetButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (simulatorRunning) {
+                    stopSimulator();
+                }
+                // move the robot
+                displayController.getPathCanvas().restartCanvas();
+                displayController.getPathCanvas().updateCenter(new Point(180, 360));
+                // update the robot
+                robotPosition = new Position(new Point(7.5, 15), 0.0);
+                Robot robot = new Robot(WHEEL_RADIUS);
+                robot.setLocation(robotPosition.getPosition());
+                displayController.getRobotCanvas().redrawRobot(robot);
+                // update the system status
+                updateSystemState(robot);
+            }
+        });
     }
 
     /**
      * TODO: Should we return error values?
      */
     public void startSimulator(RobotInput input) {
+        simulatorRunning = true;
         // clear the robot path
         displayController.getPathCanvas().restartCanvas();
         // first get the current robot position and orientation
@@ -143,6 +171,7 @@ public class SimulatorController implements Initializable {
      * TODO: Should we return error values?
      */
     public void stopSimulator() {
+        simulatorRunning = false;
         printText("Stopping Simulator");
         // zero out velocities on the system display
         stopSystemState();
@@ -175,18 +204,18 @@ public class SimulatorController implements Initializable {
         position.setText("Position: (" + df.format(robot.getLocation().getX()) + ", "
                 + df.format(robot.getLocation().getY()) + ")");
         double[] wheelRates = robot.getWheelRates();
-        wheels.setText("Wheel One: " + df.format(wheelRates[0]) + ", Wheel Two: "
-                + df.format(wheelRates[1]) + ", Wheel Three: " + df.format(wheelRates[2])
-                + ", Wheel Four: " + df.format(wheelRates[3]));
+        wheels.setText("Wheels= One: " + df.format(wheelRates[0]) + ", Two: "
+                + df.format(wheelRates[1]) + ", Three: " + df.format(wheelRates[2])
+                + ", Four: " + df.format(wheelRates[3]));
     }
 
     private void stopSystemState() {
         velocityY.setText("Velocity Y: 0.0");
         velocityX.setText("Velocity X: 0.0");
         rotationRate.setText("Rotation Rate: 0.0");
-        wheels.setText("Wheel One: " + 0.0 + ", Wheel Two: "
-                + 0.0 + ", Wheel Three: " + 0.0
-                + ", Wheel Four: " + 0.0);
+        wheels.setText("Wheels= One: " + 0.0 + ", Two: "
+                + 0.0 + ", Three: " + 0.0
+                + ", Four: " + 0.0);
     }
 
     public Position getRobotPosition() {

@@ -27,14 +27,24 @@ public class PathCanvas {
         this.pathCanvas = pathCanvas;
     }
 
+    /**
+     * Initializes the canvas with the canvas center position.
+     *
+     * @param position Canvas center in canvas reference frame
+     */
     public void init(Point position) {
         previousPosition = position;
         robotPath.add(position);
         canvasCenter = position;
-
+        // Make sure to try and draw the origin
         redrawOrigin();
     }
 
+    /**
+     * Draws a user defined path.
+     *
+     * @param input Contains the path information to draw
+     */
     public void drawPath(RobotInput input) {
         System.err.println("Not implemented!");
     }
@@ -54,17 +64,28 @@ public class PathCanvas {
         previousPosition = newLocation;
     }
 
+    /**
+     * Clears the canvas and the existing robot's path.
+     */
     public void restartCanvas() {
         clearCanvas();
         robotPath.clear();
     }
 
+    /**
+     * Clear the path canvas of all drawings.
+     */
     public void clearCanvas() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, WIDTH, HEIGHT);
         redrawOrigin();
     }
 
+    /**
+     * Given a point in PIXEL coordinates, update the canvas center for drawing.
+     *
+     * @param newCenter new PIXEL center of the canvas
+     */
     public void updateCenter(Point newCenter) {
         canvasCenter = newCenter;
         clearCanvas();
@@ -74,16 +95,26 @@ public class PathCanvas {
         redrawOrigin();
     }
 
+    /**
+     * Checks if the origin is inside the draw plane, if so it is drawn.
+     */
     private void redrawOrigin() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
-        if (isInsideCanvas(origin)) {
+        Point originLeft = new Point(origin.getX() + 15, origin.getY() + 15);
+        Point originRight = new Point(origin.getX() + 15, origin.getY() - 15);
+        Point originTop = new Point(origin.getX() - 15, origin.getY() - 15);
+        Point originBottom = new Point(origin.getX() - 15, origin.getY() + 15);
+        if (isInsideCanvas(originRight) || isInsideCanvas(originLeft) || isInsideCanvas(originTop) || isInsideCanvas(originBottom)) {
             Point paneLocation = convertToPaneCoordinates(origin);
             gc.setFill(Color.ORANGE);
-            gc.fillOval(paneLocation.getX(), paneLocation.getY(), 15, 15);
+            gc.fillOval(paneLocation.getX() - 7.5, paneLocation.getY() - 7.5, 15, 15);
 //            gc.strokeOval(paneLocation.getX(), paneLocation.getY(), 15, 15);
         }
     }
 
+    /**
+     * Redraws the robot path, useful if the canvas center was moved.
+     */
     private void redrawPath() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
         for (int i = 1; i < robotPath.size(); i++) {
@@ -98,6 +129,12 @@ public class PathCanvas {
         }
     }
 
+    /**
+     * Checks if a point in PIXEL coordinates is inside the canvas.
+     *
+     * @param point Point in PIXEL space to check
+     * @return Flag indicating if the point is inside the canvas
+     */
     private boolean isInsideCanvas(Point point) {
         if (point.getX() > this.canvasCenter.getX() - 180 && point.getX() < this.canvasCenter.getX() + 180 &&
                 point.getY() > this.canvasCenter.getX() - 360 && point.getY() < this.canvasCenter.getY() + 360) {
@@ -106,9 +143,15 @@ public class PathCanvas {
         return false;
     }
 
-    private Point convertToPaneCoordinates(Point pixelLocation) {
-        double paneX = pixelLocation.getX() - (this.canvasCenter.getX() - 180);
-        double paneY = pixelLocation.getY() - (this.canvasCenter.getY() - 360);
+    /**
+     * Given a Global reference frame, convert it to the canvas reference frame.
+     *
+     * @param globalLocation Global reference frame point
+     * @return Point in the canvas reference frame
+     */
+    private Point convertToPaneCoordinates(Point globalLocation) {
+        double paneX = globalLocation.getX() - (this.canvasCenter.getX() - 180);
+        double paneY = globalLocation.getY() - (this.canvasCenter.getY() - 360);
         paneY = 720 - paneY;
         return new Point(paneX, paneY);
     }

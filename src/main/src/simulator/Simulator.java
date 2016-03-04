@@ -35,6 +35,25 @@ public class Simulator {
     public Simulator(RobotInput input, Robot robot) {
         this.input = input;
         this.robot = robot;
+        initalizeRobot(input, this.robot);
+    }
+
+    /**
+     * Due to different input classes having different features make sure input variables are added.
+     *
+     * @param input Input of the robot
+     * @param robot Robot to update
+     */
+    private void initalizeRobot(RobotInput input, Robot robot) {
+        switch (input.getMode()) {
+            case CONTROL_GENERAL:
+                robot.setRotationRate(((GeneralInput) input).getRotation());
+                break;
+            case CONTROL_WHEELS: // Not needed all four wheel rates are read later
+                break;
+            default:
+                System.err.println("Not implemented");
+        }
     }
 
     public void setRobot(Robot robot) {

@@ -4,6 +4,7 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 <Pane fx:id="mainPane" maxHeight="720.0" maxWidth="1240.0" minHeight="720.0" minWidth="1240.0" prefHeight="720"
       prefWidth="1240" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="UI.SimulatorController">
@@ -20,8 +21,8 @@
             </children>
         </Pane>
         <TabPane fx:id="controlPane" prefHeight="720.0" prefWidth="440.0" tabClosingPolicy="UNAVAILABLE"/>
-        <TextArea fx:id="outputTextArea" layoutX="800.0" layoutY="0.0" prefHeight="600.0" prefWidth="440.0"/>
-        <Pane fx:id="systemStatePane" layoutX="800.0" layoutY="600.0" prefHeight="120.0" prefWidth="440.0">
+        <TextArea fx:id="outputTextArea" layoutX="800.0" layoutY="0.0" prefHeight="500.0" prefWidth="440.0"/>
+        <Pane fx:id="systemStatePane" layoutX="800.0" layoutY="500.0" prefHeight="220.0" prefWidth="440.0">
             <children>
                 <Label fx:id="velocityY" layoutX="14.0" layoutY="14.0" text="Velocity Y: 0.0"/>
                 <Label fx:id="velocityX" layoutX="114.0" layoutY="14.0" text="Velocity X: 0.0"/>
@@ -29,7 +30,13 @@
                 <Label fx:id="direction" layoutX="14.0" layoutY="34.0" text="Direction: 0.0"/>
                 <Label fx:id="position" layoutX="14.0" layoutY="54.0" text="Position: (0, 0)"/>
                 <Label fx:id="wheels" layoutX="14.0" layoutY="74.0"
-                       text="Wheel One: 0.0, Wheel Two: 0.0, Wheel Three: 0.0, Wheel Four: 0.0"/>
+                       text="Wheel= One: 0.0, Two: 0.0, Three: 0.0, Four: 0.0"/>
+                <Button fx:id="resetButton" layoutX="120.0" layoutY="124.0" prefHeight="50.0"
+                        prefWidth="200.0" text="Reset">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Button>
             </children>
         </Pane>
     </children>
