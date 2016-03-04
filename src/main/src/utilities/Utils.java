@@ -47,4 +47,20 @@ public class Utils {
     public static double distanceBetweenPoints(Point p1, Point p2) {
         return Math.sqrt(Math.pow(p1.getX() + p2.getX(), 2) + Math.pow(p1.getY() + p2.getY(), 2));
     }
+
+    /**
+     * Given a point p1, see if it is within two inches of the gaol.
+     *
+     * @param p1   Point in question
+     * @param goal Goal point
+     * @return flag indicating if the goal has been reached
+     */
+    public static boolean isAtGoal(Point p1, Point goal) {
+        double twoInches = 1;
+        if (p1.getX() < goal.getX() + twoInches && p1.getX() > goal.getX() - twoInches
+                && p1.getY() < goal.getY() + twoInches && p1.getY() > goal.getY() - twoInches) {
+            return true;
+        }
+        return false;
+    }
 }

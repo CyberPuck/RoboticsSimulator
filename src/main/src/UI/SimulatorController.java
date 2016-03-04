@@ -176,6 +176,10 @@ public class SimulatorController implements Initializable {
                 // update the position based on the global reference frame
 //                displayController.getRobotCanvas().setRobotPosition(sim.getRobot());
                 displayController.getRobotCanvas().redrawRobot(sim.getRobot());
+                // check if the robot is at the goal and stop
+                if (sim.isAtGoal()) {
+                    stopSimulator();
+                }
             }
         };
         timer.start();

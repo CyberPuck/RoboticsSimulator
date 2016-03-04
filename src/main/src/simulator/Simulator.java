@@ -9,6 +9,7 @@ import robot.Robot;
 import robot.VelocityEquations;
 import utilities.Point;
 import utilities.Position;
+import utilities.Utils;
 
 /**
  * This is the simulator class, like highlander there can be only one.
@@ -32,11 +33,14 @@ public class Simulator {
     // handle on the data to move the robot
     private Robot robot;
     private RobotInput input;
+    // flag indicating if the goal has been reached
+    private boolean atGoal;
 
     public Simulator(RobotInput input, Robot robot) {
         this.input = input;
         this.robot = robot;
-        initalizeRobot(input, this.robot);
+        initializeRobot(input, this.robot);
+        atGoal = false;
     }
 
     /**
@@ -45,11 +49,13 @@ public class Simulator {
      * @param input Input of the robot
      * @param robot Robot to update
      */
-    private void initalizeRobot(RobotInput input, Robot robot) {
+    private void initializeRobot(RobotInput input, Robot robot) {
         switch (input.getMode()) {
             case CONTROL_GENERAL:
                 robot.setRotationRate(((GeneralInput) input).getRotation());
                 break;
+            case POINT:
+                robot.setRotationRate(((PointInput) input).getRotationRate());
             case CONTROL_WHEELS: // Not needed all four wheel rates are read later
                 break;
             default:
@@ -70,6 +76,12 @@ public class Simulator {
     public Robot getRobot() {
         return robot;
     }
+
+    public boolean isAtGoal() {
+        return atGoal;
+    }
+
+    private long lastTime = 0;
 
     /**
      * Given the defined input, calculate the new position of the robot.
@@ -98,7 +110,10 @@ public class Simulator {
                 break;
             case POINT:
                 if (recalculateFlag) {
-                    //recalculatePointCourse(input, timeDelta);
+                    long curTime = System.currentTimeMillis();
+                    System.out.println("Recalculating after: " + (curTime - lastTime));
+                    lastTime = curTime;
+                    recalculatePointCourse(input, timeDelta);
                     recalculateFlag = false;
                 }
                 calculatePointMovement(input, timeDelta);
@@ -167,6 +182,20 @@ public class Simulator {
         updateRobot(xVel, yVel, newAngle, rotationRate, timeDelta, robot);
     }
 
+
+    private void recalculatePointCourse(RobotInput input, double timeDelta) {
+        PointInput pi = (PointInput) input;
+        if (Utils.isAtGoal(robot.getLocation(), pi.getEndPoint())) {
+            atGoal = true;
+        }
+    }
+
+    /**
+     * Calculates the robots new position and heading based on the current input and time difference.
+     *
+     * @param input     Current robot input
+     * @param timeDelta time between frames
+     */
     private void calculatePointMovement(RobotInput input, double timeDelta) {
         PointInput pi = (PointInput) input;
         double yVel = Math.cos(Math.toRadians(robot.getAngle())) * pi.getSpeed();
