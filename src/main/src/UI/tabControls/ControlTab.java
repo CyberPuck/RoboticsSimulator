@@ -264,4 +264,15 @@ public class ControlTab implements Initializable {
         speedField.setText("0.0");
         rotationField.setText("0.0");
     }
+
+    /**
+     * Checks the controller for state change.
+     */
+    public void update() {
+        if (controller.isSimulatorRunning()) {
+            startButton.setText("Stop");
+        } else {
+            startButton.setText("Start");
+        }
+    }
 }

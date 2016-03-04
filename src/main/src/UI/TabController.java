@@ -19,6 +19,10 @@ public class TabController {
     private TabPane tabPane;
     // needed for getting UI to startup simulator
     private SimulatorController controller;
+    // List of controllers, this enables the simulation to update the UI
+    private ControlTab control;
+    private PathTab path;
+    private PointTab point;
 
     public TabController(TabPane tabPane, SimulatorController controller) {
         this.tabPane = tabPane;
@@ -39,6 +43,7 @@ public class TabController {
             tabPane.getTabs().add(controlTab);
             // add the controller
             fxmlLoader.<ControlTab>getController().setController(controller);
+            control = fxmlLoader.getController();
         } catch (IOException e) {
             System.err.println("Failed to load control tab pane");
         }
@@ -52,6 +57,7 @@ public class TabController {
             pointTab.setContent(testPane);
             tabPane.getTabs().add(pointTab);
             fxmlLoader.<PointTab>getController().setController(controller);
+            point = fxmlLoader.getController();
         } catch (IOException e) {
             System.err.println("Failed to load point tab pane");
         }
@@ -66,6 +72,7 @@ public class TabController {
             tabPane.getTabs().add(pathTab);
             // add the controller
             fxmlLoader.<PathTab>getController().setController(controller);
+            path = fxmlLoader.getController();
         } catch (IOException e) {
             System.err.println("Failed to load path tab pane");
         }
@@ -83,5 +90,11 @@ public class TabController {
         }
 
         // TODO: Extra Credit?
+    }
+
+    public void updateUIs() {
+        control.update();
+        point.update();
+        path.update();
     }
 }

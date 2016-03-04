@@ -159,4 +159,15 @@ public class PathTab implements Initializable {
         farRadiusLabel.setVisible(false);
         farRadius.setVisible(false);
     }
+
+    /**
+     * Checks the controller for state change.
+     */
+    public void update() {
+        if (controller.isSimulatorRunning()) {
+            startButton.setText("Stop");
+        } else {
+            startButton.setText("Start");
+        }
+    }
 }

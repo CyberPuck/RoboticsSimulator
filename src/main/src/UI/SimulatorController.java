@@ -74,6 +74,9 @@ public class SimulatorController implements Initializable {
     private long previousTime = 0;
     // controller for the simulation display
     private DisplayPaneController displayController;
+    // controller for the tabs
+    private TabController tabController;
+    // animation timer to draw a moving robot and path
     private AnimationTimer timer;
     // Location of the robot in the global reference frame
     private Position robotPosition;
@@ -89,8 +92,8 @@ public class SimulatorController implements Initializable {
         displayController = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
         displayController.initializePane();
         // add in the tab controller
-        TabController tabControl = new TabController(controlPane, this);
-        tabControl.init();
+        tabController = new TabController(controlPane, this);
+        tabController.init();
         // force the text area to auto scroll
         outputTextArea.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -179,6 +182,7 @@ public class SimulatorController implements Initializable {
                 // check if the robot is at the goal and stop
                 if (sim.isAtGoal()) {
                     stopSimulator();
+                    tabController.updateUIs();
                 }
             }
         };

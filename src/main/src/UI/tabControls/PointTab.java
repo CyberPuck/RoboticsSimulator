@@ -100,4 +100,15 @@ public class PointTab implements Initializable {
         PointInput pi = new PointInput(endPoint, speed, endOrientation, time, rotationRate);
         return pi;
     }
+
+    /**
+     * Checks the controller for state change.
+     */
+    public void update() {
+        if (controller.isSimulatorRunning()) {
+            startButton.setText("Stop");
+        } else {
+            startButton.setText("Start");
+        }
+    }
 }
