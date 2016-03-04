@@ -7,6 +7,7 @@ import javafx.scene.transform.Rotate;
 import robot.Robot;
 import utilities.Point;
 import utilities.Position;
+import utilities.Utils;
 
 import java.io.File;
 
@@ -65,7 +66,7 @@ public class RobotCanvas {
         // clear the field first
         gc.clearRect(0, 0, X_LENGTH, Y_LENGTH);
         // calculate the new location of the robot
-        Position newPosition = convertLocationToPixels(simRobot);
+        Position newPosition = Utils.convertLocationToPixels(simRobot);
         // make sure we don't going running out of the boundary
         checkBoundaries(newPosition.getPosition());
         double paneX = newPosition.getPosition().getX() - (this.canvasCenter.getX() - 180);
@@ -90,37 +91,7 @@ public class RobotCanvas {
         pathCanvas.updateRobotPath(newPosition.getPosition());
     }
 
-    /**
-     * Convert the simulation robot position (in feet), to the pane robot in pixels.
-     * NOTE: 2 pixels = 1", 12 pixels = 6", 24 pixels = 1'
-     *
-     * @param simRobot Robot corrdinates in feet
-     * @return Position in pixels
-     */
-    private Position convertLocationToPixels(Robot simRobot) {
-        Position pixelLocation = new Position();
-        // set the location
-        pixelLocation.getPosition().setX(simRobot.getLocation().getX() * 12 * 2);
-        pixelLocation.getPosition().setY(simRobot.getLocation().getY() * 12 * 2);
-        // set the angle
-        pixelLocation.setAngle(simRobot.getAngle());
-        return pixelLocation;
-    }
 
-    /**
-     * Converts the robot location to feet, need to take into account the
-     * center of the pane as well.
-     *
-     * @return The position of the robot in feet
-     */
-    public Position convertLocationToFeet() {
-        System.out.println("Pixel Location: " + this.robotPosition.getPosition().toString());
-        double trueX = this.canvasCenter.getX() - 180 + this.robotPosition.getPosition().getX();
-        double trueY = this.canvasCenter.getY() - 360 + this.robotPosition.getPosition().getY();
-        // convert back to the global reference frame
-        trueY = 720 - trueY;
-        return new Position(new Point((trueX / (12 * 2)), (trueY / (12 * 2))), this.robotPosition.getAngle());
-    }
 
     /**
      * Checks if the pixel location is outside the boundary and update the canvas center
@@ -166,5 +137,9 @@ public class RobotCanvas {
     private void rotate(GraphicsContext gc, double angle, double x, double y) {
         Rotate rotate = new Rotate(angle, x, y);
         gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
+    }
+
+    public Position getGlobalPosition() {
+        return Utils.convertLocationToFeet(this.robotPosition, this.canvasCenter);
     }
 }

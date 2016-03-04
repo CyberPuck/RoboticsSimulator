@@ -76,6 +76,8 @@ public class SimulatorController implements Initializable {
     private AnimationTimer timer;
     // Location of the robot in the global reference frame
     private Position robotPosition;
+    // Starting location of robot, reference point for drawing input path
+    private Position startPosition;
     // flag indicating if the simulator is running
     private boolean simulatorRunning = false;
 
@@ -108,7 +110,7 @@ public class SimulatorController implements Initializable {
                 }
                 // move the robot
                 displayController.getPathCanvas().restartCanvas();
-                displayController.getPathCanvas().updateCenter(new Point(180, 360));
+//                displayController.getPathCanvas().updateCenter(new Point(180, 360));
                 // update the robot
                 robotPosition = new Position(new Point(7.5, 15), 0.0);
                 Robot robot = new Robot(WHEEL_RADIUS);
@@ -128,7 +130,7 @@ public class SimulatorController implements Initializable {
         // clear the robot path
         displayController.getPathCanvas().restartCanvas();
         // first get the current robot position and orientation
-        Position startPos = displayController.getRobotCanvas().convertLocationToFeet();
+        startPosition = displayController.getRobotCanvas().getGlobalPosition();
         final Robot robot = new Robot(WHEEL_RADIUS);
         robot.setLocation(robotPosition.getPosition());
         robot.setAngle(robotPosition.getAngle());
@@ -255,5 +257,9 @@ public class SimulatorController implements Initializable {
 
     public boolean isSimulatorRunning() {
         return simulatorRunning;
+    }
+
+    public Position getStartPosition() {
+        return startPosition;
     }
 }
