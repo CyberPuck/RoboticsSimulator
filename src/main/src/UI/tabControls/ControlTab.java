@@ -16,6 +16,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.io.File;
@@ -33,6 +34,9 @@ public class ControlTab implements Initializable {
     private static String GENERAL_MODE = "General";
     private static String WHEEL_MODE = "Wheel Rotation";
 
+    // Needed for catching key presses
+//    @FXML
+//    private Pane controlPane;
     // General movement controls (default)
     @FXML
     private ChoiceBox modeBox;
@@ -136,6 +140,24 @@ public class ControlTab implements Initializable {
         });
         // set default values
         setDefaults();
+
+        startButton.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (controller.isSimulatorRunning()) {
+                    controller.stopSimulator();
+                }
+            }
+        });
+        // stop the simulation if we started it
+//        controlPane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+//            @Override
+//            public void handle(KeyEvent event) {
+//                if(controller.isSimulatorRunning()) {
+//                    controller.stopSimulator();
+//                }
+//            }
+//        });
     }
 
     /**

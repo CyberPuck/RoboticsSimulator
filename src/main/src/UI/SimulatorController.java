@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import robot.Robot;
@@ -36,15 +37,18 @@ public class SimulatorController implements Initializable {
     // TODO: Should this be configurable? in feet
     private static double WHEEL_RADIUS = 0.25;
 
+    // parent node, need this for detecting mouse and keyboard actions
+    @FXML
+    private Pane mainPane;
+    // displays the robot
     @FXML
     private Pane displayPane;
-
+    // UI pane
     @FXML
     private TabPane controlPane;
-
     // System state variables
-    @FXML
-    private Pane systemStatePane;
+//    @FXML
+//    private Pane systemStatePane;
     @FXML
     private Label velocityY;
     @FXML
@@ -61,7 +65,8 @@ public class SimulatorController implements Initializable {
     @FXML
     private Button resetButton;
 
-    // TODO: Should we move these?
+    // Canvas to draw the robot
+    // TODO: If time move these to separate controllers.
     @FXML
     private Canvas gridCanvas;
     @FXML
@@ -82,12 +87,11 @@ public class SimulatorController implements Initializable {
     private Position robotPosition;
     // flag indicating if the simulator is running
     private boolean simulatorRunning = false;
+    // input from the UI, if any
+    private RobotInput input;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        Background test = new Background(new BackgroundFill(Color.BURLYWOOD, CornerRadii.EMPTY, Insets.EMPTY));
-        //displayPane.setBackground(test);
-//        systemStatePane.setBackground(test);
         // add in the individual controllers
         displayController = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
         displayController.initializePane();
@@ -116,7 +120,6 @@ public class SimulatorController implements Initializable {
                 }
                 // move the robot
                 displayController.getPathCanvas().restartCanvas();
-//                displayController.getPathCanvas().updateCenter(new Point(180, 360));
                 // update the robot
                 robotPosition = new Position(new Point(7.5, 15), 0.0);
                 Robot robot = new Robot(WHEEL_RADIUS);
@@ -124,6 +127,26 @@ public class SimulatorController implements Initializable {
                 displayController.getRobotCanvas().redrawRobot(robot);
                 // update the system status
                 updateSystemState(robot);
+                tabController.updateUIs();
+            }
+        });
+
+        // setup the main pane to handle input
+        mainPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (simulatorRunning && (input.getMode() == InputMode.CONTROL_WHEELS || input.getMode() == InputMode.CONTROL_GENERAL)) {
+                    stopSimulator();
+                }
+            }
+        });
+
+        mainPane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (simulatorRunning && (input.getMode() == InputMode.CONTROL_WHEELS || input.getMode() == InputMode.CONTROL_GENERAL)) {
+                    stopSimulator();
+                }
             }
         });
     }
@@ -132,6 +155,7 @@ public class SimulatorController implements Initializable {
      * TODO: Should we return error values?
      */
     public void startSimulator(final RobotInput input) {
+        this.input = input;
         simulatorRunning = true;
         // setup the robot object
         final Robot robot = new Robot(WHEEL_RADIUS);
@@ -186,7 +210,6 @@ public class SimulatorController implements Initializable {
                 // check if the robot is at the goal and stop
                 if (sim.isAtGoal()) {
                     stopSimulator();
-                    tabController.updateUIs();
                 }
             }
         };
@@ -201,6 +224,8 @@ public class SimulatorController implements Initializable {
         printText("Stopping Simulator");
         // zero out velocities on the system display
         stopSystemState();
+        // update the tabs
+        tabController.updateUIs();
         // Kill the timer
         if (timer != null) {
             timer.stop();
