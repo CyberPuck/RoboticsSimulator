@@ -22,7 +22,8 @@ public class PathCanvas {
     private static double WIDTH = 360;
 
     private Canvas pathCanvas;
-    private ArrayList<Point> robotPath = new ArrayList<>();
+    // preallocate arraylist, does this help with drawing bug?
+    private ArrayList<Point> robotPath = new ArrayList<>(100000);
     private Point previousPosition;
     private Point canvasCenter;
     // origin of the display area, new requirement
@@ -176,13 +177,12 @@ public class PathCanvas {
     private void drawGeneralPath(GeneralInput gi) {
         GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
         gc.save();
-        double angle = gi.getDirection() + 180;
         Point paneStartingPoint = convertToPaneCoordinates(startingLocation);
         Point temp = new Point(paneStartingPoint.getX(), canvasCenter.getY() - 1000000);
+        System.out.println("Starting point: " + paneStartingPoint.toString());
         System.out.println("New end point: " + temp.toString());
         Point paneEndPoint = convertToPaneCoordinates(temp);
-        Rotate rotate = new Rotate(angle, paneStartingPoint.getX(), paneStartingPoint.getY());
-        gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
+        rotatePane(gc, gi.getDirection(), paneStartingPoint);
         gc.setLineWidth(4.0);
         gc.setStroke(Color.BLUE);
         gc.setFill(Color.BLUE);
@@ -232,6 +232,20 @@ public class PathCanvas {
         double paneY = globalLocation.getY() - (this.canvasCenter.getY() - 360);
         paneY = 720 - paneY;
         return new Point(paneX, paneY);
+    }
+
+    /**
+     * Rotate the canvas based on the angle given, and the provided pivot point.
+     *
+     * @param gc         GraphicsContext for rotating
+     * @param angle      rotation angle
+     * @param pivotPoint point to rotate around
+     */
+    private void rotatePane(GraphicsContext gc, double angle, Point pivotPoint) {
+        // flip direction as it is backwards, and negate as it rotates in the wrong direction
+        angle = (angle + 180) * -1;
+        Rotate rotate = new Rotate(angle, pivotPoint.getX(), pivotPoint.getY());
+        gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
     }
 
     public void setStartingLocation(Point startingLocation) {
