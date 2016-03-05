@@ -198,8 +198,12 @@ public class Simulator {
      */
     private void calculatePointMovement(RobotInput input, double timeDelta) {
         PointInput pi = (PointInput) input;
-        double yVel = Math.cos(Math.toRadians(robot.getAngle())) * pi.getSpeed();
-        double xVel = Math.sin(Math.toRadians(robot.getAngle())) * pi.getSpeed();
+        double angle = Utils.getAngle(robot.getLocation(), pi.getEndPoint());
+        System.out.println("Angle: " + angle);
+        double yVel = Math.cos(Math.toRadians(angle)) * pi.getSpeed();
+        // need the inverse
+        double xVel = Math.sin(Math.toRadians(angle)) * pi.getSpeed() * -1;
+        System.out.println("New velocities: " + xVel + ", " + yVel);
         // get the new robot angle
         double newAngle = pi.getRotationRate() * timeDelta + robot.getAngle();
         // update the robot position
