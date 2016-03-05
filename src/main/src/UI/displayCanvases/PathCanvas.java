@@ -191,7 +191,6 @@ public class PathCanvas {
         } else {
             gc.fillOval(paneStartingPoint.getX() - 2, paneStartingPoint.getY() - 2, 4, 4);
         }
-        gc.strokeLine(-15, -15, 745, 745);
         gc.restore();
     }
 
