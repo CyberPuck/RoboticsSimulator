@@ -13,9 +13,11 @@ public class PointInput implements RobotInput {
     private Point endPoint;
     // speed in feet/sec
     private double speed;
+    // End orientation of the robot
     private double endOrientation;
     // based on the end orientation and time to complete
     private double rotationRate;
+    // time to get the robot to the end point
     private double time;
 
     public PointInput(Point endPoint, double speed, double endOrientation, double time, double rotationRate) {
