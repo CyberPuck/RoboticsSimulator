@@ -1,5 +1,7 @@
 package utilities;
 
+import java.text.DecimalFormat;
+
 /**
  * General functions that are used by multiple classes.
  * <p/>
@@ -88,5 +90,16 @@ public class Utils {
         }
         // all angular calculations return radians (eww)
         return Math.toDegrees(Math.atan((p2.getY() - p1.getY()) / (p1.getX() - p2.getX())));
+    }
+
+    /**
+     * Simply format a double to three decimals places, longer doubles are introducing error.
+     *
+     * @param value Original double value
+     * @return double trimmed to the thousandths
+     */
+    public static double roundDouble(double value) {
+        DecimalFormat df = new DecimalFormat("#.###");
+        return Double.valueOf(df.format(value));
     }
 }
