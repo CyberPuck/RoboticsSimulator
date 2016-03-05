@@ -135,7 +135,7 @@ public class RobotCanvas {
      * @param y     position of the center of the robot image
      */
     private void rotate(GraphicsContext gc, double angle, double x, double y) {
-//        angle += 180;
+        angle *= -1;
         Rotate rotate = new Rotate(angle, x, y);
         gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
     }

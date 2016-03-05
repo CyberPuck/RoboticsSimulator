@@ -63,4 +63,30 @@ public class Utils {
         }
         return false;
     }
+
+    /**
+     * Given two points, calculate the angle between them based on the GRF.
+     *
+     * @param p1 first point
+     * @param p2 second point
+     * @return angle between the two based on 0 degrees being the +y-axis
+     */
+    public static double getAngle(Point p1, Point p2) {
+        // add checks for 0, 180, 90, and 270 degrees
+        if (p1.getX() == p2.getX()) {
+            if (p1.getY() <= p2.getY()) {
+                return 0.0;
+            } else {
+                return 180.0;
+            }
+        } else if (p1.getY() == p2.getY()) {
+            if (p1.getX() > p2.getX()) {
+                return 90.0;
+            } else {
+                return -90.0;
+            }
+        }
+        // all angular calculations return radians (eww)
+        return Math.toDegrees(Math.atan((p2.getY() - p1.getY()) / (p1.getX() - p2.getX())));
+    }
 }

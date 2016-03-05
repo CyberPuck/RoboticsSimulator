@@ -103,6 +103,10 @@ public class SimulatorController implements Initializable {
         });
         // robot always starts in the middle
         robotPosition = new Position(new Point(7.5, 15), 0.0);
+        Robot robot = new Robot(WHEEL_RADIUS);
+        robot.setLocation(robotPosition.getPosition());
+        // update the system status
+        updateSystemState(robot);
         // setup the reset button
         resetButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
