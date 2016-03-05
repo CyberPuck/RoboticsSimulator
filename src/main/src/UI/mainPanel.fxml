@@ -21,7 +21,8 @@
             </children>
         </Pane>
         <TabPane fx:id="controlPane" prefHeight="720.0" prefWidth="440.0" tabClosingPolicy="UNAVAILABLE"/>
-        <TextArea fx:id="outputTextArea" layoutX="800.0" layoutY="0.0" prefHeight="500.0" prefWidth="440.0"/>
+        <TextArea fx:id="outputTextArea" layoutX="800.0" layoutY="0.0" prefHeight="500.0" prefWidth="440.0"
+                  editable="false"/>
         <Pane fx:id="systemStatePane" layoutX="800.0" layoutY="500.0" prefHeight="220.0" prefWidth="440.0">
             <children>
                 <Label fx:id="velocityY" layoutX="14.0" layoutY="14.0" text="Velocity Y: 0.0"/>
