@@ -1,8 +1,13 @@
 package UI.tabControls;
 
 import UI.SimulatorController;
+import inputs.CirclePathInput;
+import inputs.FigureEightPathInput;
+import inputs.RectanglePathInput;
+import inputs.RobotInput;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -11,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import utilities.Point;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -102,6 +109,87 @@ public class PathTab implements Initializable {
                 updateTab(modes.get(newValue.intValue()));
             }
         });
+
+        // Button pressed
+        startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (controller.isSimulatorRunning()) {
+                    controller.printText("Stopping Simulation");
+                    controller.stopSimulator();
+                    startButton.setText("Start");
+                } else {
+                    updateSimulator();
+                }
+            }
+        });
+
+        // set defaults
+        setDefaults();
+    }
+
+    private void updateSimulator() {
+        RobotInput input;
+        if (pathMode.getValue().equals(CIRCLE)) {
+            input = setupCircleInput();
+        } else if (pathMode.getValue().equals(RECTANGLE)) {
+            input = setupRectangleInput();
+        } else {
+            input = setupFigureEightInput();
+        }
+        controller.startSimulator(input);
+        startButton.setText("Stop");
+
+    }
+
+    /**
+     * Given the UI inputs, get the input for the circle.
+     *
+     * @return CirclePathInput
+     */
+    private RobotInput setupCircleInput() {
+        Point origin = controller.getRobotPosition().getPosition();
+        double radius = Double.parseDouble(circleRadius.getText());
+        double angle = Double.parseDouble(inclination.getText());
+        double endAngle = Double.parseDouble(rotation.getText());
+        double speed = Double.parseDouble(this.speed.getText());
+        double time = Double.parseDouble(this.time.getText());
+        double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
+        return new CirclePathInput(origin, radius, angle, endAngle, rr, speed, time);
+    }
+
+    /**
+     * Given the UI inputs, get the input for the rectangle.
+     *
+     * @return RectanglePathInput
+     */
+    private RobotInput setupRectangleInput() {
+        Point origin = controller.getRobotPosition().getPosition();
+        double top = Double.parseDouble(rectangleTop.getText());
+        double side = Double.parseDouble(rectangleSide.getText());
+        double angle = Double.parseDouble(inclination.getText());
+        double endAngle = Double.parseDouble(rotation.getText());
+        double speed = Double.parseDouble(this.speed.getText());
+        double time = Double.parseDouble(this.time.getText());
+        double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
+        return new RectanglePathInput(origin, top, side, angle, endAngle, rr, speed, time);
+    }
+
+    /**
+     * Given the UI inputs, get the input for the figure eight.
+     *
+     * @return FigureEightPathInput
+     */
+    private RobotInput setupFigureEightInput() {
+        Point origin = controller.getRobotPosition().getPosition();
+        double radiusOne = Double.parseDouble(closeRadius.getText());
+        double radiusTwo = Double.parseDouble(farRadius.getText());
+        double angle = Double.parseDouble(inclination.getText());
+        double endAngle = Double.parseDouble(rotation.getText());
+        double speed = Double.parseDouble(this.speed.getText());
+        double time = Double.parseDouble(this.time.getText());
+        double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
+        return new FigureEightPathInput(origin, radiusOne, radiusTwo, angle, endAngle, rr, speed, time);
     }
 
     private void updateTab(String mode) {
@@ -169,5 +257,20 @@ public class PathTab implements Initializable {
         } else {
             startButton.setText("Start");
         }
+    }
+
+    /**
+     * Set all UI elements to a default value.
+     */
+    private void setDefaults() {
+        circleRadius.setText("0.0");
+        rectangleSide.setText("0.0");
+        rectangleTop.setText("0.0");
+        closeRadius.setText("0.0");
+        farRadius.setText("0.0");
+        inclination.setText("0.0");
+        rotation.setText("0.0");
+        speed.setText("0.0");
+        time.setText("0.0");
     }
 }
