@@ -175,7 +175,6 @@ public class SimulatorController implements Initializable {
             updateWheeledState((WheelInput) input);
         }
         // start the simulator
-        printText("Starting simulation");
         System.out.println("Starting Simulator");
         final Simulator sim = new Simulator(input, robot);
         previousTime = 0;
@@ -220,17 +219,19 @@ public class SimulatorController implements Initializable {
      * TODO: Should we return error values?
      */
     public void stopSimulator() {
-        simulatorRunning = false;
-        printText("Stopping Simulator");
-        // zero out velocities on the system display
-        stopSystemState();
-        // update the tabs
-        tabController.updateUIs();
-        // Kill the timer
-        if (timer != null) {
-            timer.stop();
-            // clean out this bad boy
-            timer = null;
+        if (simulatorRunning) {
+            simulatorRunning = false;
+            printText("Stopping Simulator");
+            // zero out velocities on the system display
+            stopSystemState();
+            // update the tabs
+            tabController.updateUIs();
+            // Kill the timer
+            if (timer != null) {
+                timer.stop();
+                // clean out this bad boy
+                timer = null;
+            }
         }
     }
 

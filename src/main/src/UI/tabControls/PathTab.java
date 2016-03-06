@@ -132,10 +132,13 @@ public class PathTab implements Initializable {
         RobotInput input;
         if (pathMode.getValue().equals(CIRCLE)) {
             input = setupCircleInput();
+            controller.printText("Starting Circle Path Simulation");
         } else if (pathMode.getValue().equals(RECTANGLE)) {
             input = setupRectangleInput();
+            controller.printText("Starting Rectangle Path Simulation");
         } else {
             input = setupFigureEightInput();
+            controller.printText("Starting Figure Eight Path Simulation");
         }
         controller.startSimulator(input);
         startButton.setText("Stop");

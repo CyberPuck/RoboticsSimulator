@@ -56,6 +56,7 @@ public class PointTab implements Initializable {
                     // start the simulation
                     RobotInput input = formatInput();
                     startButton.setText("Stop");
+                    controller.printText("Starting Point Simulation");
                     controller.startSimulator(input);
                 }
             }

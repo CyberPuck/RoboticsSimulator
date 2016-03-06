@@ -182,8 +182,10 @@ public class ControlTab implements Initializable {
             RobotInput input;
             if (modeBox.getValue().equals(GENERAL_MODE)) {
                 input = setupGeneralInput();
+                controller.printText("Starting General Control Simulation");
             } else { // assume wheel mode
                 input = setupWheelInput();
+                controller.printText("Starting Wheel Control Simulation");
             }
             controller.startSimulator(input);
             startButton.setText("Stop");
