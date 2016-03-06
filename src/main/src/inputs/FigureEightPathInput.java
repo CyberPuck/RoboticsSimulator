@@ -27,7 +27,7 @@ public class FigureEightPathInput implements RobotInput {
     // time to complete figure eight
     private double time;
 
-    public FigureEightPathInput(Point origin, double radiusOne, double radiusTwo, double inclination, double speed, double endOrientation, double rotationRate, double time) {
+    public FigureEightPathInput(Point origin, double radiusOne, double radiusTwo, double inclination, double endOrientation, double rotationRate, double speed, double time) {
         this.origin = origin;
         this.radiusOne = radiusOne;
         this.radiusTwo = radiusTwo;
