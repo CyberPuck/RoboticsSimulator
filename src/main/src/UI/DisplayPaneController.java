@@ -10,6 +10,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import utilities.Point;
 
 /**
  * Handles calls to the DisplayPaneController.  This will show the robot in motion along with the defaults and paths.
@@ -29,9 +30,12 @@ public class DisplayPaneController {
     private PathCanvas path;
 
     /**
-     * Setup the displayPane.
+     * Stores all major display components.
      *
-     * @param displayPane
+     * @param displayPane Holds all canvases, displays background color
+     * @param gridCanvas Displays the 6" x 6" grid
+     * @param robotCanvas Displays the robot
+     * @param pathCanvas Displays both the robot and input paths
      */
     public DisplayPaneController(Pane displayPane, Canvas gridCanvas, Canvas robotCanvas, Canvas pathCanvas) {
         this.displayPane = displayPane;
@@ -42,8 +46,10 @@ public class DisplayPaneController {
 
     /**
      * Draw the background color (brown) with the 6" x 6" grid (grey).
+     *
+     * @param origin Origin of the canvases (in the GRF in feet)
      */
-    public void initializePane() {
+    public void initializePane(Point origin) {
         // set the background color
         Background background = new Background(new BackgroundFill(Color.rgb(136, 84, 49), CornerRadii.EMPTY, Insets.EMPTY));
         displayPane.setBackground(background);
@@ -53,7 +59,7 @@ public class DisplayPaneController {
         // Setup the path stuff
         path = new PathCanvas(pathCanvas);
         // setup the robot
-        robot = new RobotCanvas(robotCanvas, path);
+        robot = new RobotCanvas(robotCanvas, path, origin);
         robot.init();
 
     }

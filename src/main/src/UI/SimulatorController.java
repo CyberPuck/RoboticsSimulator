@@ -92,9 +92,12 @@ public class SimulatorController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // robot always starts in the middle
+        robotPosition = new Position(new Point(0, 0), 0.0);
         // add in the individual controllers
         displayController = new DisplayPaneController(displayPane, gridCanvas, robotCanvas, pathCanvas);
-        displayController.initializePane();
+        // Inform all canvases of the center
+        displayController.initializePane(robotPosition.getPosition());
         // add in the tab controller
         tabController = new TabController(controlPane, this);
         tabController.init();
@@ -105,8 +108,6 @@ public class SimulatorController implements Initializable {
                 outputTextArea.setScrollTop(Double.MAX_VALUE);
             }
         });
-        // robot always starts in the middle
-        robotPosition = new Position(new Point(7.5, 15), 0.0);
         Robot robot = new Robot(WHEEL_RADIUS);
         robot.setLocation(robotPosition.getPosition());
         // update the system status
@@ -121,7 +122,7 @@ public class SimulatorController implements Initializable {
                 // move the robot
                 displayController.getPathCanvas().restartCanvas();
                 // update the robot
-                robotPosition = new Position(new Point(7.5, 15), 0.0);
+                robotPosition = new Position(new Point(0, 0), 0.0);
                 Robot robot = new Robot(WHEEL_RADIUS);
                 robot.setLocation(robotPosition.getPosition());
                 displayController.getRobotCanvas().redrawRobot(robot);

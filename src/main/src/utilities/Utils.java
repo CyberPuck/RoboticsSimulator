@@ -1,5 +1,8 @@
 package utilities;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.transform.Rotate;
+
 import java.text.DecimalFormat;
 
 /**
@@ -101,5 +104,31 @@ public class Utils {
     public static double roundDouble(double value) {
         DecimalFormat df = new DecimalFormat("#.###");
         return Double.valueOf(df.format(value));
+    }
+
+    /**
+     * Transform the given "graphics plane" at the given angle around the image (robot).
+     *
+     * @param gc         graphics context to draw the robot
+     * @param angle      angle to rotate
+     * @param pivotPoint Point to rotate around
+     */
+    public static void rotate(GraphicsContext gc, double angle, Point pivotPoint) {
+        angle *= -1;
+        Rotate rotate = new Rotate(angle, pivotPoint.getX(), pivotPoint.getY());
+        gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
+    }
+
+    /**
+     * Given a GRF based pixel coordinate, convert it to the canvas reference frame.
+     *
+     * @param globalLocation Global reference frame point (pixel coordinates)
+     * @return Point in the canvas reference frame
+     */
+    public static Point convertToPaneCoordinates(Point globalLocation, Point origin) {
+        double paneX = globalLocation.getX() - (origin.getX() - 180);
+        double paneY = globalLocation.getY() - (origin.getY() - 360);
+        paneY = 720 - paneY;
+        return new Point(paneX, paneY);
     }
 }

@@ -5,7 +5,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.transform.Rotate;
 import utilities.Point;
 import utilities.Utils;
 
@@ -71,8 +70,8 @@ public class PathCanvas {
     public void updateRobotPath(Point newLocation) {
         robotPath.add(newLocation);
         // TODO: fill this in, take into account relocation if the boundary is hit
-        Point oldPoint = convertToPaneCoordinates(previousPosition);
-        Point newPoint = convertToPaneCoordinates(newLocation);
+        Point oldPoint = Utils.convertToPaneCoordinates(previousPosition, this.canvasCenter);
+        Point newPoint = Utils.convertToPaneCoordinates(newLocation, this.canvasCenter);
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
         gc.setStroke(Color.LIME);
         gc.setLineWidth(0);
@@ -118,13 +117,15 @@ public class PathCanvas {
      */
     private void redrawOrigin() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
-        Point originLeft = new Point(origin.getX() + 15, origin.getY() + 15);
-        Point originRight = new Point(origin.getX() + 15, origin.getY() - 15);
-        Point originTop = new Point(origin.getX() - 15, origin.getY() - 15);
-        Point originBottom = new Point(origin.getX() - 15, origin.getY() + 15);
+        // forgot to convert to pane coordinates lol
+//        Point origin = Utils.convertToPaneCoordinates(this.origin, this.canvasCenter);
+        Point paneLocation = Utils.convertToPaneCoordinates(origin, this.canvasCenter);
+        Point originLeft = new Point(paneLocation.getX() + 15, paneLocation.getY() + 15);
+        Point originRight = new Point(paneLocation.getX() + 15, paneLocation.getY() - 15);
+        Point originTop = new Point(paneLocation.getX() - 15, paneLocation.getY() - 15);
+        Point originBottom = new Point(paneLocation.getX() - 15, paneLocation.getY() + 15);
         if (isInsideCanvas(originRight) || isInsideCanvas(originLeft) || isInsideCanvas(originTop) || isInsideCanvas(originBottom)) {
-            Point paneLocation = convertToPaneCoordinates(origin);
-            gc.setFill(Color.ORANGE);
+            gc.setFill(Color.YELLOW);
             gc.fillOval(paneLocation.getX() - 7.5, paneLocation.getY() - 7.5, 15, 15);
         }
     }
@@ -136,8 +137,8 @@ public class PathCanvas {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
         for (int i = 1; i < robotPath.size(); i++) {
             if (isInsideCanvas(robotPath.get(i))) {
-                Point oldPoint = convertToPaneCoordinates(robotPath.get(i - 1));
-                Point newPoint = convertToPaneCoordinates(robotPath.get(i));
+                Point oldPoint = Utils.convertToPaneCoordinates(robotPath.get(i - 1), this.canvasCenter);
+                Point newPoint = Utils.convertToPaneCoordinates(robotPath.get(i), this.canvasCenter);
                 // draw the line
                 gc.setStroke(ROBOT_LINE_COLOR);
                 gc.setLineWidth(ROBOT_LINE_WIDTH);
@@ -182,13 +183,13 @@ public class PathCanvas {
     private void drawGeneralPath(GeneralInput gi) {
         GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
         gc.save();
-        Point paneStartingPoint = convertToPaneCoordinates(startingLocation);
+        Point paneStartingPoint = Utils.convertToPaneCoordinates(startingLocation, this.canvasCenter);
         Point temp = new Point(paneStartingPoint.getX(), canvasCenter.getY() + 1000000);
         System.out.println("Starting point: " + paneStartingPoint.toString());
         System.out.println("New end point: " + temp.toString());
         System.out.println("Angle: " + gi.getDirection());
-        Point paneEndPoint = convertToPaneCoordinates(temp);
-        rotatePane(gc, gi.getDirection(), paneStartingPoint);
+        Point paneEndPoint = Utils.convertToPaneCoordinates(temp, this.canvasCenter);
+        Utils.rotate(gc, gi.getDirection(), paneStartingPoint);
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.setFill(INPUT_LINE_COLOR);
@@ -208,9 +209,9 @@ public class PathCanvas {
     private void drawPointPath(PointInput pi) {
         GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
         gc.save();
-        Point paneStartingPoint = convertToPaneCoordinates(startingLocation);
+        Point paneStartingPoint = Utils.convertToPaneCoordinates(startingLocation, this.canvasCenter);
         Point pixelPos = Utils.convertLocationToPixels(pi.getEndPoint());
-        Point endPoint = convertToPaneCoordinates(pixelPos);
+        Point endPoint = Utils.convertToPaneCoordinates(pixelPos, this.canvasCenter);
         gc.save();
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
@@ -224,8 +225,8 @@ public class PathCanvas {
         Point origin = Utils.convertLocationToPixels(input.getOrigin());
         double radius = input.getRadius() * 24;
         Point startingPoint = new Point(origin.getX() - radius, origin.getY() + 2 * radius);
-        startingPoint = convertToPaneCoordinates(startingPoint);
-        rotatePane(gc, input.getInclination(), convertToPaneCoordinates(origin));
+        startingPoint = Utils.convertToPaneCoordinates(startingPoint, canvasCenter);
+        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(origin, this.canvasCenter));
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeOval(startingPoint.getX(), startingPoint.getY(), 2 * radius, 2 * radius);
@@ -239,8 +240,8 @@ public class PathCanvas {
         double topSide = input.getTopLength() * 24;
         double side = input.getSideLength() * 24;
         Point startingPoint = new Point(origin.getX(), origin.getY() + side);
-        startingPoint = convertToPaneCoordinates(startingPoint);
-        rotatePane(gc, input.getInclination(), origin);
+        startingPoint = Utils.convertToPaneCoordinates(startingPoint, this.canvasCenter);
+        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(origin, this.canvasCenter));
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeRect(startingPoint.getX(), startingPoint.getY(), topSide, side);
@@ -255,9 +256,9 @@ public class PathCanvas {
         double farRadius = input.getRadiusTwo() * 24;
         Point closePoint = new Point(origin.getX() - closeRadius, origin.getY() + 2 * closeRadius);
         Point farPoint = new Point(origin.getX() - farRadius, origin.getY() + 2 * closeRadius + 2 * farRadius);
-        closePoint = convertToPaneCoordinates(closePoint);
-        farPoint = convertToPaneCoordinates(farPoint);
-        rotatePane(gc, input.getInclination(), origin);
+        closePoint = Utils.convertToPaneCoordinates(closePoint, this.canvasCenter);
+        farPoint = Utils.convertToPaneCoordinates(farPoint, this.canvasCenter);
+        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(origin, this.canvasCenter));
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeOval(closePoint.getX(), closePoint.getY(), 2 * closeRadius, 2 * closeRadius);
@@ -277,33 +278,6 @@ public class PathCanvas {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Given a GRF based pixel coordinate, convert it to the canvas reference frame.
-     *
-     * @param globalLocation Global reference frame point (pixel coordinates)
-     * @return Point in the canvas reference frame
-     */
-    private Point convertToPaneCoordinates(Point globalLocation) {
-        double paneX = globalLocation.getX() - (this.canvasCenter.getX() - 180);
-        double paneY = globalLocation.getY() - (this.canvasCenter.getY() - 360);
-        paneY = 720 - paneY;
-        return new Point(paneX, paneY);
-    }
-
-    /**
-     * Rotate the canvas based on the angle given, and the provided pivot point.
-     *
-     * @param gc         GraphicsContext for rotating
-     * @param angle      rotation angle
-     * @param pivotPoint point to rotate around
-     */
-    private void rotatePane(GraphicsContext gc, double angle, Point pivotPoint) {
-        // invert angle as the pane rotation axis is reversed from the GRF
-        angle = angle *-1;
-        Rotate rotate = new Rotate(angle, pivotPoint.getX(), pivotPoint.getY());
-        gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
     }
 
     public void setStartingLocation(Point startingLocation) {

@@ -3,7 +3,6 @@ package UI.displayCanvases;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.transform.Rotate;
 import robot.Robot;
 import utilities.Point;
 import utilities.Position;
@@ -35,17 +34,24 @@ public class RobotCanvas {
     private Point canvasCenter;
     // Since this class handles shift the boundaries it handles the path canvas
     private PathCanvas pathCanvas;
+    // starting robot origin
+    private Point robotOrigin;
 
-    public RobotCanvas(Canvas robotCanvas, PathCanvas pathCanvas) {
+    public RobotCanvas(Canvas robotCanvas, PathCanvas pathCanvas, Point origin) {
+        // convert origin to canvas location
+        origin = Utils.convertLocationToPixels(origin);
+        Point paneOrigin = Utils.convertToPaneCoordinates(origin, origin);
+
         this.robotCanvas = robotCanvas;
-        this.robotPosition = new Position(new Point(180, 360), 0.0);
+        this.robotPosition = new Position(new Point(paneOrigin.getX(), paneOrigin.getY()), 0.0);
 
         File robotImage = new File(ROBOT_IMAGE);
         this.robot = new Image("file:" + robotImage.getAbsolutePath(), 48.0, 96.0, false, true);
         // Make the current center of the pane
-        canvasCenter = new Point(360 / 2, 720 / 2);
+        canvasCenter = new Point(origin.getX(), origin.getY());
         // setup the path canvas
         this.pathCanvas = pathCanvas;
+        this.robotOrigin = origin;
     }
 
     /**
@@ -53,10 +59,10 @@ public class RobotCanvas {
      */
     public void init() {
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
-        rotate(gc, 0, 180, 360);
-        gc.drawImage(robot, 180 - robot.getWidth() / 2, 360 - robot.getHeight() / 2);
+        Point robotPoint = Utils.convertToPaneCoordinates(robotOrigin, this.canvasCenter);
+        gc.drawImage(robot, robotPoint.getX() - robot.getWidth() / 2, robotPoint.getY() - robot.getHeight() / 2);
         // initialize the path
-        pathCanvas.init(new Point(180, 360));
+        pathCanvas.init(robotOrigin);
     }
 
     /**
@@ -70,12 +76,13 @@ public class RobotCanvas {
         Point newPosition = Utils.convertLocationToPixels(simRobot.getLocation());
         // make sure we don't going running out of the boundary
         checkBoundaries(newPosition);
-        double paneX = newPosition.getX() - (this.canvasCenter.getX() - 180);
-        double paneY = newPosition.getY() - (this.canvasCenter.getY() - 360);
-        // convert to the pane reference frame
-        paneY = 720 - paneY;
+        Point panePoint = Utils.convertToPaneCoordinates(newPosition, this.canvasCenter);
+//        double paneX = newPosition.getX() - (this.canvasCenter.getX() - 180);
+//        double paneY = newPosition.getY() - (this.canvasCenter.getY() - 360);
+//        // convert to the pane reference frame
+//        paneY = 720 - paneY;
         // set the robot position and angle
-        this.robotPosition.setPosition(new Point(paneX, paneY));
+        this.robotPosition.setPosition(panePoint);
         this.robotPosition.setAngle(simRobot.getAngle());
         // draw the robot
         gc.save();
@@ -84,9 +91,9 @@ public class RobotCanvas {
 //        System.out.println("Pixel Position: " + newPosition.toString());
 //        System.out.println("ROBOT: " + this.robotPosition.toString());
 //        System.out.println("Canvas Center: " + this.canvasCenter.toString());
-        rotate(gc, this.robotPosition.getAngle(), paneX, paneY);
+        Utils.rotate(gc, this.robotPosition.getAngle(), this.robotPosition.getPosition());
         // convert coordinates to upper left of image, not robot center to draw it
-        gc.drawImage(robot, paneX - robot.getWidth() / 2, paneY - robot.getHeight() / 2);
+        gc.drawImage(robot, panePoint.getX() - robot.getWidth() / 2, panePoint.getY() - robot.getHeight() / 2);
         gc.restore();
         pathCanvas.updateRobotPath(newPosition);
     }
@@ -124,20 +131,6 @@ public class RobotCanvas {
         this.canvasCenter = currentLocation;
         // update the path canvas
         pathCanvas.updateCenter(this.canvasCenter);
-    }
-
-    /**
-     * Transform the given "graphics plane" at the given angle around the image (robot).
-     *
-     * @param gc    graphics context to draw the robot
-     * @param angle angle to rotate
-     * @param x     position of the center of the robot image
-     * @param y     position of the center of the robot image
-     */
-    private void rotate(GraphicsContext gc, double angle, double x, double y) {
-        angle *= -1;
-        Rotate rotate = new Rotate(angle, x, y);
-        gc.transform(rotate.getMxx(), rotate.getMyx(), rotate.getMxy(), rotate.getMyy(), rotate.getTx(), rotate.getTy());
     }
 
     public Position getGlobalPosition() {
