@@ -54,6 +54,8 @@ public class RobotCanvas {
      */
     public void init() {
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
+        // ensure the canvas is clear
+        Utils.clearCanvas(gc, X_LENGTH, Y_LENGTH);
         Point robotPoint = Utils.convertToPaneCoordinates(robotOrigin, this.canvasCenter);
         gc.drawImage(robot, robotPoint.getX() - robot.getWidth() / 2, robotPoint.getY() - robot.getHeight() / 2);
         // initialize the path
@@ -66,16 +68,12 @@ public class RobotCanvas {
     public void redrawRobot(Robot simRobot) {
         GraphicsContext gc = robotCanvas.getGraphicsContext2D();
         // clear the field first
-        gc.clearRect(0, 0, X_LENGTH, Y_LENGTH);
+        Utils.clearCanvas(gc, X_LENGTH, Y_LENGTH);
         // calculate the new location of the robot
         Point newPosition = Utils.convertLocationToPixels(simRobot.getLocation());
         // make sure we don't going running out of the boundary
         checkBoundaries(newPosition);
         Point panePoint = Utils.convertToPaneCoordinates(newPosition, this.canvasCenter);
-//        double paneX = newPosition.getX() - (this.canvasCenter.getX() - 180);
-//        double paneY = newPosition.getY() - (this.canvasCenter.getY() - 360);
-//        // convert to the pane reference frame
-//        paneY = 720 - paneY;
         // set the robot position and angle
         this.robotPosition.setPosition(panePoint);
         this.robotPosition.setAngle(simRobot.getAngle());

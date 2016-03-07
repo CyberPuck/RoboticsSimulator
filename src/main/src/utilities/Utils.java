@@ -131,4 +131,15 @@ public class Utils {
         paneY = 720 - paneY;
         return new Point(paneX, paneY);
     }
+
+    /**
+     * Clears a rectangle portion of a canvas.
+     *
+     * @param gc graphics context to the canvas
+     * @param x  width of the canvas to clear
+     * @param y  height of the canvas to clear
+     */
+    public static void clearCanvas(GraphicsContext gc, double x, double y) {
+        gc.clearRect(0, 0, x, y);
+    }
 }

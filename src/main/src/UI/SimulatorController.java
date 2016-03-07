@@ -116,18 +116,18 @@ public class SimulatorController implements Initializable {
         resetButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                // make sure to stop the simulation
                 if (simulatorRunning) {
                     stopSimulator();
                 }
                 // move the robot
                 displayController.getPathCanvas().restartCanvas();
-                // update the robot
+                // update the robot to origin
                 robotPosition = new Position(new Point(0, 0), 0.0);
-                Robot robot = new Robot(WHEEL_RADIUS);
-                robot.setLocation(robotPosition.getPosition());
-                displayController.getRobotCanvas().redrawRobot(robot);
-                // update the system status
-                updateSystemState(robot);
+                displayController.initializePane(new Point(0, 0));
+                // restart system state
+                resetSystemState();
+                // update the tabs to reflect new state
                 tabController.updateUIs();
             }
         });
@@ -183,33 +183,36 @@ public class SimulatorController implements Initializable {
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                // Calculate the delta between this frame and the last
-                double deltaTime = 0;
-                if (previousTime != 0) {
-                    deltaTime = now - previousTime;
-                    // convert to seconds
-                    deltaTime = deltaTime / 1000000000.0;
-                }
-                previousTime = now;
-                // Debug code, need to add logic to only update every x frames
+                // make sure to only update when the simulator is running
+                if (simulatorRunning) {
+                    // Calculate the delta between this frame and the last
+                    double deltaTime = 0;
+                    if (previousTime != 0) {
+                        deltaTime = now - previousTime;
+                        // convert to seconds
+                        deltaTime = deltaTime / 1000000000.0;
+                    }
+                    previousTime = now;
+                    // Debug code, need to add logic to only update every x frames
 //                printText("Now: " + now);
-                // TODO: Need to convert the Y position into the canvas coordinates
-                // update the robot position
-                sim.calculateNewPosition(deltaTime);
-                // update the reference position
-                robotPosition = new Position(sim.getRobot().getLocation(), robot.getAngle());
-                // update the robot data
-                updateSystemState(sim.getRobot());
-                // check if the wheel rotation is static
-                if (input.getMode() == InputMode.CONTROL_WHEELS) {
-                    updateWheeledState((WheelInput) input);
-                }
-                // update the position based on the global reference frame
+                    // TODO: Need to convert the Y position into the canvas coordinates
+                    // update the robot position
+                    sim.calculateNewPosition(deltaTime);
+                    // update the reference position
+                    robotPosition = new Position(sim.getRobot().getLocation(), robot.getAngle());
+                    // update the robot data
+                    updateSystemState(sim.getRobot());
+                    // check if the wheel rotation is static
+                    if (input.getMode() == InputMode.CONTROL_WHEELS) {
+                        updateWheeledState((WheelInput) input);
+                    }
+                    // update the position based on the global reference frame
 //                displayController.getRobotCanvas().setRobotPosition(sim.getRobot());
-                displayController.getRobotCanvas().redrawRobot(sim.getRobot());
-                // check if the robot is at the goal and stop
-                if (sim.isAtGoal()) {
-                    stopSimulator();
+                    displayController.getRobotCanvas().redrawRobot(sim.getRobot());
+                    // check if the robot is at the goal and stop
+                    if (sim.isAtGoal()) {
+                        stopSimulator();
+                    }
                 }
             }
         };
@@ -290,6 +293,18 @@ public class SimulatorController implements Initializable {
         wheels.setText("Wheels= One: " + 0.0 + ", Two: "
                 + 0.0 + ", Three: " + 0.0
                 + ", Four: " + 0.0);
+    }
+
+    /**
+     * Zero's all state fields.
+     */
+    private void resetSystemState() {
+        velocityY.setText("Velocity Y: 0");
+        velocityX.setText("Velocity X: 0");
+        rotationRate.setText("Rotation Rate: 0");
+        direction.setText("Direction: 0");
+        position.setText("Position: (0, 0)");
+        wheels.setText("Wheels= One: 0, Two: 0, Three: 0, Four: 0");
     }
 
     public Position getRobotPosition() {

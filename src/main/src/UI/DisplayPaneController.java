@@ -61,7 +61,6 @@ public class DisplayPaneController {
         // setup the robot
         robot = new RobotCanvas(robotCanvas, path, origin);
         robot.init();
-
     }
 
     public RobotCanvas getRobotCanvas() {

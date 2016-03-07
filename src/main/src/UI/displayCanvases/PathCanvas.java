@@ -43,6 +43,8 @@ public class PathCanvas {
      * @param position Canvas center in canvas reference frame
      */
     public void init(Point position) {
+        GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
+        Utils.clearCanvas(gc, WIDTH, HEIGHT);
         startingLocation = position;
         previousPosition = position;
         robotPath.add(position);
@@ -83,8 +85,8 @@ public class PathCanvas {
      * Clears the canvas and the existing robot's path.
      */
     public void restartCanvas() {
-        clearCanvas();
         robotPath.clear();
+        clearCanvas();
     }
 
     /**
@@ -92,7 +94,7 @@ public class PathCanvas {
      */
     public void clearCanvas() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, WIDTH, HEIGHT);
+        Utils.clearCanvas(gc, WIDTH, HEIGHT);
         redrawOrigin();
     }
 
