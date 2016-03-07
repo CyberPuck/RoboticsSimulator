@@ -222,11 +222,11 @@ public class PathCanvas {
     private void drawCirclePath(CirclePathInput input) {
         GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
         gc.save();
-        Point origin = Utils.convertLocationToPixels(input.getOrigin());
+        Point robotOrigin = Utils.convertLocationToPixels(input.getOrigin());
         double radius = input.getRadius() * 24;
-        Point startingPoint = new Point(origin.getX() - radius, origin.getY() + 2 * radius);
+        Point startingPoint = new Point(robotOrigin.getX() - radius, robotOrigin.getY() + 2 * radius);
         startingPoint = Utils.convertToPaneCoordinates(startingPoint, canvasCenter);
-        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(origin, this.canvasCenter));
+        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(robotOrigin, this.canvasCenter));
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeOval(startingPoint.getX(), startingPoint.getY(), 2 * radius, 2 * radius);
@@ -236,12 +236,12 @@ public class PathCanvas {
     private void drawRectanglePath(RectanglePathInput input) {
         GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
         gc.save();
-        Point origin = Utils.convertLocationToPixels(input.getOrigin());
+        Point robotOrigin = Utils.convertLocationToPixels(input.getOrigin());
         double topSide = input.getTopLength() * 24;
         double side = input.getSideLength() * 24;
-        Point startingPoint = new Point(origin.getX(), origin.getY() + side);
+        Point startingPoint = new Point(robotOrigin.getX(), robotOrigin.getY() + side);
         startingPoint = Utils.convertToPaneCoordinates(startingPoint, this.canvasCenter);
-        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(origin, this.canvasCenter));
+        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(robotOrigin, this.canvasCenter));
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeRect(startingPoint.getX(), startingPoint.getY(), topSide, side);
@@ -251,14 +251,14 @@ public class PathCanvas {
     private void drawFigureEightPath(FigureEightPathInput input) {
         GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
         gc.save();
-        Point origin = Utils.convertLocationToPixels(input.getOrigin());
+        Point robotOrigin = Utils.convertLocationToPixels(input.getOrigin());
         double closeRadius = input.getRadiusOne() * 24;
         double farRadius = input.getRadiusTwo() * 24;
-        Point closePoint = new Point(origin.getX() - closeRadius, origin.getY() + 2 * closeRadius);
-        Point farPoint = new Point(origin.getX() - farRadius, origin.getY() + 2 * closeRadius + 2 * farRadius);
+        Point closePoint = new Point(robotOrigin.getX() - closeRadius, robotOrigin.getY() + 2 * closeRadius);
+        Point farPoint = new Point(robotOrigin.getX() - farRadius, robotOrigin.getY() + 2 * closeRadius + 2 * farRadius);
         closePoint = Utils.convertToPaneCoordinates(closePoint, this.canvasCenter);
         farPoint = Utils.convertToPaneCoordinates(farPoint, this.canvasCenter);
-        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(origin, this.canvasCenter));
+        Utils.rotate(gc, input.getInclination(), Utils.convertToPaneCoordinates(robotOrigin, this.canvasCenter));
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeOval(closePoint.getX(), closePoint.getY(), 2 * closeRadius, 2 * closeRadius);
