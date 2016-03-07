@@ -19,7 +19,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -29,14 +28,10 @@ import java.util.ResourceBundle;
  * Created by CyberPuck on 2016-02-21.
  */
 public class ControlTab implements Initializable {
-    private static String ROBOT_IMAGE = "./src/main/src/assets/mecanum_robot_ui.png";
-
+    // Labels for the choice box
     private static String GENERAL_MODE = "General";
     private static String WHEEL_MODE = "Wheel Rotation";
 
-    // Needed for catching key presses
-//    @FXML
-//    private Pane controlPane;
     // General movement controls (default)
     @FXML
     private ChoiceBox modeBox;
@@ -118,12 +113,9 @@ public class ControlTab implements Initializable {
         // enable and disable the fields
         enableGeneralFields();
         // setup the canvas with the robot image
-        File fileLocation = new File(ROBOT_IMAGE);
-        System.out.println(fileLocation.getAbsoluteFile());
-        Image robot = new Image("file:" + fileLocation.getAbsolutePath(), 128, 256, false, true);
+        Image robot = new Image(getClass().getResource("/assets/mecanum_robot_ui.png").toString(), 128, 256, false, true);
         GraphicsContext gc = robotImage.getGraphicsContext2D();
         gc.drawImage(robot, 0, 0);
-
         // Check for an update in the selection
         modeBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -131,7 +123,7 @@ public class ControlTab implements Initializable {
                 updateTab(modes.get(newValue.intValue()));
             }
         });
-
+        // handle start button press
         startButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -140,24 +132,13 @@ public class ControlTab implements Initializable {
         });
         // set default values
         setDefaults();
-
+        // handle key pressed on the start button
         startButton.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (controller.isSimulatorRunning()) {
-                    controller.stopSimulator();
-                }
+                updateSimulator();
             }
         });
-        // stop the simulation if we started it
-//        controlPane.setOnKeyPressed(new EventHandler<KeyEvent>() {
-//            @Override
-//            public void handle(KeyEvent event) {
-//                if(controller.isSimulatorRunning()) {
-//                    controller.stopSimulator();
-//                }
-//            }
-//        });
     }
 
     /**

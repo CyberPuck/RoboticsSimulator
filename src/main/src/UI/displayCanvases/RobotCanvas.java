@@ -8,15 +8,11 @@ import utilities.Point;
 import utilities.Position;
 import utilities.Utils;
 
-import java.io.File;
-
 /**
  * Handles drawing the robot.
  * Created by CyberPuck on 2016-02-17.
  */
 public class RobotCanvas {
-    // robot file
-    private static String ROBOT_IMAGE = "./src/main/src/assets/mecanum_robot_center.png";
     // static height of the view pane
     private static double X_LENGTH = 360;
     private static double Y_LENGTH = 720;
@@ -41,12 +37,11 @@ public class RobotCanvas {
         // convert origin to canvas location
         origin = Utils.convertLocationToPixels(origin);
         Point paneOrigin = Utils.convertToPaneCoordinates(origin, origin);
-
+        // setup canvas
         this.robotCanvas = robotCanvas;
         this.robotPosition = new Position(new Point(paneOrigin.getX(), paneOrigin.getY()), 0.0);
-
-        File robotImage = new File(ROBOT_IMAGE);
-        this.robot = new Image("file:" + robotImage.getAbsolutePath(), 48.0, 96.0, false, true);
+        // Import image
+        this.robot = new Image(getClass().getResource("/assets/mecanum_robot_center.png").toString(), 48.0, 96.0, false, true);
         // Make the current center of the pane
         canvasCenter = new Point(origin.getX(), origin.getY());
         // setup the path canvas
@@ -97,7 +92,6 @@ public class RobotCanvas {
         gc.restore();
         pathCanvas.updateRobotPath(newPosition);
     }
-
 
 
     /**
