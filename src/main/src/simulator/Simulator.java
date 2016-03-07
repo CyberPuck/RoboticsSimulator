@@ -32,12 +32,16 @@ public class Simulator {
     private double lastRecalculation;
     // handle on the data to move the robot
     private Robot robot;
+    // current input for the robot to move
     private RobotInput input;
+    // original input, provided by the UI
+    private RobotInput originalInput;
     // flag indicating if the goal has been reached
     private boolean atGoal;
 
     public Simulator(RobotInput input, Robot robot) {
         this.input = input;
+        this.originalInput = input;
         this.robot = robot;
         initializeRobot(input, this.robot);
         atGoal = false;
@@ -116,7 +120,8 @@ public class Simulator {
                     recalculatePointCourse(input, timeDelta);
                     recalculateFlag = false;
                 }
-                calculatePointMovement(input, timeDelta);
+//                calculatePointMovement(input, timeDelta);
+                updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getAngle(), robot.getRotationRate(), timeDelta, robot);
                 break;
             default:
                 System.err.println("Not implemented");
@@ -136,7 +141,7 @@ public class Simulator {
         double xTwoMinusXOne = endPointX - startPointX;
         double nominator = Math.abs(yTwoMinusYOne * robotX - xTwoMinusXOne * robotY + endPointX * startPointY - endPointY * startPointX);
         double denominator = Math.sqrt(Math.pow((endPointY - startPointY), 2) + Math.pow((endPointX - startPointX), 2));
-        double distance = nominator / denominator;
+//        double distance = nominator / denominator;
 //        System.out.println("Distance from line: " + distance);
     }
 
@@ -188,6 +193,15 @@ public class Simulator {
         PointInput pi = (PointInput) input;
         if (Utils.isAtGoal(robot.getLocation(), pi.getEndPoint())) {
             atGoal = true;
+        } else {
+            // update the current heading via velocity to reach the goal
+            double currentAngle = Utils.getAngle(robot.getLocation(), pi.getEndPoint());
+            if (Math.round(currentAngle) != Math.round(robot.getAngle())) {
+                // update the velocity to point at the new heading
+                Point newVelocity = VelocityEquations.convertSpeedHeadingToVelocity(pi.getSpeed(), currentAngle);
+                robot.setVelocity(newVelocity);
+                robot.setAngle(currentAngle);
+            }
         }
     }
 
@@ -203,7 +217,7 @@ public class Simulator {
         System.out.println("Angle: " + angle);
         double yVel = Math.cos(Math.toRadians(angle)) * pi.getSpeed();
         // need the inverse
-        double xVel = Math.sin(Math.toRadians(angle)) * pi.getSpeed() * -1;
+        double xVel = Math.sin(Math.toRadians(angle)) * pi.getSpeed();
         System.out.println("New velocities: " + xVel + ", " + yVel);
         // get the new robot angle
         double newAngle = pi.getRotationRate() * timeDelta + robot.getAngle();

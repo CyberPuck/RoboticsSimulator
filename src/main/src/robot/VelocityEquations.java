@@ -28,4 +28,17 @@ public class VelocityEquations {
         pos.setY((Math.sin(gamma) * robotX) + (Math.cos(gamma) * robotY));
         return pos;
     }
+
+    /**
+     * Given the heading and speed (total velocity) of the robot calculate the x, y component velocities.
+     *
+     * @param speed   Total speed of the robot
+     * @param heading Heading of the robot
+     * @return Point representing the X and Y components of the velocity
+     */
+    public static Point convertSpeedHeadingToVelocity(double speed, double heading) {
+        double xVel = speed * Math.cos(Math.toRadians(heading));
+        double yVel = speed * Math.sin(Math.toRadians(heading));
+        return new Point(xVel, yVel);
+    }
 }
