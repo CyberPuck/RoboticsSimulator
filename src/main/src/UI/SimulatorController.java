@@ -129,6 +129,7 @@ public class SimulatorController implements Initializable {
                 resetSystemState();
                 // update the tabs to reflect new state
                 tabController.updateUIs();
+                printText("Resetting Simulation environment");
             }
         });
 
