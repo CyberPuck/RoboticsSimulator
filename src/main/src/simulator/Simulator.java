@@ -86,6 +86,8 @@ public class Simulator {
     private boolean initializeRobot(RobotInput input, Robot robot) {
         double distance = 0.0;
         switch (input.getMode()) {
+            case CONTROL_WHEELS: // Not needed all four wheel rates are read later
+                break;
             case CONTROL_GENERAL:
                 robot.setRotationRate(((GeneralInput) input).getRotation());
                 break;
@@ -109,8 +111,6 @@ public class Simulator {
                 robot.setRotationRate(rpi.getRotationRate());
                 rpi.setSpeed(distance / rpi.getTime());
                 rpi.setIndiceCount(0);
-                break;
-            case CONTROL_WHEELS: // Not needed all four wheel rates are read later
                 break;
             default:
                 System.err.println("Not implemented");
@@ -149,6 +149,7 @@ public class Simulator {
                     break;
                 case PATH_RECTANGLE:
                     calculateRectangleMovement(input, timeDelta);
+                    break;
                 default:
                     System.err.println("Not implemented");
             }
