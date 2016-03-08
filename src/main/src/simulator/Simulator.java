@@ -39,6 +39,8 @@ public class Simulator {
     private boolean enoughTime;
     // Array list of points for complex paths
     private ArrayList<Point> pathVertices = new ArrayList<>();
+    // index in the path list
+    private int pathIndex;
 
     public Simulator(RobotInput input, Robot robot) {
         this.input = input;
@@ -82,6 +84,7 @@ public class Simulator {
      */
     private boolean initializeRobot(RobotInput input, Robot robot) {
         double distance = 0.0;
+        pathIndex = 0;
         switch (input.getMode()) {
             case CONTROL_WHEELS: // Not needed all four wheel rates are read later
                 break;
@@ -122,10 +125,16 @@ public class Simulator {
                 cpi.setCurrentIndex(0);
                 break;
             case PATH_FIGURE_EIGHT:
-                System.err.println("Fig. 8 not implemented");
-                return false;
-            // TODO: Uncomment the break
-//            break;
+                FigureEightPathInput fepi = (FigureEightPathInput) input;
+                distance = calculateFigureEightPath(fepi);
+                if (!verifyPathCompletion(fepi.getTime(), distance)) {
+                    return false;
+                }
+                // generate the path
+                generateFigureEightPath(fepi, robot.getLocation());
+                robot.setRotationRate(fepi.getRotationRate());
+                fepi.setSpeed(distance / fepi.getTime());
+                break;
             default:
                 System.err.println("Not implemented");
         }
@@ -166,6 +175,9 @@ public class Simulator {
                     break;
                 case PATH_CIRCLE:
                     calculateCircleMovement(input, timeDelta);
+                    break;
+                case PATH_FIGURE_EIGHT:
+                    calculateFigureEightMovement(input, timeDelta);
                     break;
                 default:
                     System.err.println("Not implemented");
@@ -276,6 +288,20 @@ public class Simulator {
         robot.setRotationRate(cpi.getRotationRate());
     }
 
+    private void calculateFigureEightMovement(RobotInput input, double timeDelta) {
+        FigureEightPathInput fepi = (FigureEightPathInput) input;
+        if (pathIndex == pathVertices.size() - 1 && Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
+            atGoal = true;
+        } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
+            pathIndex++;
+        }
+        double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * fepi.getSpeed();
+        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * fepi.getSpeed() * -1;
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(fepi.getRotationRate());
+    }
+
     /**
      * Updates the robots current location and heading to a new one based on calculated velocity and rotation rate.
      *
@@ -334,6 +360,16 @@ public class Simulator {
     }
 
     /**
+     * Calculates the distance a robot needs to travel around two circles.
+     *
+     * @param fepi input
+     * @return distance
+     */
+    private double calculateFigureEightPath(FigureEightPathInput fepi) {
+        return (2 * Math.PI * fepi.getRadiusOne() + 2 * Math.PI * fepi.getRadiusTwo());
+    }
+
+    /**
      * Verifies the robot doesn't have to speed to complete the path.
      *
      * @param time     time to complete path
@@ -365,8 +401,7 @@ public class Simulator {
         Point three = Utils.calculatePoint(two, rpi.getSideLength(), rpi.getInclination() - 180);
         this.pathVertices.add(three);
         // TODO: Should we just use the starting location?
-        Point four = Utils.calculatePoint(three, rpi.getTopLength(), rpi.getInclination() - 270);
-        this.pathVertices.add(four);
+        this.pathVertices.add(startingLocation);
     }
 
     /**
@@ -383,6 +418,30 @@ public class Simulator {
         // add vertices in 30 degree chunks
         for (int i = 30; i <= 360; i += 30) {
             this.pathVertices.add(Utils.calculatePoint(circleCenter, cpi.getRadius(), 180 + cpi.getInclination() - i));
+        }
+        this.pathVertices.add(startingPoint);
+    }
+
+    /**
+     * Start with the first half of one circle, transfer to the entire second circle, then finish the first.
+     *
+     * @param fepi          input for figure eight
+     * @param startingPoint starting point
+     */
+    private void generateFigureEightPath(FigureEightPathInput fepi, Point startingPoint) {
+        Point closeCircleCenter = Utils.calculatePoint(startingPoint, fepi.getRadiusOne(), fepi.getInclination());
+        Point farCircleCenter = Utils.calculatePoint(startingPoint, fepi.getRadiusOne() * 2 + fepi.getRadiusTwo(), fepi.getInclination());
+        // go through the first half
+        for (int i = 30; i <= 180; i += 30) {
+            this.pathVertices.add(Utils.calculatePoint(closeCircleCenter, fepi.getRadiusOne(), 180 + fepi.getInclination() - i));
+        }
+        // add the far circle
+        for (int i = 360; i >= 0; i -= 30) {
+            this.pathVertices.add(Utils.calculatePoint(farCircleCenter, fepi.getRadiusTwo(), 180 + fepi.getInclination() - i));
+        }
+        // add the rest of the last circle
+        for (int i = 180 + 30; i < 360; i += 30) {
+            this.pathVertices.add(Utils.calculatePoint(closeCircleCenter, fepi.getRadiusOne(), 180 + fepi.getInclination() - i));
         }
         this.pathVertices.add(startingPoint);
     }
