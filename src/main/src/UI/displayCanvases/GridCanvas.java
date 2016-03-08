@@ -18,7 +18,6 @@ public class GridCanvas {
      * Setup the grid canvas, one time thing.
      */
     public void init() {
-        // TODO: Lines are being drawn incorrectly!
         GraphicsContext gc = gridCanvas.getGraphicsContext2D();
 
         // draw them lines
