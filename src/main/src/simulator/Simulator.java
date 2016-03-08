@@ -93,43 +93,35 @@ public class Simulator {
      * @param timeDelta Time difference between this calculation and the last one
      */
     public void calculateNewPosition(double timeDelta) {
-        boolean recalculateFlag = false;
-        if (lastRecalculation > RECALCULATE_COURSE) {
-            recalculateFlag = true;
-            lastRecalculation = 0.0;
-        }
         lastRecalculation += timeDelta;
 //        System.out.println("Last recalc: " + lastRecalculation);
         // calculate the course
-        switch (input.getMode()) {
-            case CONTROL_WHEELS:
-                if (recalculateFlag) {
+        if (lastRecalculation > RECALCULATE_COURSE) {
+            // reset last recalulation time
+            lastRecalculation = 0.0;
+            switch (input.getMode()) {
+                case CONTROL_WHEELS:
                     calculateWheelMovement(input, timeDelta);
-                }
-                // get the new robot angle
-                updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getRotationRate(), timeDelta, robot);
-                break;
-            case CONTROL_GENERAL:
-                if (recalculateFlag) {
+                    break;
+                case CONTROL_GENERAL:
                     recalculateGeneralCourse(input, timeDelta);
-                    recalculateFlag = false;
-                }
-                calculateGeneralMovement(input, timeDelta);
-                break;
-            case POINT:
-                if (recalculateFlag) {
+
+                    calculateGeneralMovement(input, timeDelta);
+                    break;
+                case POINT:
                     long curTime = System.currentTimeMillis();
                     System.out.println("Recalculating after: " + (curTime - lastTime));
                     lastTime = curTime;
                     recalculatePointCourse(input, timeDelta);
-                    recalculateFlag = false;
-                }
 //                calculatePointMovement(input, timeDelta);
 //                updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getAngle(), robot.getRotationRate(), timeDelta, robot);
-                break;
-            default:
-                System.err.println("Not implemented");
+                    break;
+                default:
+                    System.err.println("Not implemented");
+            }
         }
+        // get the new robot angle
+        updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getRotationRate(), timeDelta, robot);
     }
 
     private void recalculateGeneralCourse(RobotInput input, double timeDelta) {
