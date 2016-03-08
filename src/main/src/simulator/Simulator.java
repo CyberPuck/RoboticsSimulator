@@ -103,7 +103,11 @@ public class Simulator {
         // calculate the course
         switch (input.getMode()) {
             case CONTROL_WHEELS:
-                calculateWheelMovement(input, timeDelta);
+                if (recalculateFlag) {
+                    calculateWheelMovement(input, timeDelta);
+                }
+                // get the new robot angle
+                updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getRotationRate(), timeDelta, robot);
                 break;
             case CONTROL_GENERAL:
                 if (recalculateFlag) {
@@ -121,7 +125,7 @@ public class Simulator {
                     recalculateFlag = false;
                 }
 //                calculatePointMovement(input, timeDelta);
-                updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getAngle(), robot.getRotationRate(), timeDelta, robot);
+//                updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getAngle(), robot.getRotationRate(), timeDelta, robot);
                 break;
             default:
                 System.err.println("Not implemented");
@@ -137,12 +141,9 @@ public class Simulator {
         double startPointY = gi.getStartLocation().getY();
         double endPointY = robotY;
         double endPointX = robotY / Math.tan(Math.toRadians(gi.getDirection()));
-        double yTwoMinusYOne = endPointY - startPointY;
-        double xTwoMinusXOne = endPointX - startPointX;
-        double nominator = Math.abs(yTwoMinusYOne * robotX - xTwoMinusXOne * robotY + endPointX * startPointY - endPointY * startPointX);
-        double denominator = Math.sqrt(Math.pow((endPointY - startPointY), 2) + Math.pow((endPointX - startPointX), 2));
+        double distance = Math.sqrt(Math.pow((endPointY - startPointY), 2) + Math.pow((endPointX - startPointX), 2));
 //        double distance = nominator / denominator;
-//        System.out.println("Distance from line: " + distance);
+        System.out.println("Distance from line: " + distance);
     }
 
     /**
@@ -158,10 +159,9 @@ public class Simulator {
         double yVel = Math.cos(Math.toRadians(gi.getDirection())) * gi.getSpeed();
         double xVel = Math.sin(Math.toRadians(gi.getDirection())) * gi.getSpeed() * -1;
         System.out.println("Current angle: " + Math.toDegrees(Math.atan(yVel / xVel)));
-        // get the new robot angle
-        double newAngle = gi.getRotation() * timeDelta + robot.getAngle();
+
         // update the robot
-        updateRobot(xVel, yVel, newAngle, robot.getRotationRate(), timeDelta, robot);
+//        updateRobot(xVel, yVel, newAngle, robot.getRotationRate(), timeDelta, robot);
     }
 
     /**
@@ -178,14 +178,12 @@ public class Simulator {
         double w3 = wInput.getWheelThree();
         double w4 = wInput.getWheelFour();
         // calculate the velocity and angle rate
-        double rotationRate = Kinematics.calculateVehicleRotation(WHEEL_RADIUS, ROBOT_LENGTH, ROBOT_HEIGHT, w1, w2, w3, w4);
+        double rotationRate = Kinematics.calculateVehicleRotation(WHEEL_RADIUS, ROBOT_LENGTH / 2, ROBOT_HEIGHT / 2, w1, w2, w3, w4);
         double xVel = Kinematics.calculateVelocityX(WHEEL_RADIUS, w1, w2, w3, w4);
         double yVel = Kinematics.calculateVelocityY(WHEEL_RADIUS, w1, w2, w3, w4);
-
-        // calculate the new angle based on rate and time difference between last calculation
-        double newAngle = rotationRate * timeDelta + robot.getAngle();
-        // update the robot
-        updateRobot(xVel, yVel, newAngle, rotationRate, timeDelta, robot);
+        // update the robot components
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(rotationRate);
     }
 
 
@@ -222,28 +220,26 @@ public class Simulator {
         // get the new robot angle
         double newAngle = pi.getRotationRate() * timeDelta + robot.getAngle();
         // update the robot position
-        updateRobot(xVel, yVel, newAngle, pi.getRotationRate(), timeDelta, robot);
+//        updateRobot(xVel, yVel, newAngle, pi.getRotationRate(), timeDelta, robot);
     }
 
     /**
-     * Updates the robots current location to a new one based on velocity and heading.
+     * Updates the robots current location and heading to a new one based on calculated velocity and rotation rate.
      *
-     * @param xVel         GRF X-axis velocity
-     * @param yVel         GRF Y-axis velocity
-     * @param newAngle     GRF angle of robot
-     * @param rotationRate Rotation rate of robot
-     * @param timeDelta    Time difference between this and last frame
-     * @param robot        Robot
+     * @param xVel         GRF X-axis velocity in feet/sec
+     * @param yVel         GRF Y-axis velocity in feet/sec
+     * @param rotationRate Rotation rate of robot in seconds
+     * @param timeDelta    Time difference between this and last frame in seconds
+     * @param robot        Robot to have heading and location updated
      */
-    private void updateRobot(double xVel, double yVel, double newAngle, double rotationRate, double timeDelta, Robot robot) {
-        robot.setVelocity(new Point(Utils.roundDouble(xVel), Utils.roundDouble(yVel)));
-        robot.setRotationRate(Utils.roundDouble(rotationRate));
-        robot.setAngle(Utils.roundDouble(newAngle));
-        // update velocities based on vehicle angle
-        robot.setVelocity(VelocityEquations.convertYawToGlobalFrame(new Position(robot.getVelocity(), robot.getAngle())));
+    private void updateRobot(double xVel, double yVel, double rotationRate, double timeDelta, Robot robot) {
+        double angle = timeDelta * rotationRate + robot.getAngle();
+        robot.setAngle(Utils.roundDouble(angle));
+        // update velocities based on vehicle angle to the GRF
+        Point vel = VelocityEquations.convertYawToGlobalFrame(new Position(new Point(xVel, yVel), robot.getAngle()));
         // calculate the new position data
-        double newX = robot.getVelocity().getX() * timeDelta + robot.getLocation().getX();
-        double newY = robot.getVelocity().getY() * timeDelta + robot.getLocation().getY();
+        double newX = vel.getX() * timeDelta + robot.getLocation().getX();
+        double newY = vel.getY() * timeDelta + robot.getLocation().getY();
         robot.setLocation(new Point(Utils.roundDouble(newX), Utils.roundDouble(newY)));
         System.out.println(robot.toString());
     }
