@@ -51,7 +51,7 @@ public class Kinematics {
      */
     public static double calculateVehicleRotation(double radius, double width, double length, double rateOne, double rateTwo, double rateThree, double rateFour) {
         double rotationRate = radius / (4 * (width + length));
-        rotationRate *= (-rateOne + rateTwo - rateThree + rateFour);
+        rotationRate *= (-1 * rateOne + rateTwo - rateThree + rateFour);
         return rotationRate;
     }
 
