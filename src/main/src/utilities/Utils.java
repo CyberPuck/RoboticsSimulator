@@ -91,8 +91,13 @@ public class Utils {
                 return -90.0;
             }
         }
-        // all angular calculations return radians (eww)
-        return Math.toDegrees(Math.atan((p2.getY() - p1.getY()) / (p1.getX() - p2.getX())));
+        // check which coordinate system we are going to be in, tangent operates in 0 - 180 degrees
+        if (p1.getY() < p2.getY()) {
+            // moving in the positive Y-axis
+            return Math.toDegrees(Math.atan((p1.getX() - p2.getX()) / (p2.getY() - p1.getY())));
+        } else {
+            return Math.toDegrees(Math.atan((p1.getX() - p2.getX()) / (p2.getY() - p1.getY()))) - 180;
+        }
     }
 
     /**

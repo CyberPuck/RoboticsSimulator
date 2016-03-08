@@ -89,6 +89,8 @@ public class SimulatorController implements Initializable {
     private boolean simulatorRunning = false;
     // input from the UI, if any
     private RobotInput input;
+    // used for the timer, display this at the end of every simulation
+    private long startTime;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -157,6 +159,7 @@ public class SimulatorController implements Initializable {
      * TODO: Should we return error values?
      */
     public void startSimulator(final RobotInput input) {
+        startTime = System.currentTimeMillis();
         this.input = input;
         simulatorRunning = true;
         // setup the robot object
@@ -225,8 +228,10 @@ public class SimulatorController implements Initializable {
      */
     public void stopSimulator() {
         if (simulatorRunning) {
+            long difference = System.currentTimeMillis() - startTime;
             simulatorRunning = false;
             printText("Stopping Simulator");
+            printText("Simulation took approximately " + difference / 1000.0 + " seconds");
             // zero out velocities on the system display
             stopSystemState();
             // update the tabs

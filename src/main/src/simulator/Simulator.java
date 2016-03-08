@@ -111,8 +111,7 @@ public class Simulator {
                     long curTime = System.currentTimeMillis();
                     System.out.println("Recalculating after: " + (curTime - lastTime));
                     lastTime = curTime;
-                    recalculatePointCourse(input, timeDelta);
-//                calculatePointMovement(input, timeDelta);
+                    calculatePointMovement(input, timeDelta);
                     break;
                 default:
                     System.err.println("Not implemented");
@@ -120,23 +119,6 @@ public class Simulator {
         }
         // update the robot position
         updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getRotationRate(), timeDelta, robot);
-    }
-
-    /**
-     * Based on the direction, speed, and rotation rate calculate the wheel rates and new location.
-     *
-     * @param input     General input
-     * @param timeDelta difference between last calculations
-     */
-    private void calculateGeneralMovement(RobotInput input, double timeDelta) {
-        GeneralInput gi = (GeneralInput) input;
-        // TODO: based on the current location calculate if a course correction is required
-        // Given the direction get the x and y component velocities
-        double yVel = Math.cos(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed();
-        double xVel = Math.sin(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed() * -1;
-        robot.setVelocity(new Point(xVel, yVel));
-        robot.setRotationRate(gi.getRotation());
-        System.out.println("Current angle: " + Math.toDegrees(Math.atan(yVel / xVel)));
     }
 
     /**
@@ -161,21 +143,21 @@ public class Simulator {
         robot.setRotationRate(rotationRate);
     }
 
-
-    private void recalculatePointCourse(RobotInput input, double timeDelta) {
-        PointInput pi = (PointInput) input;
-        if (Utils.isAtGoal(robot.getLocation(), pi.getEndPoint())) {
-            atGoal = true;
-        } else {
-            // update the current heading via velocity to reach the goal
-            double currentAngle = Utils.getAngle(robot.getLocation(), pi.getEndPoint());
-            if (Math.round(currentAngle) != Math.round(robot.getAngle())) {
-                // update the velocity to point at the new heading
-                Point newVelocity = VelocityEquations.convertSpeedHeadingToVelocity(pi.getSpeed(), currentAngle);
-                robot.setVelocity(newVelocity);
-                robot.setAngle(currentAngle);
-            }
-        }
+    /**
+     * Based on the direction, speed, and rotation rate calculate the wheel rates and new location.
+     *
+     * @param input     General input
+     * @param timeDelta difference between last calculations
+     */
+    private void calculateGeneralMovement(RobotInput input, double timeDelta) {
+        GeneralInput gi = (GeneralInput) input;
+        // TODO: based on the current location calculate if a course correction is required
+        // Given the direction get the x and y component velocities
+        double yVel = Math.cos(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed();
+        double xVel = Math.sin(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed() * -1;
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(gi.getRotation());
+        System.out.println("Current angle: " + Math.toDegrees(Math.atan(yVel / xVel)));
     }
 
     /**
@@ -186,14 +168,17 @@ public class Simulator {
      */
     private void calculatePointMovement(RobotInput input, double timeDelta) {
         PointInput pi = (PointInput) input;
+        // Check if we made it to the goal
+        if (Utils.isAtGoal(robot.getLocation(), pi.getEndPoint())) {
+            atGoal = true;
+        }
         double angle = Utils.getAngle(robot.getLocation(), pi.getEndPoint());
-        System.out.println("Angle: " + angle);
-        double yVel = Math.cos(Math.toRadians(angle)) * pi.getSpeed();
-        // need the inverse
-        double xVel = Math.sin(Math.toRadians(angle)) * pi.getSpeed();
+        System.out.println("Angle to point: " + angle);
+        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * pi.getSpeed();
+        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * pi.getSpeed() * -1;
         System.out.println("New velocities: " + xVel + ", " + yVel);
-        // get the new robot angle
-        double newAngle = pi.getRotationRate() * timeDelta + robot.getAngle();
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(pi.getRotationRate());
     }
 
     /**
@@ -207,13 +192,15 @@ public class Simulator {
      */
     private void updateRobot(double xVel, double yVel, double rotationRate, double timeDelta, Robot robot) {
         double angle = timeDelta * rotationRate + robot.getAngle();
+        System.out.println("angle of robot: " + angle);
         robot.setAngle(Utils.roundDouble(angle));
         // update velocities based on vehicle angle to the GRF
         Point vel = VelocityEquations.convertYawToGlobalFrame(new Position(new Point(xVel, yVel), robot.getAngle()));
+        System.out.println("Converted velocity: " + vel.toString());
         // calculate the new position data
         double newX = vel.getX() * timeDelta + robot.getLocation().getX();
         double newY = vel.getY() * timeDelta + robot.getLocation().getY();
         robot.setLocation(new Point(Utils.roundDouble(newX), Utils.roundDouble(newY)));
-        System.out.println(robot.toString());
+//        System.out.println(robot.toString());
     }
 }
