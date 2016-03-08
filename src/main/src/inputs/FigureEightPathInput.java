@@ -67,6 +67,10 @@ public class FigureEightPathInput implements RobotInput {
         return speed;
     }
 
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
     public double getRotationRate() {
         return rotationRate;
     }

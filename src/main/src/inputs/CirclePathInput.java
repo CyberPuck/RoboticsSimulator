@@ -51,6 +51,10 @@ public class CirclePathInput implements RobotInput {
         return speed;
     }
 
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
     public double getTime() {
         return time;
     }
