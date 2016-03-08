@@ -33,8 +33,6 @@ public class Simulator {
     private Robot robot;
     // current input for the robot to move
     private RobotInput input;
-    // original input, provided by the UI
-    private RobotInput originalInput;
     // flag indicating if the goal has been reached
     private boolean atGoal;
     // flag indicating if the simulation can complete in time
@@ -44,7 +42,6 @@ public class Simulator {
 
     public Simulator(RobotInput input, Robot robot) {
         this.input = input;
-        this.originalInput = input;
         this.robot = robot;
         enoughTime = initializeRobot(input, this.robot);
         atGoal = false;
