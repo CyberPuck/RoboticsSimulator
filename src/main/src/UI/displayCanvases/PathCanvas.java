@@ -119,9 +119,9 @@ public class PathCanvas {
      */
     private void redrawOrigin() {
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
-        // forgot to convert to pane coordinates lol
-//        Point origin = Utils.convertToPaneCoordinates(this.origin, this.canvasCenter);
+        // convert to pane coordinates
         Point paneLocation = Utils.convertToPaneCoordinates(origin, this.canvasCenter);
+        // get a simple bounding box
         Point originLeft = new Point(paneLocation.getX() + 15, paneLocation.getY() + 15);
         Point originRight = new Point(paneLocation.getX() + 15, paneLocation.getY() - 15);
         Point originTop = new Point(paneLocation.getX() - 15, paneLocation.getY() - 15);
@@ -129,6 +129,21 @@ public class PathCanvas {
         if (isInsideCanvas(originRight) || isInsideCanvas(originLeft) || isInsideCanvas(originTop) || isInsideCanvas(originBottom)) {
             gc.setFill(Color.YELLOW);
             gc.fillOval(paneLocation.getX() - 7.5, paneLocation.getY() - 7.5, 15, 15);
+        }
+        gc.setStroke(Color.YELLOW);
+        gc.setLineWidth(1.0);
+        // draw the origin lines
+        if (this.canvasCenter.getY() - 360 < 0 && this.canvasCenter.getY() + 360 > 0) {
+            // draw x axis
+            Point x1 = Utils.convertToPaneCoordinates(new Point(this.canvasCenter.getX() - 180, 0), this.canvasCenter);
+            Point x2 = Utils.convertToPaneCoordinates(new Point(this.canvasCenter.getX() + 180, 0), this.canvasCenter);
+            gc.strokeLine(x1.getX(), x1.getY(), x2.getX(), x2.getY());
+        }
+        if (this.canvasCenter.getX() - 180 < 0 && this.canvasCenter.getX() + 180 > 0) {
+            //draw y axis
+            Point y1 = Utils.convertToPaneCoordinates(new Point(0, this.canvasCenter.getY() - 360), this.canvasCenter);
+            Point y2 = Utils.convertToPaneCoordinates(new Point(0, this.canvasCenter.getY() + 360), this.canvasCenter);
+            gc.strokeLine(y1.getX(), y1.getY(), y2.getX(), y2.getY());
         }
     }
 
@@ -186,17 +201,28 @@ public class PathCanvas {
         GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
         gc.save();
         Point paneStartingPoint = Utils.convertToPaneCoordinates(startingLocation, this.canvasCenter);
-        Point temp = new Point(paneStartingPoint.getX(), canvasCenter.getY() + 1000000);
+        // TODO: Deal with a path that is off by tenths of a degree or fix it
+        // Calculate the point in space, rotating the line introduces slop between the robot velocity and line
+//        double endX = -1000000;
+//        if(gi.getDirection() < 0 && gi.getDirection() > -180 || gi.getDirection() > 180 && gi.getDirection() < 360) {
+//            endX *= -1;
+//        }
+//        double endY = endX * Math.tan(Math.toRadians(gi.getDirection())) * -1;
+//        Point endP = new Point(endX, endY);
+//        endP = Utils.convertToPaneCoordinates(endP, this.canvasCenter);
+        Point temp = new Point(paneStartingPoint.getX(), paneStartingPoint.getY() + 1000000);
         System.out.println("Starting point: " + paneStartingPoint.toString());
         System.out.println("New end point: " + temp.toString());
         System.out.println("Angle: " + gi.getDirection());
         Point paneEndPoint = Utils.convertToPaneCoordinates(temp, this.canvasCenter);
-        Utils.rotate(gc, gi.getDirection(), paneStartingPoint);
+//        System.out.println("Pane end point: " + endP.toString());
+        Utils.rotate(gc, gi.getDirection() + 0.0000000001, paneStartingPoint);
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.setFill(INPUT_LINE_COLOR);
         if (gi.getSpeed() != 0) {
             gc.strokeLine(paneStartingPoint.getX(), paneStartingPoint.getY(), paneEndPoint.getX(), paneEndPoint.getY());
+//            gc.strokeLine(paneStartingPoint.getX(), paneStartingPoint.getY(), endP.getX(), endP.getY());
         } else {
             gc.fillOval(paneStartingPoint.getX() - 2, paneStartingPoint.getY() - 2, 4, 4);
         }
