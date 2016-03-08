@@ -1,15 +1,14 @@
 package simulator;
 
-import inputs.GeneralInput;
-import inputs.PointInput;
-import inputs.RobotInput;
-import inputs.WheelInput;
+import inputs.*;
 import robot.Kinematics;
 import robot.Robot;
 import robot.VelocityEquations;
 import utilities.Point;
 import utilities.Position;
 import utilities.Utils;
+
+import java.util.ArrayList;
 
 /**
  * This is the simulator class, like highlander there can be only one.
@@ -40,6 +39,8 @@ public class Simulator {
     private boolean atGoal;
     // flag indicating if the simulation can complete in time
     private boolean enoughTime;
+    // Array list of points for complex paths
+    private ArrayList<Point> pathVertices = new ArrayList<>();
 
     public Simulator(RobotInput input, Robot robot) {
         this.input = input;
@@ -47,40 +48,6 @@ public class Simulator {
         this.robot = robot;
         enoughTime = initializeRobot(input, this.robot);
         atGoal = false;
-    }
-
-    /**
-     * Due to different input classes having different features make sure input variables are added.
-     *
-     * @param input Input of the robot
-     * @param robot Robot to update
-     */
-    private boolean initializeRobot(RobotInput input, Robot robot) {
-        switch (input.getMode()) {
-            case CONTROL_GENERAL:
-                robot.setRotationRate(((GeneralInput) input).getRotation());
-                break;
-            case POINT:
-                PointInput pi = (PointInput) input;
-                double distance = calculatePointDistance(pi);
-                if (!verifyPointCompletion(pi.getTime(), distance)) {
-                    return false;
-                }
-                robot.setRotationRate(pi.getRotationRate());
-                ((PointInput) input).setSpeed(distance / pi.getTime());
-                break;
-            case CONTROL_WHEELS: // Not needed all four wheel rates are read later
-                break;
-            default:
-                System.err.println("Not implemented");
-        }
-        this.input = input;
-        return true;
-    }
-
-    public void setRobot(Robot robot) {
-        lastRecalculation = 0.0;
-        this.robot = robot;
     }
 
     /**
@@ -111,6 +78,53 @@ public class Simulator {
     }
 
     /**
+     * Due to different input classes having different features make sure input variables are added.
+     *
+     * @param input Input of the robot
+     * @param robot Robot to update
+     */
+    private boolean initializeRobot(RobotInput input, Robot robot) {
+        double distance = 0.0;
+        switch (input.getMode()) {
+            case CONTROL_GENERAL:
+                robot.setRotationRate(((GeneralInput) input).getRotation());
+                break;
+            case POINT:
+                PointInput pi = (PointInput) input;
+                distance = calculatePointDistance(pi);
+                if (!verifyPathCompletion(pi.getTime(), distance)) {
+                    return false;
+                }
+                robot.setRotationRate(pi.getRotationRate());
+                pi.setSpeed(distance / pi.getTime());
+                break;
+            case PATH_RECTANGLE:
+                RectanglePathInput rpi = (RectanglePathInput) input;
+                distance = calculateRectangleDistance(rpi);
+                if (!verifyPathCompletion(rpi.getTime(), distance)) {
+                    return false;
+                }
+                // generate the path point
+                generateRectanglePath(rpi, robot.getLocation());
+                robot.setRotationRate(rpi.getRotationRate());
+                rpi.setSpeed(distance / rpi.getTime());
+                rpi.setIndiceCount(0);
+                break;
+            case CONTROL_WHEELS: // Not needed all four wheel rates are read later
+                break;
+            default:
+                System.err.println("Not implemented");
+        }
+        this.input = input;
+        return true;
+    }
+
+    public void setRobot(Robot robot) {
+        lastRecalculation = 0.0;
+        this.robot = robot;
+    }
+
+    /**
      * Given the defined input, calculate the new position of the robot.
      *
      * @param timeDelta Time difference between this calculation and the last one
@@ -133,6 +147,8 @@ public class Simulator {
                 case POINT:
                     calculatePointMovement(input, timeDelta);
                     break;
+                case PATH_RECTANGLE:
+                    calculateRectangleMovement(input, timeDelta);
                 default:
                     System.err.println("Not implemented");
             }
@@ -202,6 +218,27 @@ public class Simulator {
     }
 
     /**
+     * Calculates the robots next move based on the current vertex it is aiming for.
+     *
+     * @param input     Current robot input
+     * @param deltaTime time between frames
+     */
+    private void calculateRectangleMovement(RobotInput input, double deltaTime) {
+        RectanglePathInput rpi = (RectanglePathInput) input;
+        if (rpi.getIndiceCount() == pathVertices.size() - 1 && Utils.isAtGoal(robot.getLocation(), pathVertices.get(rpi.getIndiceCount()))) {
+            atGoal = true;
+        } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(rpi.getIndiceCount()))) {
+            // if we are at a vertex that is not the goal, set the local goal to the next index
+            rpi.setIndiceCount(rpi.getIndiceCount() + 1);
+        }
+        double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(rpi.getIndiceCount()));
+        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * rpi.getSpeed();
+        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * rpi.getSpeed() * -1;
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(rpi.getRotationRate());
+    }
+
+    /**
      * Updates the robots current location and heading to a new one based on calculated velocity and rotation rate.
      *
      * @param xVel         GRF X-axis velocity in feet/sec
@@ -237,13 +274,25 @@ public class Simulator {
     }
 
     /**
+     * Calculates the distance a robot needs to travel to go around a rectangle.
+     *
+     * @param rpi input
+     * @return distance
+     */
+    private double calculateRectangleDistance(RectanglePathInput rpi) {
+        double topSides = rpi.getTopLength();
+        double sides = rpi.getSideLength();
+        return topSides * 2 + sides * 2;
+    }
+
+    /**
      * Verifies the robot doesn't have to speed to complete the path.
      *
      * @param time     time to complete path
      * @param distance distance to travel for path
      * @return flag indicating if the path at that time is possible
      */
-    private boolean verifyPointCompletion(double time, double distance) {
+    private boolean verifyPathCompletion(double time, double distance) {
         if (time <= 0) {
             return true;
         }
@@ -252,5 +301,16 @@ public class Simulator {
             return true;
         }
         return false;
+    }
+
+    private void generateRectanglePath(RectanglePathInput rpi, Point startingLocation) {
+        Point one = Utils.calculatePoint(startingLocation, rpi.getSideLength(), rpi.getInclination());
+        this.pathVertices.add(one);
+        Point two = Utils.calculatePoint(one, rpi.getTopLength(), rpi.getInclination() - 90);
+        this.pathVertices.add(two);
+        Point three = Utils.calculatePoint(two, rpi.getSideLength(), rpi.getInclination() - 180);
+        this.pathVertices.add(three);
+        Point four = Utils.calculatePoint(three, rpi.getTopLength(), rpi.getInclination() - 270);
+        this.pathVertices.add(four);
     }
 }

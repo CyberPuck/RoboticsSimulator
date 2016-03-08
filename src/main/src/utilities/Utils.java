@@ -147,4 +147,18 @@ public class Utils {
     public static void clearCanvas(GraphicsContext gc, double x, double y) {
         gc.clearRect(0, 0, x, y);
     }
+
+    /**
+     * Based on the angle and distance from a starting point, calculate the new point.
+     *
+     * @param startingPoint origin
+     * @param distance      distance from origin
+     * @param angle         angle from origin
+     * @return new point
+     */
+    public static Point calculatePoint(Point startingPoint, double distance, double angle) {
+        double x = startingPoint.getX() + Math.sin(Math.toRadians(angle)) * distance * -1;
+        double y = startingPoint.getY() + Math.cos(Math.toRadians(angle)) * distance;
+        return new Point(x, y);
+    }
 }

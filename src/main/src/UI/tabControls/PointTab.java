@@ -94,10 +94,7 @@ public class PointTab implements Initializable {
         // calculate how long the trip will take (approximately)
         double timeTaken = distance / speed;
         // calculate the rate the robot should rotate
-        double rotationRate = 0;
-        if (speed != 0) {
-            rotationRate = (endOrientation - controller.getRobotPosition().getAngle()) / timeTaken;
-        }
+        double rotationRate = endOrientation / time;
         PointInput pi = new PointInput(endPoint, speed, endOrientation, time, rotationRate);
         return pi;
     }
