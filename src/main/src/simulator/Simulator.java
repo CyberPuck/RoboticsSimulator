@@ -97,15 +97,14 @@ public class Simulator {
 //        System.out.println("Last recalc: " + lastRecalculation);
         // calculate the course
         if (lastRecalculation > RECALCULATE_COURSE) {
-            // reset last recalulation time
+            // reset last recalculation time
             lastRecalculation = 0.0;
+            // update robot velocity settings to course correct
             switch (input.getMode()) {
                 case CONTROL_WHEELS:
                     calculateWheelMovement(input, timeDelta);
                     break;
                 case CONTROL_GENERAL:
-                    recalculateGeneralCourse(input, timeDelta);
-
                     calculateGeneralMovement(input, timeDelta);
                     break;
                 case POINT:
@@ -114,28 +113,13 @@ public class Simulator {
                     lastTime = curTime;
                     recalculatePointCourse(input, timeDelta);
 //                calculatePointMovement(input, timeDelta);
-//                updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getAngle(), robot.getRotationRate(), timeDelta, robot);
                     break;
                 default:
                     System.err.println("Not implemented");
             }
         }
-        // get the new robot angle
+        // update the robot position
         updateRobot(robot.getVelocity().getX(), robot.getVelocity().getY(), robot.getRotationRate(), timeDelta, robot);
-    }
-
-    private void recalculateGeneralCourse(RobotInput input, double timeDelta) {
-        // find out how far off course the robot is
-        GeneralInput gi = (GeneralInput) input;
-        double robotY = robot.getLocation().getY();
-        double robotX = robot.getLocation().getX();
-        double startPointX = gi.getStartLocation().getX();
-        double startPointY = gi.getStartLocation().getY();
-        double endPointY = robotY;
-        double endPointX = robotY / Math.tan(Math.toRadians(gi.getDirection()));
-        double distance = Math.sqrt(Math.pow((endPointY - startPointY), 2) + Math.pow((endPointX - startPointX), 2));
-//        double distance = nominator / denominator;
-        System.out.println("Distance from line: " + distance);
     }
 
     /**
@@ -148,12 +132,11 @@ public class Simulator {
         GeneralInput gi = (GeneralInput) input;
         // TODO: based on the current location calculate if a course correction is required
         // Given the direction get the x and y component velocities
-        double yVel = Math.cos(Math.toRadians(gi.getDirection())) * gi.getSpeed();
-        double xVel = Math.sin(Math.toRadians(gi.getDirection())) * gi.getSpeed() * -1;
+        double yVel = Math.cos(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed();
+        double xVel = Math.sin(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed() * -1;
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(gi.getRotation());
         System.out.println("Current angle: " + Math.toDegrees(Math.atan(yVel / xVel)));
-
-        // update the robot
-//        updateRobot(xVel, yVel, newAngle, robot.getRotationRate(), timeDelta, robot);
     }
 
     /**
@@ -211,8 +194,6 @@ public class Simulator {
         System.out.println("New velocities: " + xVel + ", " + yVel);
         // get the new robot angle
         double newAngle = pi.getRotationRate() * timeDelta + robot.getAngle();
-        // update the robot position
-//        updateRobot(xVel, yVel, newAngle, pi.getRotationRate(), timeDelta, robot);
     }
 
     /**
