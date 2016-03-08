@@ -23,6 +23,8 @@ public class CirclePathInput implements RobotInput {
     private double speed;
     // time to complete the circle
     private double time;
+    // index for the path
+    private int currentIndex;
 
     public CirclePathInput(Point origin, double radius, double inclination, double endOrientation, double rotationRate, double speed, double time) {
         this.origin = origin;
@@ -69,6 +71,14 @@ public class CirclePathInput implements RobotInput {
 
     public double getInclination() {
         return inclination;
+    }
+
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
+
+    public void setCurrentIndex(int currentIndex) {
+        this.currentIndex = currentIndex;
     }
 
     @Override
