@@ -112,6 +112,23 @@ public class Simulator {
                 rpi.setSpeed(distance / rpi.getTime());
                 rpi.setIndiceCount(0);
                 break;
+            case PATH_CIRCLE:
+                CirclePathInput cpi = (CirclePathInput) input;
+                distance = calculateCircleDistance(cpi);
+                if (!verifyPathCompletion(cpi.getTime(), distance)) {
+                    return false;
+                }
+                // generate the path
+                generateCirclePath(cpi, robot.getLocation());
+                robot.setRotationRate(cpi.getRotationRate());
+                cpi.setSpeed(distance / cpi.getTime());
+                cpi.setCurrentIndex(0);
+                break;
+            case PATH_FIGURE_EIGHT:
+                System.err.println("Fig. 8 not implemented");
+                return false;
+            // TODO: Uncomment the break
+//            break;
             default:
                 System.err.println("Not implemented");
         }
@@ -149,6 +166,9 @@ public class Simulator {
                     break;
                 case PATH_RECTANGLE:
                     calculateRectangleMovement(input, timeDelta);
+                    break;
+                case PATH_CIRCLE:
+                    calculateCircleMovement(input, timeDelta);
                     break;
                 default:
                     System.err.println("Not implemented");
@@ -240,6 +260,26 @@ public class Simulator {
     }
 
     /**
+     * Calculates the robots next moved based on the location around the circle.
+     *
+     * @param input     current robot input
+     * @param timeDelta time between frames
+     */
+    private void calculateCircleMovement(RobotInput input, double timeDelta) {
+        CirclePathInput cpi = (CirclePathInput) input;
+        if (cpi.getCurrentIndex() == pathVertices.size() - 1 && Utils.isAtGoal(robot.getLocation(), pathVertices.get(cpi.getCurrentIndex()))) {
+            atGoal = true;
+        } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(cpi.getCurrentIndex()))) {
+            cpi.setCurrentIndex(cpi.getCurrentIndex() + 1);
+        }
+        double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(cpi.getCurrentIndex()));
+        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * cpi.getSpeed();
+        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * cpi.getSpeed() * -1;
+        robot.setVelocity(new Point(xVel, yVel));
+        robot.setRotationRate(cpi.getRotationRate());
+    }
+
+    /**
      * Updates the robots current location and heading to a new one based on calculated velocity and rotation rate.
      *
      * @param xVel         GRF X-axis velocity in feet/sec
@@ -287,6 +327,16 @@ public class Simulator {
     }
 
     /**
+     * Calculates the distance a robot need to travel to go around a circle.
+     *
+     * @param cpi input
+     * @return distance
+     */
+    private double calculateCircleDistance(CirclePathInput cpi) {
+        return 2 * Math.PI * cpi.getRadius();
+    }
+
+    /**
      * Verifies the robot doesn't have to speed to complete the path.
      *
      * @param time     time to complete path
@@ -304,6 +354,12 @@ public class Simulator {
         return false;
     }
 
+    /**
+     * Calculates the four points of a rectangle in clockwise order and adds them to an ArrayList.
+     *
+     * @param rpi              input for getting distance between points
+     * @param startingLocation input for getting the location of the first point
+     */
     private void generateRectanglePath(RectanglePathInput rpi, Point startingLocation) {
         Point one = Utils.calculatePoint(startingLocation, rpi.getSideLength(), rpi.getInclination());
         this.pathVertices.add(one);
@@ -311,7 +367,26 @@ public class Simulator {
         this.pathVertices.add(two);
         Point three = Utils.calculatePoint(two, rpi.getSideLength(), rpi.getInclination() - 180);
         this.pathVertices.add(three);
+        // TODO: Should we just use the starting location?
         Point four = Utils.calculatePoint(three, rpi.getTopLength(), rpi.getInclination() - 270);
         this.pathVertices.add(four);
+    }
+
+    /**
+     * Calculates two points, one at the "top" of the circle and the starting point.
+     * Robot will move to the "top" point then back to the starting point.
+     *
+     * @param cpi           input for circle path
+     * @param startingPoint starting location
+     */
+    private void generateCirclePath(CirclePathInput cpi, Point startingPoint) {
+//        Point top = Utils.calculatePoint(startingPoint, cpi.getRadius() * 2, cpi.getInclination());
+//        this.pathVertices.add(top);
+        Point circleCenter = Utils.calculatePoint(startingPoint, cpi.getRadius(), cpi.getInclination());
+        // add vertices in 30 degree chunks
+        for (int i = 30; i <= 360; i += 30) {
+            this.pathVertices.add(Utils.calculatePoint(circleCenter, cpi.getRadius(), 180 + cpi.getInclination() - i));
+        }
+        this.pathVertices.add(startingPoint);
     }
 }
