@@ -17,8 +17,8 @@ import java.util.ArrayList;
 public class PathCanvas {
     private static double HEIGHT = 720;
     private static double WIDTH = 360;
-    private static double INPUT_LINE_WIDTH = 4.0;
-    private static Paint INPUT_LINE_COLOR = Color.BLUE;
+    private static double INPUT_LINE_WIDTH = 5.5;
+    private static Paint INPUT_LINE_COLOR = Color.DARKVIOLET;
     private static double ROBOT_LINE_WIDTH = 0.0;
     private static Paint ROBOT_LINE_COLOR = Color.LIME;
 
