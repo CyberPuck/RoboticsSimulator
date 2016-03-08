@@ -80,10 +80,6 @@ public class RobotCanvas {
         // draw the robot
         gc.save();
         // Update the robot location
-        // TODO: Remove these
-//        System.out.println("Pixel Position: " + newPosition.toString());
-//        System.out.println("ROBOT: " + this.robotPosition.toString());
-//        System.out.println("Canvas Center: " + this.canvasCenter.toString());
         Utils.rotate(gc, this.robotPosition.getAngle(), this.robotPosition.getPosition());
         // convert coordinates to upper left of image, not robot center to draw it
         gc.drawImage(robot, panePoint.getX() - robot.getWidth() / 2, panePoint.getY() - robot.getHeight() / 2);
