@@ -38,12 +38,14 @@ public class Simulator {
     private RobotInput originalInput;
     // flag indicating if the goal has been reached
     private boolean atGoal;
+    // flag indicating if the simulation can complete in time
+    private boolean enoughTime;
 
     public Simulator(RobotInput input, Robot robot) {
         this.input = input;
         this.originalInput = input;
         this.robot = robot;
-        initializeRobot(input, this.robot);
+        enoughTime = initializeRobot(input, this.robot);
         atGoal = false;
     }
 
@@ -53,18 +55,27 @@ public class Simulator {
      * @param input Input of the robot
      * @param robot Robot to update
      */
-    private void initializeRobot(RobotInput input, Robot robot) {
+    private boolean initializeRobot(RobotInput input, Robot robot) {
         switch (input.getMode()) {
             case CONTROL_GENERAL:
                 robot.setRotationRate(((GeneralInput) input).getRotation());
                 break;
             case POINT:
-                robot.setRotationRate(((PointInput) input).getRotationRate());
+                PointInput pi = (PointInput) input;
+                double distance = calculatePointDistance(pi);
+                if (!verifyPointCompletion(pi.getTime(), distance)) {
+                    return false;
+                }
+                robot.setRotationRate(pi.getRotationRate());
+                ((PointInput) input).setSpeed(distance / pi.getTime());
+                break;
             case CONTROL_WHEELS: // Not needed all four wheel rates are read later
                 break;
             default:
                 System.err.println("Not implemented");
         }
+        this.input = input;
+        return true;
     }
 
     public void setRobot(Robot robot) {
@@ -81,11 +92,23 @@ public class Simulator {
         return robot;
     }
 
+    /**
+     * Flag indicating if the robot got to the goal in time
+     *
+     * @return goal reached?
+     */
     public boolean isAtGoal() {
         return atGoal;
     }
 
-    private long lastTime = 0;
+    /**
+     * Flag indicating if the robot can get to the goal before time runs out.
+     *
+     * @return reach goal in time?
+     */
+    public boolean isEnoughTime() {
+        return enoughTime;
+    }
 
     /**
      * Given the defined input, calculate the new position of the robot.
@@ -108,9 +131,6 @@ public class Simulator {
                     calculateGeneralMovement(input, timeDelta);
                     break;
                 case POINT:
-                    long curTime = System.currentTimeMillis();
-                    System.out.println("Recalculating after: " + (curTime - lastTime));
-                    lastTime = curTime;
                     calculatePointMovement(input, timeDelta);
                     break;
                 default:
@@ -202,5 +222,35 @@ public class Simulator {
         double newY = vel.getY() * timeDelta + robot.getLocation().getY();
         robot.setLocation(new Point(Utils.roundDouble(newX), Utils.roundDouble(newY)));
 //        System.out.println(robot.toString());
+    }
+
+    /**
+     * Calculates the path length for the point operation.
+     *
+     * @param pi PointInput
+     * @return distance to goal
+     */
+    private double calculatePointDistance(PointInput pi) {
+        double distance = Utils.distanceBetweenPoints(robot.getLocation(), pi.getEndPoint());
+        // make sure the distance is positive
+        return distance >= 0 ? distance : -1 * distance;
+    }
+
+    /**
+     * Verifies the robot doesn't have to speed to complete the path.
+     *
+     * @param time     time to complete path
+     * @param distance distance to travel for path
+     * @return flag indicating if the path at that time is possible
+     */
+    private boolean verifyPointCompletion(double time, double distance) {
+        if (time <= 0) {
+            return true;
+        }
+        // make sure the robot doesn't speed
+        if (distance / time <= 15.0) {
+            return true;
+        }
+        return false;
     }
 }

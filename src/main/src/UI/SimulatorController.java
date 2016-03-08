@@ -159,68 +159,75 @@ public class SimulatorController implements Initializable {
      * TODO: Should we return error values?
      */
     public void startSimulator(final RobotInput input) {
-        startTime = System.currentTimeMillis();
         this.input = input;
-        simulatorRunning = true;
         // setup the robot object
         final Robot robot = new Robot(WHEEL_RADIUS);
         robot.setLocation(robotPosition.getPosition());
         robot.setAngle(robotPosition.getAngle());
         robot.setVelocity(new Point(0, 0));
-        // clear the robot path
-        displayController.getPathCanvas().restartCanvas();
-        // draw the input path
-        displayController.getPathCanvas().setInput(input);
-        displayController.getPathCanvas().setStartingLocation(Utils.convertLocationToPixels(robot.getLocation()));
-        displayController.getPathCanvas().redrawInputPath();
-        // update the robot stats
-        updateSystemState(robot);
-        // check if the wheel rotation is static
-        if (input.getMode() == InputMode.CONTROL_WHEELS) {
-            updateWheeledState((WheelInput) input);
-        }
+
         // start the simulator
-        System.out.println("Starting Simulator");
         final Simulator sim = new Simulator(input, robot);
-        previousTime = 0;
-//        final long previousTime = 0;
-        timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                // make sure to only update when the simulator is running
-                if (simulatorRunning) {
-                    // Calculate the delta between this frame and the last
-                    double deltaTime = 0;
-                    if (previousTime != 0) {
-                        deltaTime = now - previousTime;
-                        // convert to seconds
-                        deltaTime = deltaTime / 1000000000.0;
-                    }
-                    previousTime = now;
-                    // Debug code, need to add logic to only update every x frames
+        // verify the simulator can complete in time
+        if (sim.isEnoughTime()) {
+            // setup variables now that we can actually start the simulation
+            startTime = System.currentTimeMillis();
+            simulatorRunning = true;
+            previousTime = 0;
+            // clear the robot path
+            displayController.getPathCanvas().restartCanvas();
+            // draw the input path
+            displayController.getPathCanvas().setInput(input);
+            displayController.getPathCanvas().setStartingLocation(Utils.convertLocationToPixels(robot.getLocation()));
+            displayController.getPathCanvas().redrawInputPath();
+            // update the robot stats
+            updateSystemState(robot);
+            // check if the wheel rotation is static
+            if (input.getMode() == InputMode.CONTROL_WHEELS) {
+                updateWheeledState((WheelInput) input);
+            }
+            // startup the animation timer
+            timer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    // make sure to only update when the simulator is running
+                    if (simulatorRunning) {
+                        // Calculate the delta between this frame and the last
+                        double deltaTime = 0;
+                        if (previousTime != 0) {
+                            deltaTime = now - previousTime;
+                            // convert to seconds
+                            deltaTime = deltaTime / 1000000000.0;
+                        }
+                        previousTime = now;
+                        // Debug code, need to add logic to only update every x frames
 //                printText("Now: " + now);
-                    // TODO: Need to convert the Y position into the canvas coordinates
-                    // update the robot position
-                    sim.calculateNewPosition(deltaTime);
-                    // update the reference position
-                    robotPosition = new Position(sim.getRobot().getLocation(), robot.getAngle());
-                    // update the robot data
-                    updateSystemState(sim.getRobot());
-                    // check if the wheel rotation is static
-                    if (input.getMode() == InputMode.CONTROL_WHEELS) {
-                        updateWheeledState((WheelInput) input);
-                    }
-                    // update the position based on the global reference frame
+                        // TODO: Need to convert the Y position into the canvas coordinates
+                        // update the robot position
+                        sim.calculateNewPosition(deltaTime);
+                        // update the reference position
+                        robotPosition = new Position(sim.getRobot().getLocation(), robot.getAngle());
+                        // update the robot data
+                        updateSystemState(sim.getRobot());
+                        // check if the wheel rotation is static
+                        if (input.getMode() == InputMode.CONTROL_WHEELS) {
+                            updateWheeledState((WheelInput) input);
+                        }
+                        // update the position based on the global reference frame
 //                displayController.getRobotCanvas().setRobotPosition(sim.getRobot());
-                    displayController.getRobotCanvas().redrawRobot(sim.getRobot());
-                    // check if the robot is at the goal and stop
-                    if (sim.isAtGoal()) {
-                        stopSimulator();
+                        displayController.getRobotCanvas().redrawRobot(sim.getRobot());
+                        // check if the robot is at the goal and stop
+                        if (sim.isAtGoal()) {
+                            stopSimulator();
+                        }
                     }
                 }
-            }
-        };
-        timer.start();
+            };
+            timer.start();
+        } else {
+            printText("Cannot complete simulation in time");
+            tabController.updateUIs();
+        }
     }
 
     /**

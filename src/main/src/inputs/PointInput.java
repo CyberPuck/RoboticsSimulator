@@ -41,6 +41,10 @@ public class PointInput implements RobotInput {
         return speed;
     }
 
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
     public double getEndOrientation() {
         return endOrientation;
     }
