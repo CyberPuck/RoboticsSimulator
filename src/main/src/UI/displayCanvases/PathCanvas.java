@@ -210,7 +210,12 @@ public class PathCanvas {
 //        double endY = endX * Math.tan(Math.toRadians(gi.getDirection())) * -1;
 //        Point endP = new Point(endX, endY);
 //        endP = Utils.convertToPaneCoordinates(endP, this.canvasCenter);
-        Point temp = new Point(paneStartingPoint.getX(), paneStartingPoint.getY() + 1000000);
+        Point temp;
+        if (gi.getSpeed() >= 0) {
+            temp = new Point(paneStartingPoint.getX(), paneStartingPoint.getY() + 1000000);
+        } else {
+            temp = new Point(paneStartingPoint.getX(), paneStartingPoint.getY() - 1000000);
+        }
         System.out.println("Starting point: " + paneStartingPoint.toString());
         System.out.println("New end point: " + temp.toString());
         System.out.println("Angle: " + gi.getDirection());
