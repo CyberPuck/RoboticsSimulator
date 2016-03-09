@@ -265,11 +265,11 @@ public class SimulatorController implements Initializable {
         // update the velocity components
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.HALF_UP);
-        velocityY.setText("Velocity Y: " + df.format(robot.getVelocity().getY()));
-        velocityX.setText("Velocity X: " + df.format(robot.getVelocity().getX()));
-        rotationRate.setText("Rotation Rate: " + df.format(robot.getRotationRate()));
-        direction.setText("Direction: " + df.format(robot.getAngle()));
-        position.setText("Position: (" + df.format(robot.getLocation().getX()) + ", "
+        velocityY.setText("Velocity Y(ft/s): " + df.format(robot.getVelocity().getY()));
+        velocityX.setText("Velocity X(ft/s): " + df.format(robot.getVelocity().getX()));
+        rotationRate.setText("Rotation Rate(deg/s): " + df.format(robot.getRotationRate()));
+        direction.setText("Direction(deg): " + df.format(robot.getAngle()));
+        position.setText("Position(ft): (" + df.format(robot.getLocation().getX()) + ", "
                 + df.format(robot.getLocation().getY()) + ")");
         double[] wheelRates = robot.getWheelRates();
         wheels.setText("Wheels= One: " + df.format(wheelRates[0]) + ", Two: "
@@ -294,9 +294,9 @@ public class SimulatorController implements Initializable {
      * Resets the system velocity and movement statuses to zero.
      */
     private void stopSystemState() {
-        velocityY.setText("Velocity Y: 0.0");
-        velocityX.setText("Velocity X: 0.0");
-        rotationRate.setText("Rotation Rate: 0.0");
+        velocityY.setText("Velocity Y(ft/s): 0.0");
+        velocityX.setText("Velocity X(ft/s): 0.0");
+        rotationRate.setText("Rotation Rate(deg/s): 0.0");
         wheels.setText("Wheels= One: " + 0.0 + ", Two: "
                 + 0.0 + ", Three: " + 0.0
                 + ", Four: " + 0.0);
@@ -306,11 +306,11 @@ public class SimulatorController implements Initializable {
      * Zero's all state fields.
      */
     private void resetSystemState() {
-        velocityY.setText("Velocity Y: 0");
-        velocityX.setText("Velocity X: 0");
-        rotationRate.setText("Rotation Rate: 0");
-        direction.setText("Direction: 0");
-        position.setText("Position: (0, 0)");
+        velocityY.setText("Velocity Y(ft/s): 0");
+        velocityX.setText("Velocity X(ft/s): 0");
+        rotationRate.setText("Rotation Rate(deg/s): 0");
+        direction.setText("Direction(deg): 0");
+        position.setText("Position(ft): (0, 0)");
         wheels.setText("Wheels= One: 0, Two: 0, Three: 0, Four: 0");
     }
 

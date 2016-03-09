@@ -9,20 +9,20 @@
       prefWidth="440.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="UI.tabControls.ControlTab">
     <children>
-        <ChoiceBox fx:id="modeBox" layoutX="70.0" layoutY="14.0" prefWidth="150.0"/>
+        <ChoiceBox fx:id="modeBox" layoutX="100.0" layoutY="14.0" prefWidth="150.0"/>
         <Label layoutX="14.0" layoutY="18.0" text="Mode:"/>
-        <Label fx:id="directionLabel" layoutX="14.0" layoutY="60.0" text="Direction:"/>
-        <Label fx:id="speedLabel" layoutX="14.0" layoutY="95.0" text="Speed:"/>
-        <Label fx:id="rotationLabel" layoutX="14.0" layoutY="130.0" text="Rotation:"/>
-        <TextField fx:id="directionField" layoutX="71.0" layoutY="60.0"/>
-        <TextField fx:id="speedField" layoutX="71.0" layoutY="95.0"/>
-        <TextField fx:id="rotationField" layoutX="71.0" layoutY="130.0"/>
+        <Label fx:id="directionLabel" layoutX="14.0" layoutY="60.0" text="Direction(deg):"/>
+        <Label fx:id="speedLabel" layoutX="14.0" layoutY="95.0" text="Speed(ft/s):"/>
+        <Label fx:id="rotationLabel" layoutX="14.0" layoutY="130.0" text="Rotation(deg/s):"/>
+        <TextField fx:id="directionField" layoutX="150.0" layoutY="60.0"/>
+        <TextField fx:id="speedField" layoutX="150.0" layoutY="95.0"/>
+        <TextField fx:id="rotationField" layoutX="150.0" layoutY="130.0"/>
         <Canvas fx:id="robotImage" layoutX="156.0" layoutY="110.0" height="256.0" width="128.0"/>
-        <Label fx:id="wheelOneLabel" layoutX="25.0" layoutY="130.0" text="Wheel One:"/>
+        <Label fx:id="wheelOneLabel" layoutX="10.0" layoutY="130.0" text="Wheel One:"/>
         <TextField fx:id="wheelOneField" layoutX="100.0" layoutY="125.0" prefHeight="25.0" prefWidth="51.0"/>
         <TextField fx:id="wheelTwoField" layoutX="290.0" layoutY="125.0" prefHeight="25.0" prefWidth="51.0"/>
         <Label fx:id="wheelTwoLabel" layoutX="345.0" layoutY="130.0" text="Wheel Two"/>
-        <Label fx:id="wheelThreeLabel" layoutX="25.0" layoutY="341.0" text="Wheel Three:"/>
+        <Label fx:id="wheelThreeLabel" layoutX="10.0" layoutY="341.0" text="Wheel Three:"/>
         <Label fx:id="wheelFourLabel" layoutX="345.0" layoutY="341.0" text="Wheel Four"/>
         <TextField fx:id="wheelThreeField" layoutX="100.0" layoutY="337.0" prefHeight="25.0" prefWidth="51.0"/>
         <TextField fx:id="wheelFourField" layoutX="290.0" layoutY="337.0" prefHeight="25.0" prefWidth="51.0"/>
@@ -32,5 +32,7 @@
                 <Font size="24.0"/>
             </font>
         </Button>
+        <Label layoutX="14.0" layoutY="600.0" text="All angles are based of the positive y-axis 0 degrees"/>
+        <Label layoutX="14.0" layoutY="625.0" text="Positive rotation is in the counter-clockwise direction"/>
     </children>
 </Pane>

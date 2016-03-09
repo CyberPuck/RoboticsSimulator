@@ -129,6 +129,7 @@ public class PathCanvas {
         if (isInsideCanvas(originRight) || isInsideCanvas(originLeft) || isInsideCanvas(originTop) || isInsideCanvas(originBottom)) {
             gc.setFill(Color.YELLOW);
             gc.fillOval(paneLocation.getX() - 3.75, paneLocation.getY() - 3.75, 7.5, 7.5);
+            gc.fillText("(0, 0)", paneLocation.getX() + 10, paneLocation.getY() + 20);
         }
         gc.setStroke(Color.YELLOW);
         gc.setLineWidth(1.0);
@@ -138,12 +139,16 @@ public class PathCanvas {
             Point x1 = Utils.convertToPaneCoordinates(new Point(this.canvasCenter.getX() - 180, 0), this.canvasCenter);
             Point x2 = Utils.convertToPaneCoordinates(new Point(this.canvasCenter.getX() + 180, 0), this.canvasCenter);
             gc.strokeLine(x1.getX(), x1.getY(), x2.getX(), x2.getY());
+            gc.setFill(Color.YELLOW);
+            gc.fillText("X-axis", 0, x1.getY());
         }
         if (this.canvasCenter.getX() - 180 < 0 && this.canvasCenter.getX() + 180 > 0) {
             //draw y axis
             Point y1 = Utils.convertToPaneCoordinates(new Point(0, this.canvasCenter.getY() - 360), this.canvasCenter);
             Point y2 = Utils.convertToPaneCoordinates(new Point(0, this.canvasCenter.getY() + 360), this.canvasCenter);
             gc.strokeLine(y1.getX(), y1.getY(), y2.getX(), y2.getY());
+            gc.setFill(Color.YELLOW);
+            gc.fillText("Y-axis", y1.getX(), 15);
         }
     }
 

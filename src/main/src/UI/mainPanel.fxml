@@ -25,13 +25,13 @@
                   editable="false"/>
         <Pane fx:id="systemStatePane" layoutX="800.0" layoutY="500.0" prefHeight="220.0" prefWidth="440.0">
             <children>
-                <Label fx:id="velocityY" layoutX="14.0" layoutY="14.0" text="Velocity Y: 0.0"/>
-                <Label fx:id="velocityX" layoutX="114.0" layoutY="14.0" text="Velocity X: 0.0"/>
-                <Label fx:id="rotationRate" layoutX="214.0" layoutY="14.0" text="Rotation Rate: 0.0"/>
-                <Label fx:id="direction" layoutX="14.0" layoutY="34.0" text="Direction: 0.0"/>
+                <Label fx:id="velocityY" layoutX="14.0" layoutY="14.0" text="Velocity Y(ft/s): 0.0"/>
+                <Label fx:id="velocityX" layoutX="164.0" layoutY="14.0" text="Velocity X(ft/s): 0.0"/>
+                <Label fx:id="rotationRate" layoutX="164.0" layoutY="34.0" text="Rotation Rate(deg/s): 0.0"/>
+                <Label fx:id="direction" layoutX="14.0" layoutY="34.0" text="Direction(deg): 0.0"/>
                 <Label fx:id="position" layoutX="14.0" layoutY="54.0" text="Position: (0, 0)"/>
                 <Label fx:id="wheels" layoutX="14.0" layoutY="74.0"
-                       text="Wheel= One: 0.0, Two: 0.0, Three: 0.0, Four: 0.0"/>
+                       text="Wheel(angle/s)= One: 0.0, Two: 0.0, Three: 0.0, Four: 0.0"/>
                 <Button fx:id="resetButton" layoutX="120.0" layoutY="124.0" prefHeight="50.0"
                         prefWidth="200.0" text="Reset">
                     <font>

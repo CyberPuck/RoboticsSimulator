@@ -50,6 +50,8 @@ public class PathTab implements Initializable {
     private TextField rectangleSide;
     @FXML
     private Canvas rectangleCanvas;
+    @FXML
+    private Label rectangleUnits;
 
     // figure eight controls
     @FXML
@@ -292,6 +294,7 @@ public class PathTab implements Initializable {
         rectangleTop.setVisible(true);
         rectangleSide.setVisible(true);
         rectangleCanvas.setVisible(true);
+        rectangleUnits.setVisible(true);
         disableCircle();
         disableFigureEight();
     }
@@ -300,6 +303,7 @@ public class PathTab implements Initializable {
         rectangleTop.setVisible(false);
         rectangleSide.setVisible(false);
         rectangleCanvas.setVisible(false);
+        rectangleUnits.setVisible(false);
     }
 
     private void enableFigureEight() {
