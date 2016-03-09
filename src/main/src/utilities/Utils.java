@@ -61,7 +61,7 @@ public class Utils {
      * @return flag indicating if the goal has been reached
      */
     public static boolean isAtGoal(Point p1, Point goal) {
-        double distance = 0.5;
+        double distance = 0.25;
         if (p1.getX() < goal.getX() + distance && p1.getX() > goal.getX() - distance
                 && p1.getY() < goal.getY() + distance && p1.getY() > goal.getY() - distance) {
             return true;

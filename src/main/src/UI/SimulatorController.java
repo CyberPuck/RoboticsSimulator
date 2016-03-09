@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
  * Created by CyberPuck on 2016-02-15.
  */
 public class SimulatorController implements Initializable {
-    private static double WHEEL_RADIUS = 0.25;
+    private static double WHEEL_RADIUS = 0.5;
 
     // parent node, need this for detecting mouse and keyboard actions
     @FXML
