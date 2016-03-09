@@ -50,7 +50,7 @@ public class Utils {
      * @return distance between p1 and p2
      */
     public static double distanceBetweenPoints(Point p1, Point p2) {
-        return Math.sqrt(Math.pow(p1.getX() + p2.getX(), 2) + Math.pow(p1.getY() + p2.getY(), 2));
+        return Math.sqrt(Math.pow(p1.getX() - p2.getX(), 2) + Math.pow(p1.getY() - p2.getY(), 2));
     }
 
     /**
@@ -61,7 +61,7 @@ public class Utils {
      * @return flag indicating if the goal has been reached
      */
     public static boolean isAtGoal(Point p1, Point goal) {
-        double distance = 0.25;
+        double distance = 0.5;
         if (p1.getX() < goal.getX() + distance && p1.getX() > goal.getX() - distance
                 && p1.getY() < goal.getY() + distance && p1.getY() > goal.getY() - distance) {
             return true;
