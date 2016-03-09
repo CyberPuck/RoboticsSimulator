@@ -73,6 +73,20 @@ public class PathTab implements Initializable {
     @FXML
     private Button startButton;
 
+    // way points
+    @FXML
+    private TextField oneX;
+    @FXML
+    private TextField oneY;
+    @FXML
+    private TextField twoX;
+    @FXML
+    private TextField twoY;
+    @FXML
+    private TextField threeX;
+    @FXML
+    private TextField threeY;
+
     // simulator controls
     private SimulatorController controller;
 
@@ -166,7 +180,20 @@ public class PathTab implements Initializable {
             return null;
         }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
-        return new CirclePathInput(origin, radius, angle, endAngle, rr, time);
+        // check for way points
+        ArrayList<Point> wayPoints = new ArrayList<>();
+        if (!oneX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(oneX.getText()), Double.parseDouble(oneY.getText())));
+        }
+        if (!twoX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(twoX.getText()), Double.parseDouble(twoY.getText())));
+        }
+        if (!threeX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(threeX.getText()), Double.parseDouble(threeY.getText())));
+        }
+        CirclePathInput cpi = new CirclePathInput(origin, radius, angle, endAngle, rr, time);
+        cpi.setWayPoints(wayPoints);
+        return cpi;
     }
 
     /**
@@ -186,7 +213,20 @@ public class PathTab implements Initializable {
             return null;
         }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
-        return new RectanglePathInput(origin, top, side, angle, endAngle, rr, time);
+        // check for way points
+        ArrayList<Point> wayPoints = new ArrayList<>();
+        if (!oneX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(oneX.getText()), Double.parseDouble(oneY.getText())));
+        }
+        if (!twoX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(twoX.getText()), Double.parseDouble(twoY.getText())));
+        }
+        if (!threeX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(threeX.getText()), Double.parseDouble(threeY.getText())));
+        }
+        RectanglePathInput rpi = new RectanglePathInput(origin, top, side, angle, endAngle, rr, time);
+        rpi.setWayPoints(wayPoints);
+        return rpi;
     }
 
     /**
@@ -206,7 +246,20 @@ public class PathTab implements Initializable {
             return null;
         }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
-        return new FigureEightPathInput(origin, radiusOne, radiusTwo, angle, endAngle, rr, time);
+        // check for way points
+        ArrayList<Point> wayPoints = new ArrayList<>();
+        if (!oneX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(oneX.getText()), Double.parseDouble(oneY.getText())));
+        }
+        if (!twoX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(twoX.getText()), Double.parseDouble(twoY.getText())));
+        }
+        if (!threeX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(threeX.getText()), Double.parseDouble(threeY.getText())));
+        }
+        FigureEightPathInput fepi = new FigureEightPathInput(origin, radiusOne, radiusTwo, angle, endAngle, rr, time);
+        fepi.setWayPoints(wayPoints);
+        return fepi;
     }
 
     private void updateTab(String mode) {
