@@ -13,6 +13,7 @@ import utilities.Point;
 import utilities.Utils;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -27,12 +28,23 @@ public class PointTab implements Initializable {
     private TextField yEndPoint;
     @FXML
     private TextField endOrientation;
-    //    @FXML
-//    private TextField speedField;
     @FXML
     private TextField timeToFinish;
     @FXML
     private Button startButton;
+    // way point options
+    @FXML
+    private TextField oneX;
+    @FXML
+    private TextField oneY;
+    @FXML
+    private TextField twoX;
+    @FXML
+    private TextField twoY;
+    @FXML
+    private TextField threeX;
+    @FXML
+    private TextField threeY;
 
     private SimulatorController controller;
 
@@ -93,7 +105,6 @@ public class PointTab implements Initializable {
         double y = Double.parseDouble(this.yEndPoint.getText());
         Point endPoint = new Point(x, y);
         double endOrientation = Double.parseDouble(this.endOrientation.getText());
-//        double speed = Double.parseDouble(this.speedField.getText());
         double time = Double.parseDouble(this.timeToFinish.getText());
         if (time == 0) {
             controller.printText("Robot can't complete a path in 0 seconds");
@@ -105,6 +116,18 @@ public class PointTab implements Initializable {
         // calculate the rate the robot should rotate
         double rotationRate = endOrientation / time;
         PointInput pi = new PointInput(endPoint, speed, endOrientation, time, rotationRate);
+        // check for way points
+        ArrayList<Point> wayPoints = new ArrayList<>();
+        if (!oneX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(oneX.getText()), Double.parseDouble(oneY.getText())));
+        }
+        if (!twoX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(twoX.getText()), Double.parseDouble(twoY.getText())));
+        }
+        if (!threeX.getText().isEmpty()) {
+            wayPoints.add(new Point(Double.parseDouble(threeX.getText()), Double.parseDouble(threeY.getText())));
+        }
+        pi.setWayPoints(wayPoints);
         return pi;
     }
 

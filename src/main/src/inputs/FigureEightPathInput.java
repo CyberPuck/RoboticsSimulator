@@ -2,6 +2,8 @@ package inputs;
 
 import utilities.Point;
 
+import java.util.ArrayList;
+
 /**
  * Holds the input for the figure eight path.
  * <p/>
@@ -24,6 +26,8 @@ public class FigureEightPathInput implements RobotInput {
     private double rotationRate;
     // time to complete figure eight
     private double time;
+    // Waypoint list
+    private ArrayList<Point> wayPoints;
 
     public FigureEightPathInput(Point origin, double radiusOne, double radiusTwo, double inclination, double endOrientation, double rotationRate, double time) {
         this.origin = origin;
@@ -66,6 +70,14 @@ public class FigureEightPathInput implements RobotInput {
 
     public double getTime() {
         return time;
+    }
+
+    public ArrayList<Point> getWayPoints() {
+        return wayPoints;
+    }
+
+    public void setWayPoints(ArrayList<Point> wayPoints) {
+        this.wayPoints = wayPoints;
     }
 
     @Override

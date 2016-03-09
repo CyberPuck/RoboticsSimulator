@@ -19,6 +19,7 @@ public class PathCanvas {
     private static double WIDTH = 360;
     private static double INPUT_LINE_WIDTH = 5.5;
     private static Paint INPUT_LINE_COLOR = Color.DARKVIOLET;
+    private static Paint WAY_POINT_COLOR = Color.BLUE;
     private static double ROBOT_LINE_WIDTH = 0.0;
     private static Paint ROBOT_LINE_COLOR = Color.LIME;
 
@@ -235,7 +236,10 @@ public class PathCanvas {
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeLine(paneStartingPoint.getX(), paneStartingPoint.getY(), endPoint.getX(), endPoint.getY());
+        // check for way points
+        drawWayPoints(pi.getWayPoints(), gc);
         gc.restore();
+
     }
 
     private void drawCirclePath(CirclePathInput input) {
@@ -301,5 +305,23 @@ public class PathCanvas {
 
     public void setStartingLocation(Point startingLocation) {
         this.startingLocation = startingLocation;
+    }
+
+    /**
+     * Attempts to draw way points on the canvas.
+     *
+     * @param wayPoints way points to draw
+     * @param gc        graphics context
+     */
+    public void drawWayPoints(ArrayList<Point> wayPoints, GraphicsContext gc) {
+        gc.setFill(WAY_POINT_COLOR);
+        if (!wayPoints.isEmpty()) {
+            // run though the array list
+            for (int i = 0; i < wayPoints.size(); i++) {
+                Point pixelPos = Utils.convertLocationToPixels(wayPoints.get(i));
+                Point endPoint = Utils.convertToPaneCoordinates(pixelPos, this.canvasCenter);
+                gc.fillOval(endPoint.getX(), endPoint.getY(), INPUT_LINE_WIDTH, INPUT_LINE_WIDTH);
+            }
+        }
     }
 }

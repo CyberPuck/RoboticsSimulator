@@ -2,6 +2,8 @@ package inputs;
 
 import utilities.Point;
 
+import java.util.ArrayList;
+
 /**
  * Holds input data for the rectangle path.
  * <p/>
@@ -24,6 +26,8 @@ public class RectanglePathInput implements RobotInput {
     private double rotationRate;
     // time to complete rectangle path
     private double time;
+    // Waypoint list
+    private ArrayList<Point> wayPoints;
 
     public RectanglePathInput(Point origin, double topLength, double sideLength, double inclination, double endOrientation, double rotationRate, double time) {
         this.origin = origin;
@@ -66,6 +70,14 @@ public class RectanglePathInput implements RobotInput {
 
     public double getTime() {
         return time;
+    }
+
+    public ArrayList<Point> getWayPoints() {
+        return wayPoints;
+    }
+
+    public void setWayPoints(ArrayList<Point> wayPoints) {
+        this.wayPoints = wayPoints;
     }
 
     @Override

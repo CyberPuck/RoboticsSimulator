@@ -2,6 +2,8 @@ package inputs;
 
 import utilities.Point;
 
+import java.util.ArrayList;
+
 /**
  * Handles the end point control.
  * Created by CyberPuck on 2016-03-01.
@@ -19,6 +21,8 @@ public class PointInput implements RobotInput {
     private double rotationRate;
     // time to get the robot to the end point
     private double time;
+    // Waypoint list
+    private ArrayList<Point> wayPoints;
 
     public PointInput(Point endPoint, double speed, double endOrientation, double time, double rotationRate) {
         this.endPoint = endPoint;
@@ -55,6 +59,14 @@ public class PointInput implements RobotInput {
 
     public double getRotationRate() {
         return rotationRate;
+    }
+
+    public ArrayList<Point> getWayPoints() {
+        return wayPoints;
+    }
+
+    public void setWayPoints(ArrayList<Point> wayPoints) {
+        this.wayPoints = wayPoints;
     }
 
     @Override

@@ -2,6 +2,8 @@ package inputs;
 
 import utilities.Point;
 
+import java.util.ArrayList;
+
 /**
  * Holds the user defined input for a circle path.
  * <p/>
@@ -19,10 +21,10 @@ public class CirclePathInput implements RobotInput {
     private double endOrientation;
     // rate the robot needs to rotate to reach the end orientation
     private double rotationRate;
-    //    // speed of the robot
-//    private double speed;
     // time to complete the circle
     private double time;
+    // Waypoint list
+    private ArrayList<Point> wayPoints;
 
     public CirclePathInput(Point origin, double radius, double inclination, double endOrientation, double rotationRate, double time) {
         this.origin = origin;
@@ -60,6 +62,14 @@ public class CirclePathInput implements RobotInput {
 
     public double getInclination() {
         return inclination;
+    }
+
+    public ArrayList<Point> getWayPoints() {
+        return wayPoints;
+    }
+
+    public void setWayPoints(ArrayList<Point> wayPoints) {
+        this.wayPoints = wayPoints;
     }
 
     @Override

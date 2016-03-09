@@ -101,7 +101,7 @@ public class Simulator {
                     return false;
                 }
                 robot.setRotationRate(pi.getRotationRate());
-                pi.setSpeed(distance / pi.getTime());
+                speed = distance / pi.getTime();
                 break;
             case PATH_RECTANGLE:
                 RectanglePathInput rpi = (RectanglePathInput) input;
@@ -234,17 +234,29 @@ public class Simulator {
      */
     private void calculatePointMovement(RobotInput input, double timeDelta) {
         PointInput pi = (PointInput) input;
-        // Check if we made it to the goal
-        if (Utils.isAtGoal(robot.getLocation(), pi.getEndPoint())) {
+        if (pathIndex == pathVertices.size() - 1 && Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
             atGoal = true;
+        } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
+            // if we are at a vertex that is not the goal, set the local goal to the next index
+            pathIndex++;
         }
-        double angle = Utils.getAngle(robot.getLocation(), pi.getEndPoint());
-        System.out.println("Angle to point: " + angle);
-        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * pi.getSpeed();
-        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * pi.getSpeed() * -1;
-        System.out.println("New velocities: " + xVel + ", " + yVel);
-        robot.setVelocity(new Point(xVel, yVel));
-        robot.setRotationRate(pi.getRotationRate());
+        double distance = Utils.distanceBetweenPoints(robot.getLocation(), pathVertices.get(pathIndex));
+        System.out.println("Distance: " + distance);
+        distance = distance < 0 ? distance * -1 : distance;
+        if (distance <= SLOW_DOWN_DISTANCE) {
+            // if we are within 1 foot of the target slow down
+            double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+            double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed * 0.5;
+            double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1 * 0.5;
+            robot.setVelocity(new Point(xVel, yVel));
+            robot.setRotationRate(pi.getRotationRate());
+        } else {
+            double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+            double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
+            double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
+            robot.setVelocity(new Point(xVel, yVel));
+            robot.setRotationRate(pi.getRotationRate());
+        }
     }
 
     /**
@@ -362,9 +374,27 @@ public class Simulator {
      * @return distance to goal
      */
     private double calculatePointDistance(PointInput pi) {
-        double distance = Utils.distanceBetweenPoints(robot.getLocation(), pi.getEndPoint());
-        // make sure the distance is positive
-        return distance >= 0 ? distance : -1 * distance;
+        if (pi.getWayPoints().isEmpty()) {
+            double distance = Utils.distanceBetweenPoints(robot.getLocation(), pi.getEndPoint());
+            this.pathVertices.add(pi.getEndPoint());
+            // make sure the distance is positive
+            return distance >= 0 ? distance : -1 * distance;
+        } else {
+            // add in the way points
+            double distance = 0.0;
+            double temp = 0.0;
+            Point previousPoint = robot.getLocation();
+            for (int i = 0; i < pi.getWayPoints().size(); i++) {
+                temp = Utils.distanceBetweenPoints(previousPoint, pi.getWayPoints().get(i));
+                distance += temp >= 0 ? temp : -1 * temp;
+                pathVertices.add(pi.getWayPoints().get(i));
+                previousPoint = pi.getWayPoints().get(i);
+            }
+            temp = Utils.distanceBetweenPoints(previousPoint, pi.getEndPoint());
+            distance += temp >= 0 ? temp : -1 * temp;
+            this.pathVertices.add(pi.getEndPoint());
+            return distance;
+        }
     }
 
     /**
