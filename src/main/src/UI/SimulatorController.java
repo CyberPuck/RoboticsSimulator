@@ -327,4 +327,8 @@ public class SimulatorController implements Initializable {
     public boolean isSimulatorRunning() {
         return simulatorRunning;
     }
+
+    public double getRadius() {
+        return WHEEL_RADIUS;
+    }
 }

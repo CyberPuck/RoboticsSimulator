@@ -18,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import robot.Kinematics;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -161,15 +162,20 @@ public class ControlTab implements Initializable {
         if (!this.controller.isSimulatorRunning()) {
             // setup the input
             RobotInput input;
+            String mode = "";
             if (modeBox.getValue().equals(GENERAL_MODE)) {
                 input = setupGeneralInput();
-                controller.printText("Starting General Control Simulation");
+                mode = "Starting General Control Simulation";
             } else { // assume wheel mode
                 input = setupWheelInput();
-                controller.printText("Starting Wheel Control Simulation");
+                mode = "Starting Wheel Control Simulation";
             }
-            controller.startSimulator(input);
-            startButton.setText("Stop");
+            // verify the input is valid
+            if (input != null) {
+                controller.printText(mode);
+                controller.startSimulator(input);
+                startButton.setText("Stop");
+            }
         } else {
             controller.stopSimulator();
             startButton.setText("Start");
@@ -186,6 +192,13 @@ public class ControlTab implements Initializable {
         double two = Double.parseDouble(wheelTwoField.getText());
         double three = Double.parseDouble(wheelThreeField.getText());
         double four = Double.parseDouble(wheelFourField.getText());
+        double velX = Kinematics.calculateVelocityX(controller.getRadius(), one, two, three, four);
+        double velY = Kinematics.calculateVelocityY(controller.getRadius(), one, two, three, four);
+        double totalVel = Math.sqrt(velX * velX + velY * velY);
+        if (totalVel > 15.0) {
+            controller.printText("Robot speed cannot exceed 15.0 ft/s, current input results in: " + Math.round(totalVel) + " ft/s");
+            return null;
+        }
         return new WheelInput(one, two, three, four);
     }
 
@@ -197,6 +210,10 @@ public class ControlTab implements Initializable {
     private RobotInput setupGeneralInput() {
         double direction = Double.parseDouble(directionField.getText());
         double speed = Double.parseDouble(speedField.getText());
+        if (speed > 15.0) {
+            controller.printText("Robot speed cannot exceed 15.0 ft/s, current input results in: " + speed + " ft/s");
+            return null;
+        }
         double rotation = Double.parseDouble(rotationField.getText());
         GeneralInput gi = new GeneralInput(direction, speed, rotation);
         gi.setStartLocation(controller.getRobotPosition().getPosition());
