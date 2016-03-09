@@ -93,6 +93,7 @@ public class Simulator {
                 break;
             case CONTROL_GENERAL:
                 robot.setRotationRate(((GeneralInput) input).getRotation());
+                speed = ((GeneralInput) input).getSpeed();
                 break;
             case POINT:
                 PointInput pi = (PointInput) input;
@@ -213,11 +214,19 @@ public class Simulator {
      */
     private void calculateGeneralMovement(RobotInput input, double timeDelta) {
         GeneralInput gi = (GeneralInput) input;
-        // Given the direction get the x and y component velocities
-        double yVel = Math.cos(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed();
-        double xVel = Math.sin(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed() * -1;
+        Point virtualEndPoint = Utils.calculatePoint(gi.getStartLocation(), 1000000, gi.getDirection());
+
+        double angle = Utils.getAngle(robot.getLocation(), virtualEndPoint);
+        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
+        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
         robot.setVelocity(new Point(xVel, yVel));
         robot.setRotationRate(gi.getRotation());
+
+        // Given the direction get the x and y component velocities
+//        double yVel = Math.cos(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed();
+//        double xVel = Math.sin(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed() * -1;
+//        robot.setVelocity(new Point(xVel, yVel));
+//        robot.setRotationRate(gi.getRotation());
     }
 
     /**
