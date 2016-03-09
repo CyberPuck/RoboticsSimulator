@@ -14,7 +14,7 @@ public class MainPanel extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            primaryStage.setTitle("Robot Simulator - BETA v0.2");
+            primaryStage.setTitle("Robot Simulator - ktraver3 - Version: 1.0");
             Pane myPane = FXMLLoader.load(getClass().getResource
                     ("UI/mainPanel.fxml"));
             Scene myScene = new Scene(myPane);
