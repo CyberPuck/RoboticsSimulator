@@ -55,9 +55,11 @@ public class PointTab implements Initializable {
                 } else {
                     // start the simulation
                     RobotInput input = formatInput();
-                    startButton.setText("Stop");
-                    controller.printText("Starting Point Simulation");
-                    controller.startSimulator(input);
+                    if (input != null) {
+                        startButton.setText("Stop");
+                        controller.printText("Starting Point Simulation");
+                        controller.startSimulator(input);
+                    }
                 }
             }
         });
@@ -89,6 +91,10 @@ public class PointTab implements Initializable {
         double endOrientation = Double.parseDouble(this.endOrientation.getText());
         double speed = Double.parseDouble(this.speedField.getText());
         double time = Double.parseDouble(this.timeToFinish.getText());
+        if (time == 0) {
+            controller.printText("Robot can't complete a path in 0 seconds");
+            return null;
+        }
         // get distance between the two points
         double distance = Utils.distanceBetweenPoints(controller.getRobotPosition().getPosition(), endPoint);
         // calculate how long the trip will take (approximately)

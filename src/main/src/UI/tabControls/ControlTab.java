@@ -162,7 +162,7 @@ public class ControlTab implements Initializable {
         if (!this.controller.isSimulatorRunning()) {
             // setup the input
             RobotInput input;
-            String mode = "";
+            String mode;
             if (modeBox.getValue().equals(GENERAL_MODE)) {
                 input = setupGeneralInput();
                 mode = "Starting General Control Simulation";

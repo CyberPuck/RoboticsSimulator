@@ -130,19 +130,22 @@ public class PathTab implements Initializable {
 
     private void updateSimulator() {
         RobotInput input;
+        String mode;
         if (pathMode.getValue().equals(CIRCLE)) {
             input = setupCircleInput();
-            controller.printText("Starting Circle Path Simulation");
+            mode = "Starting Circle Path Simulation";
         } else if (pathMode.getValue().equals(RECTANGLE)) {
             input = setupRectangleInput();
-            controller.printText("Starting Rectangle Path Simulation");
+            mode = "Starting Rectangle Path Simulation";
         } else {
             input = setupFigureEightInput();
-            controller.printText("Starting Figure Eight Path Simulation");
+            mode = "Starting Figure Eight Path Simulation";
         }
-        controller.startSimulator(input);
-        startButton.setText("Stop");
-
+        if (input != null) {
+            controller.printText(mode);
+            controller.startSimulator(input);
+            startButton.setText("Stop");
+        }
     }
 
     /**
@@ -157,6 +160,10 @@ public class PathTab implements Initializable {
         double endAngle = Double.parseDouble(rotation.getText());
         double speed = Double.parseDouble(this.speed.getText());
         double time = Double.parseDouble(this.time.getText());
+        if (time == 0) {
+            controller.printText("Robot can't complete a path in 0 seconds");
+            return null;
+        }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
         return new CirclePathInput(origin, radius, angle, endAngle, rr, speed, time);
     }
@@ -174,6 +181,10 @@ public class PathTab implements Initializable {
         double endAngle = Double.parseDouble(rotation.getText());
         double speed = Double.parseDouble(this.speed.getText());
         double time = Double.parseDouble(this.time.getText());
+        if (time == 0) {
+            controller.printText("Robot can't complete a path in 0 seconds");
+            return null;
+        }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
         return new RectanglePathInput(origin, top, side, angle, endAngle, rr, speed, time);
     }
@@ -191,6 +202,10 @@ public class PathTab implements Initializable {
         double endAngle = Double.parseDouble(rotation.getText());
         double speed = Double.parseDouble(this.speed.getText());
         double time = Double.parseDouble(this.time.getText());
+        if (time == 0) {
+            controller.printText("Robot can't complete a path in 0 seconds");
+            return null;
+        }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
         return new FigureEightPathInput(origin, radiusOne, radiusTwo, angle, endAngle, rr, speed, time);
     }
