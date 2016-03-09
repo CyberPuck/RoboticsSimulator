@@ -53,12 +53,16 @@ public class PointTab implements Initializable {
                     startButton.setText("Start");
                     controller.stopSimulator();
                 } else {
-                    // start the simulation
-                    RobotInput input = formatInput();
-                    if (input != null) {
-                        startButton.setText("Stop");
-                        controller.printText("Starting Point Simulation");
-                        controller.startSimulator(input);
+                    try {
+                        // start the simulation
+                        RobotInput input = formatInput();
+                        if (input != null) {
+                            startButton.setText("Stop");
+                            controller.printText("Starting Point Simulation");
+                            controller.startSimulator(input);
+                        }
+                    } catch (Exception e) {
+                        controller.printText("Invalid input, only floating point numbers please");
                     }
                 }
             }

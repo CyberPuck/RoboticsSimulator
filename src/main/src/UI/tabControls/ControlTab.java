@@ -160,21 +160,25 @@ public class ControlTab implements Initializable {
 
     private void updateSimulator() {
         if (!this.controller.isSimulatorRunning()) {
-            // setup the input
-            RobotInput input;
-            String mode;
-            if (modeBox.getValue().equals(GENERAL_MODE)) {
-                input = setupGeneralInput();
-                mode = "Starting General Control Simulation";
-            } else { // assume wheel mode
-                input = setupWheelInput();
-                mode = "Starting Wheel Control Simulation";
-            }
-            // verify the input is valid
-            if (input != null) {
-                controller.printText(mode);
-                controller.startSimulator(input);
-                startButton.setText("Stop");
+            try {
+                // setup the input
+                RobotInput input;
+                String mode;
+                if (modeBox.getValue().equals(GENERAL_MODE)) {
+                    input = setupGeneralInput();
+                    mode = "Starting General Control Simulation";
+                } else { // assume wheel mode
+                    input = setupWheelInput();
+                    mode = "Starting Wheel Control Simulation";
+                }
+                // verify the input is valid
+                if (input != null) {
+                    controller.printText(mode);
+                    controller.startSimulator(input);
+                    startButton.setText("Stop");
+                }
+            } catch (Exception e) {
+                controller.printText("Invalid input, only floating point numbers please");
             }
         } else {
             controller.stopSimulator();

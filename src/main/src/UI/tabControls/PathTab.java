@@ -129,20 +129,24 @@ public class PathTab implements Initializable {
     private void updateSimulator() {
         RobotInput input;
         String mode;
-        if (pathMode.getValue().equals(CIRCLE)) {
-            input = setupCircleInput();
-            mode = "Starting Circle Path Simulation";
-        } else if (pathMode.getValue().equals(RECTANGLE)) {
-            input = setupRectangleInput();
-            mode = "Starting Rectangle Path Simulation";
-        } else {
-            input = setupFigureEightInput();
-            mode = "Starting Figure Eight Path Simulation";
-        }
-        if (input != null) {
-            controller.printText(mode);
-            controller.startSimulator(input);
-            startButton.setText("Stop");
+        try {
+            if (pathMode.getValue().equals(CIRCLE)) {
+                input = setupCircleInput();
+                mode = "Starting Circle Path Simulation";
+            } else if (pathMode.getValue().equals(RECTANGLE)) {
+                input = setupRectangleInput();
+                mode = "Starting Rectangle Path Simulation";
+            } else {
+                input = setupFigureEightInput();
+                mode = "Starting Figure Eight Path Simulation";
+            }
+            if (input != null) {
+                controller.printText(mode);
+                controller.startSimulator(input);
+                startButton.setText("Stop");
+            }
+        } catch (Exception e) {
+            controller.printText("Invalid input, only floating point numbers please");
         }
     }
 
