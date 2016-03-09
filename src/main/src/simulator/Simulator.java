@@ -13,23 +13,21 @@ import java.util.ArrayList;
 /**
  * This is the simulator class, like highlander there can be only one.
  * Handles: path planning, movement, and conversion to canvas coordinates.
- * TODO:
- * Add kinematic equations
- * Add draw loop
- * Determine wheel radius
- * Determine recalculation rate
+ *
  * <p/>
  * Created by CyberPuck on 2016-02-26.
  */
 public class Simulator {
-    // TODO: Should this be hard coded?
-    private static double WHEEL_RADIUS = 0.5;
+    // robot basics
     private static double ROBOT_LENGTH = 2;
     private static double ROBOT_HEIGHT = 4;
     // every 100 ms recalculate the course to take
     private static double RECALCULATE_COURSE = 0.1;
     // distance to start slowing down
     private static double SLOW_DOWN_DISTANCE = 1.0;
+    //radius of the wheels
+    private double wheelRadius;
+    // time since the last velocity and rotation rate recalculation
     private double lastRecalculation;
     // handle on the data to move the robot
     private Robot robot;
@@ -46,11 +44,12 @@ public class Simulator {
     // max/desired speed of the robot
     private double speed;
 
-    public Simulator(RobotInput input, Robot robot) {
+    public Simulator(RobotInput input, Robot robot, double wheelRadius) {
         this.input = input;
         this.robot = robot;
         enoughTime = initializeRobot(input, this.robot);
         atGoal = false;
+        this.wheelRadius = wheelRadius;
     }
 
     /**
@@ -203,9 +202,9 @@ public class Simulator {
         double w3 = wInput.getWheelThree();
         double w4 = wInput.getWheelFour();
         // calculate the velocity and angle rate
-        double rotationRate = Kinematics.calculateVehicleRotation(WHEEL_RADIUS, ROBOT_LENGTH / 2, ROBOT_HEIGHT / 2, w1, w2, w3, w4);
-        double xVel = Kinematics.calculateVelocityX(WHEEL_RADIUS, w1, w2, w3, w4);
-        double yVel = Kinematics.calculateVelocityY(WHEEL_RADIUS, w1, w2, w3, w4);
+        double rotationRate = Kinematics.calculateVehicleRotation(wheelRadius, ROBOT_LENGTH / 2, ROBOT_HEIGHT / 2, w1, w2, w3, w4);
+        double xVel = Kinematics.calculateVelocityX(wheelRadius, w1, w2, w3, w4);
+        double yVel = Kinematics.calculateVelocityY(wheelRadius, w1, w2, w3, w4);
         // update the robot components
         robot.setVelocity(new Point(xVel, yVel));
         robot.setRotationRate(rotationRate);
@@ -219,7 +218,6 @@ public class Simulator {
      */
     private void calculateGeneralMovement(RobotInput input, double timeDelta) {
         GeneralInput gi = (GeneralInput) input;
-        // TODO: based on the current location calculate if a course correction is required
         // Given the direction get the x and y component velocities
         double yVel = Math.cos(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed();
         double xVel = Math.sin(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed() * -1;

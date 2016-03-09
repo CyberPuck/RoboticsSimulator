@@ -30,8 +30,6 @@ public class TabController {
     }
 
     public void init() {
-        // add the controller
-//        setupTabControllers();
         // Add the control tab (part 1)
         Tab controlTab = new Tab();
         controlTab.setText("Control");
@@ -48,7 +46,7 @@ public class TabController {
             System.err.println("Failed to load control tab pane");
         }
 
-        // TODO: Add Part 2
+        // Add point tab
         Tab pointTab = new Tab();
         pointTab.setText("Point");
         fxmlLoader = new FXMLLoader(getClass().getResource("pointPane.fxml"));
@@ -62,7 +60,7 @@ public class TabController {
             System.err.println("Failed to load point tab pane");
         }
 
-        // TODO: Add Part 3
+        // Add path tab
         Tab pathTab = new Tab();
         pathTab.setText("Path");
         fxmlLoader = new FXMLLoader(getClass().getResource("pathPane.fxml"));
@@ -76,20 +74,6 @@ public class TabController {
         } catch (IOException e) {
             System.err.println("Failed to load path tab pane");
         }
-
-        // TODO: Add Part 4
-        Tab wayPointTab = new Tab();
-        wayPointTab.setText("Way Points");
-        fxmlLoader = new FXMLLoader(getClass().getResource("wayPointPane.fxml"));
-        try {
-            Pane testPane = fxmlLoader.load();
-            wayPointTab.setContent(testPane);
-            tabPane.getTabs().add(wayPointTab);
-        } catch (IOException e) {
-            System.err.println("Failed to load way point tab pane");
-        }
-
-        // TODO: Extra Credit?
     }
 
     public void updateUIs() {

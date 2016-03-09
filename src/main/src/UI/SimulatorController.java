@@ -34,7 +34,6 @@ import java.util.ResourceBundle;
  * Created by CyberPuck on 2016-02-15.
  */
 public class SimulatorController implements Initializable {
-    // TODO: Should this be configurable? in feet
     private static double WHEEL_RADIUS = 0.25;
 
     // parent node, need this for detecting mouse and keyboard actions
@@ -66,7 +65,6 @@ public class SimulatorController implements Initializable {
     private Button resetButton;
 
     // Canvas to draw the robot
-    // TODO: If time move these to separate controllers.
     @FXML
     private Canvas gridCanvas;
     @FXML
@@ -156,7 +154,7 @@ public class SimulatorController implements Initializable {
     }
 
     /**
-     * TODO: Should we return error values?
+     * Starts the simulation based on the input from the UI.
      */
     public void startSimulator(final RobotInput input) {
         this.input = input;
@@ -167,7 +165,7 @@ public class SimulatorController implements Initializable {
         robot.setVelocity(new Point(0, 0));
 
         // start the simulator
-        final Simulator sim = new Simulator(input, robot);
+        final Simulator sim = new Simulator(input, robot, WHEEL_RADIUS);
         // verify the simulator can complete in time
         if (sim.isEnoughTime()) {
             // setup variables now that we can actually start the simulation
@@ -200,9 +198,6 @@ public class SimulatorController implements Initializable {
                             deltaTime = deltaTime / 1000000000.0;
                         }
                         previousTime = now;
-                        // Debug code, need to add logic to only update every x frames
-//                printText("Now: " + now);
-                        // TODO: Need to convert the Y position into the canvas coordinates
                         // update the robot position
                         sim.calculateNewPosition(deltaTime);
                         // update the reference position
@@ -214,7 +209,6 @@ public class SimulatorController implements Initializable {
                             updateWheeledState((WheelInput) input);
                         }
                         // update the position based on the global reference frame
-//                displayController.getRobotCanvas().setRobotPosition(sim.getRobot());
                         displayController.getRobotCanvas().redrawRobot(sim.getRobot());
                         // check if the robot is at the goal and stop
                         if (sim.isAtGoal()) {
@@ -231,7 +225,7 @@ public class SimulatorController implements Initializable {
     }
 
     /**
-     * TODO: Should we return error values?
+     * Stops the current simulation if running.
      */
     public void stopSimulator() {
         if (simulatorRunning) {

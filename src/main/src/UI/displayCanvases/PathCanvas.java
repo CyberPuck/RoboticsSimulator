@@ -71,7 +71,6 @@ public class PathCanvas {
      */
     public void updateRobotPath(Point newLocation) {
         robotPath.add(newLocation);
-        // TODO: fill this in, take into account relocation if the boundary is hit
         Point oldPoint = Utils.convertToPaneCoordinates(previousPosition, this.canvasCenter);
         Point newPoint = Utils.convertToPaneCoordinates(newLocation, this.canvasCenter);
         GraphicsContext gc = pathCanvas.getGraphicsContext2D();
@@ -201,7 +200,7 @@ public class PathCanvas {
         GraphicsContext gc = this.pathCanvas.getGraphicsContext2D();
         gc.save();
         Point paneStartingPoint = Utils.convertToPaneCoordinates(startingLocation, this.canvasCenter);
-        // TODO: Deal with a path that is off by tenths of a degree or fix it
+        // Path might be offset from robot path, this is due to double precision inaccuracy
         Point temp;
         if (gi.getSpeed() >= 0) {
             temp = new Point(paneStartingPoint.getX(), paneStartingPoint.getY() + 1000000);
