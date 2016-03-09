@@ -65,8 +65,6 @@ public class PathTab implements Initializable {
     @FXML
     private TextField inclination;
     @FXML
-    private TextField speed;
-    @FXML
     private TextField time;
     @FXML
     private TextField rotation;
@@ -158,14 +156,13 @@ public class PathTab implements Initializable {
         double radius = Double.parseDouble(circleRadius.getText());
         double angle = Double.parseDouble(inclination.getText());
         double endAngle = Double.parseDouble(rotation.getText());
-        double speed = Double.parseDouble(this.speed.getText());
         double time = Double.parseDouble(this.time.getText());
         if (time == 0) {
             controller.printText("Robot can't complete a path in 0 seconds");
             return null;
         }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
-        return new CirclePathInput(origin, radius, angle, endAngle, rr, speed, time);
+        return new CirclePathInput(origin, radius, angle, endAngle, rr, time);
     }
 
     /**
@@ -179,14 +176,13 @@ public class PathTab implements Initializable {
         double side = Double.parseDouble(rectangleSide.getText());
         double angle = Double.parseDouble(inclination.getText());
         double endAngle = Double.parseDouble(rotation.getText());
-        double speed = Double.parseDouble(this.speed.getText());
         double time = Double.parseDouble(this.time.getText());
         if (time == 0) {
             controller.printText("Robot can't complete a path in 0 seconds");
             return null;
         }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
-        return new RectanglePathInput(origin, top, side, angle, endAngle, rr, speed, time);
+        return new RectanglePathInput(origin, top, side, angle, endAngle, rr, time);
     }
 
     /**
@@ -200,14 +196,13 @@ public class PathTab implements Initializable {
         double radiusTwo = Double.parseDouble(farRadius.getText());
         double angle = Double.parseDouble(inclination.getText());
         double endAngle = Double.parseDouble(rotation.getText());
-        double speed = Double.parseDouble(this.speed.getText());
         double time = Double.parseDouble(this.time.getText());
         if (time == 0) {
             controller.printText("Robot can't complete a path in 0 seconds");
             return null;
         }
         double rr = (endAngle - controller.getRobotPosition().getAngle()) / time;
-        return new FigureEightPathInput(origin, radiusOne, radiusTwo, angle, endAngle, rr, speed, time);
+        return new FigureEightPathInput(origin, radiusOne, radiusTwo, angle, endAngle, rr, time);
     }
 
     private void updateTab(String mode) {
@@ -288,7 +283,6 @@ public class PathTab implements Initializable {
         farRadius.setText("0.0");
         inclination.setText("0.0");
         rotation.setText("0.0");
-        speed.setText("0.0");
         time.setText("0.0");
     }
 }

@@ -13,8 +13,8 @@
         <TextField fx:id="yEndPoint" layoutX="277.0" layoutY="39.0"/>
         <Label layoutX="10.0" layoutY="75.0" text="End orientation:"/>
         <TextField fx:id="endOrientation" layoutX="115.0" layoutY="71.0"/>
-        <Label layoutX="10.0" layoutY="105.0" text="Speed (ft/sec):"/>
-        <TextField fx:id="speedField" layoutX="115.0" layoutY="101.0"/>
+        <!--<Label layoutX="10.0" layoutY="105.0" text="Speed (ft/sec):"/>-->
+        <!--<TextField fx:id="speedField" layoutX="115.0" layoutY="101.0"/>-->
         <Label layoutX="10.0" layoutY="135.0" text="Time to finish(sec):"/>
         <TextField fx:id="timeToFinish" layoutX="115.0" layoutY="131.0"/>
         <Button fx:id="startButton" layoutX="170.0" layoutY="530.0" mnemonicParsing="false" prefHeight="50.0"

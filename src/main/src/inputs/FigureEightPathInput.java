@@ -18,8 +18,6 @@ public class FigureEightPathInput implements RobotInput {
     private double radiusTwo;
     // angle both radii are at
     private double inclination;
-    // speed robot can operate at
-    private double speed;
     // end orientation of the robot
     private double endOrientation;
     // rotation rate of the vehicle
@@ -27,12 +25,11 @@ public class FigureEightPathInput implements RobotInput {
     // time to complete figure eight
     private double time;
 
-    public FigureEightPathInput(Point origin, double radiusOne, double radiusTwo, double inclination, double endOrientation, double rotationRate, double speed, double time) {
+    public FigureEightPathInput(Point origin, double radiusOne, double radiusTwo, double inclination, double endOrientation, double rotationRate, double time) {
         this.origin = origin;
         this.radiusOne = radiusOne;
         this.radiusTwo = radiusTwo;
         this.inclination = inclination;
-        this.speed = speed;
         this.endOrientation = endOrientation;
         this.rotationRate = rotationRate;
         this.time = time;
@@ -63,14 +60,6 @@ public class FigureEightPathInput implements RobotInput {
         return inclination;
     }
 
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
     public double getRotationRate() {
         return rotationRate;
     }
@@ -87,7 +76,6 @@ public class FigureEightPathInput implements RobotInput {
                 ", radiusOne=" + radiusOne +
                 ", radiusTwo=" + radiusTwo +
                 ", inclination=" + inclination +
-                ", speed=" + speed +
                 ", endOrientation=" + endOrientation +
                 ", rotationRate=" + rotationRate +
                 ", time=" + time +

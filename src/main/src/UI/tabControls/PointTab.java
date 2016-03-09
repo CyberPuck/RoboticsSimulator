@@ -27,8 +27,8 @@ public class PointTab implements Initializable {
     private TextField yEndPoint;
     @FXML
     private TextField endOrientation;
-    @FXML
-    private TextField speedField;
+    //    @FXML
+//    private TextField speedField;
     @FXML
     private TextField timeToFinish;
     @FXML
@@ -73,7 +73,7 @@ public class PointTab implements Initializable {
     private void setDefaults() {
         xEndPoint.setText("0.0");
         yEndPoint.setText("0.0");
-        speedField.setText("0.0");
+//        speedField.setText("0.0");
         endOrientation.setText("0.0");
         timeToFinish.setText("0.0");
     }
@@ -89,7 +89,7 @@ public class PointTab implements Initializable {
         double y = Double.parseDouble(this.yEndPoint.getText());
         Point endPoint = new Point(x, y);
         double endOrientation = Double.parseDouble(this.endOrientation.getText());
-        double speed = Double.parseDouble(this.speedField.getText());
+//        double speed = Double.parseDouble(this.speedField.getText());
         double time = Double.parseDouble(this.timeToFinish.getText());
         if (time == 0) {
             controller.printText("Robot can't complete a path in 0 seconds");
@@ -97,8 +97,7 @@ public class PointTab implements Initializable {
         }
         // get distance between the two points
         double distance = Utils.distanceBetweenPoints(controller.getRobotPosition().getPosition(), endPoint);
-        // calculate how long the trip will take (approximately)
-        double timeTaken = distance / speed;
+        double speed = distance / time;
         // calculate the rate the robot should rotate
         double rotationRate = endOrientation / time;
         PointInput pi = new PointInput(endPoint, speed, endOrientation, time, rotationRate);

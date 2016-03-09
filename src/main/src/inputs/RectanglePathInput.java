@@ -22,21 +22,18 @@ public class RectanglePathInput implements RobotInput {
     private double endOrientation;
     // rate robot rotates while moving along path
     private double rotationRate;
-    // speed of the robot
-    private double speed;
     // time to complete rectangle path
     private double time;
     // index counter for the number of vertices the robot has visited
     private int indiceCount;
 
-    public RectanglePathInput(Point origin, double topLength, double sideLength, double inclination, double endOrientation, double rotationRate, double speed, double time) {
+    public RectanglePathInput(Point origin, double topLength, double sideLength, double inclination, double endOrientation, double rotationRate, double time) {
         this.origin = origin;
         this.topLength = topLength;
         this.sideLength = sideLength;
         this.inclination = inclination;
         this.endOrientation = endOrientation;
         this.rotationRate = rotationRate;
-        this.speed = speed;
         this.time = time;
     }
 
@@ -69,14 +66,6 @@ public class RectanglePathInput implements RobotInput {
         return rotationRate;
     }
 
-    public double getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
     public double getTime() {
         return time;
     }
@@ -99,7 +88,6 @@ public class RectanglePathInput implements RobotInput {
                 ", inclination=" + inclination +
                 ", endOrientation=" + endOrientation +
                 ", rotationRate=" + rotationRate +
-                ", speed=" + speed +
                 ", time=" + time +
                 '}';
     }

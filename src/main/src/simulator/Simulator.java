@@ -41,6 +41,8 @@ public class Simulator {
     private ArrayList<Point> pathVertices = new ArrayList<>();
     // index in the path list
     private int pathIndex;
+    // max/desired speed of the robot
+    private double speed;
 
     public Simulator(RobotInput input, Robot robot) {
         this.input = input;
@@ -109,7 +111,7 @@ public class Simulator {
                 // generate the path point
                 generateRectanglePath(rpi, robot.getLocation());
                 robot.setRotationRate(rpi.getRotationRate());
-                rpi.setSpeed(distance / rpi.getTime());
+                speed = distance / rpi.getTime();
                 rpi.setIndiceCount(0);
                 break;
             case PATH_CIRCLE:
@@ -121,7 +123,7 @@ public class Simulator {
                 // generate the path
                 generateCirclePath(cpi, robot.getLocation());
                 robot.setRotationRate(cpi.getRotationRate());
-                cpi.setSpeed(distance / cpi.getTime());
+                speed = distance / cpi.getTime();
                 cpi.setCurrentIndex(0);
                 break;
             case PATH_FIGURE_EIGHT:
@@ -133,7 +135,7 @@ public class Simulator {
                 // generate the path
                 generateFigureEightPath(fepi, robot.getLocation());
                 robot.setRotationRate(fepi.getRotationRate());
-                fepi.setSpeed(distance / fepi.getTime());
+                speed = distance / fepi.getTime();
                 break;
             default:
                 System.err.println("Not implemented");
@@ -262,8 +264,8 @@ public class Simulator {
             rpi.setIndiceCount(rpi.getIndiceCount() + 1);
         }
         double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(rpi.getIndiceCount()));
-        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * rpi.getSpeed();
-        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * rpi.getSpeed() * -1;
+        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
+        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
         robot.setVelocity(new Point(xVel, yVel));
         robot.setRotationRate(rpi.getRotationRate());
     }
@@ -282,8 +284,8 @@ public class Simulator {
             cpi.setCurrentIndex(cpi.getCurrentIndex() + 1);
         }
         double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(cpi.getCurrentIndex()));
-        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * cpi.getSpeed();
-        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * cpi.getSpeed() * -1;
+        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
+        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
         robot.setVelocity(new Point(xVel, yVel));
         robot.setRotationRate(cpi.getRotationRate());
     }
@@ -296,8 +298,8 @@ public class Simulator {
             pathIndex++;
         }
         double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
-        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * fepi.getSpeed();
-        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * fepi.getSpeed() * -1;
+        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
+        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
         robot.setVelocity(new Point(xVel, yVel));
         robot.setRotationRate(fepi.getRotationRate());
     }
