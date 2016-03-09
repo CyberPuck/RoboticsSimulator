@@ -68,6 +68,8 @@ public class ControlTab implements Initializable {
     private TextField wheelFourField;
     @FXML
     private Canvas robotImage;
+    @FXML
+    private Label wheelUnits;
 
     // Fire up the simulation
     @FXML
@@ -260,6 +262,7 @@ public class ControlTab implements Initializable {
         wheelFourLabel.setVisible(false);
         wheelFourField.setVisible(false);
         robotImage.setVisible(false);
+        wheelUnits.setVisible(false);
     }
 
     private void enableWheelFields() {
@@ -272,6 +275,7 @@ public class ControlTab implements Initializable {
         wheelFourLabel.setVisible(true);
         wheelFourField.setVisible(true);
         robotImage.setVisible(true);
+        wheelUnits.setVisible(true);
         // disable general
         disableGeneralFields();
     }

@@ -17,6 +17,7 @@
         <TextField fx:id="directionField" layoutX="150.0" layoutY="60.0"/>
         <TextField fx:id="speedField" layoutX="150.0" layoutY="95.0"/>
         <TextField fx:id="rotationField" layoutX="150.0" layoutY="130.0"/>
+        <Label fx:id="wheelUnits" layoutX="75" layoutY="85" text="Wheel rotation units are rotations per second"/>
         <Canvas fx:id="robotImage" layoutX="156.0" layoutY="110.0" height="256.0" width="128.0"/>
         <Label fx:id="wheelOneLabel" layoutX="10.0" layoutY="130.0" text="Wheel One:"/>
         <TextField fx:id="wheelOneField" layoutX="100.0" layoutY="125.0" prefHeight="25.0" prefWidth="51.0"/>
