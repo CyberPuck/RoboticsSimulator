@@ -98,11 +98,9 @@ public class RobotCanvas {
         double x = currentLocation.getX();
         double y = currentLocation.getY();
         if (x > BOUNDARY_LENGTH_X + canvasCenter.getX() || x < canvasCenter.getX() - BOUNDARY_LENGTH_X) {
-            System.out.println("Updating center, X");
             centerCanvas(currentLocation);
         }
         if (y > BOUNDARY_LENGTH_Y + canvasCenter.getY() || y < canvasCenter.getY() - BOUNDARY_LENGTH_Y) {
-            System.out.println("Updating center, Y");
             centerCanvas(currentLocation);
         }
 

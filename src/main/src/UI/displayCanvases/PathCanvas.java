@@ -236,10 +236,9 @@ public class PathCanvas {
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeLine(paneStartingPoint.getX(), paneStartingPoint.getY(), endPoint.getX(), endPoint.getY());
+        gc.restore();
         // check for way points
         drawWayPoints(pi.getWayPoints(), gc);
-        gc.restore();
-
     }
 
     private void drawCirclePath(CirclePathInput input) {
@@ -253,9 +252,9 @@ public class PathCanvas {
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeOval(startingPoint.getX(), startingPoint.getY(), 2 * radius, 2 * radius);
+        gc.restore();
         // check for way points
         drawWayPoints(input.getWayPoints(), gc);
-        gc.restore();
     }
 
     private void drawRectanglePath(RectanglePathInput input) {
@@ -270,9 +269,9 @@ public class PathCanvas {
         gc.setLineWidth(INPUT_LINE_WIDTH);
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeRect(startingPoint.getX(), startingPoint.getY(), topSide, side);
+        gc.restore();
         // check for way points
         drawWayPoints(input.getWayPoints(), gc);
-        gc.restore();
     }
 
     private void drawFigureEightPath(FigureEightPathInput input) {
@@ -290,9 +289,9 @@ public class PathCanvas {
         gc.setStroke(INPUT_LINE_COLOR);
         gc.strokeOval(closePoint.getX(), closePoint.getY(), 2 * closeRadius, 2 * closeRadius);
         gc.strokeOval(farPoint.getX(), farPoint.getY(), 2 * farRadius, 2 * farRadius);
+        gc.restore();
         // check for way points
         drawWayPoints(input.getWayPoints(), gc);
-        gc.restore();
     }
 
     /**

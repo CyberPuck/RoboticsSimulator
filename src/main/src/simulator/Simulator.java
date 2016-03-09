@@ -109,8 +109,6 @@ public class Simulator {
                 if (!verifyPathCompletion(rpi.getTime(), distance)) {
                     return false;
                 }
-                // generate the path point
-                generateRectanglePath(rpi, robot.getLocation());
                 robot.setRotationRate(rpi.getRotationRate());
                 speed = distance / rpi.getTime();
                 break;
@@ -121,7 +119,6 @@ public class Simulator {
                     return false;
                 }
                 // generate the path
-                generateCirclePath(cpi, robot.getLocation());
                 robot.setRotationRate(cpi.getRotationRate());
                 speed = distance / cpi.getTime();
                 break;
@@ -132,7 +129,6 @@ public class Simulator {
                     return false;
                 }
                 // generate the path
-                generateFigureEightPath(fepi, robot.getLocation());
                 robot.setRotationRate(fepi.getRotationRate());
                 speed = distance / fepi.getTime();
                 break;
@@ -155,7 +151,6 @@ public class Simulator {
      */
     public void calculateNewPosition(double timeDelta) {
         lastRecalculation += timeDelta;
-//        System.out.println("Last recalc: " + lastRecalculation);
         // calculate the course
         if (lastRecalculation > RECALCULATE_COURSE) {
             // reset last recalculation time
@@ -223,7 +218,6 @@ public class Simulator {
         double xVel = Math.sin(Math.toRadians(gi.getDirection() - robot.getAngle())) * gi.getSpeed() * -1;
         robot.setVelocity(new Point(xVel, yVel));
         robot.setRotationRate(gi.getRotation());
-        System.out.println("Current angle: " + Math.toDegrees(Math.atan(yVel / xVel)));
     }
 
     /**
@@ -241,7 +235,6 @@ public class Simulator {
             pathIndex++;
         }
         double distance = Utils.distanceBetweenPoints(robot.getLocation(), pathVertices.get(pathIndex));
-        System.out.println("Distance: " + distance);
         distance = distance < 0 ? distance * -1 : distance;
         if (distance <= SLOW_DOWN_DISTANCE) {
             // if we are within 1 foot of the target slow down
@@ -274,7 +267,6 @@ public class Simulator {
             pathIndex++;
         }
         double distance = Utils.distanceBetweenPoints(robot.getLocation(), pathVertices.get(pathIndex));
-        System.out.println("Distance: " + distance);
         distance = distance < 0 ? distance * -1 : distance;
         if (distance <= SLOW_DOWN_DISTANCE) {
             // if we are within 1 foot of the target slow down
@@ -381,19 +373,12 @@ public class Simulator {
             return distance >= 0 ? distance : -1 * distance;
         } else {
             // add in the way points
-            double distance = 0.0;
-            double temp = 0.0;
-            Point previousPoint = robot.getLocation();
-            for (int i = 0; i < pi.getWayPoints().size(); i++) {
-                temp = Utils.distanceBetweenPoints(previousPoint, pi.getWayPoints().get(i));
-                distance += temp >= 0 ? temp : -1 * temp;
-                pathVertices.add(pi.getWayPoints().get(i));
-                previousPoint = pi.getWayPoints().get(i);
-            }
-            temp = Utils.distanceBetweenPoints(previousPoint, pi.getEndPoint());
-            distance += temp >= 0 ? temp : -1 * temp;
+            this.pathVertices.addAll(pi.getWayPoints());
+            // organize the way points
+            organizeVertices(pi.getWayPoints());
             this.pathVertices.add(pi.getEndPoint());
-            return distance;
+            // calculate the total distance
+            return calculateTotalPathLength();
         }
     }
 
@@ -404,9 +389,26 @@ public class Simulator {
      * @return distance
      */
     private double calculateRectangleDistance(RectanglePathInput rpi) {
-        double topSides = rpi.getTopLength();
-        double sides = rpi.getSideLength();
-        return topSides * 2 + sides * 2;
+        if (rpi.getWayPoints().isEmpty()) {
+            double topSides = rpi.getTopLength();
+            double sides = rpi.getSideLength();
+            generateRectanglePath(rpi, robot.getLocation());
+            return topSides * 2 + sides * 2;
+        } else {
+            // update way points
+//            updateWayPoints(rpi.getWayPoints(), rpi.getInclination());
+            Point one = Utils.calculatePoint(robot.getLocation(), rpi.getSideLength(), rpi.getInclination());
+            this.pathVertices.add(one);
+            Point two = Utils.calculatePoint(one, rpi.getTopLength(), rpi.getInclination() - 90);
+            this.pathVertices.add(two);
+            Point three = Utils.calculatePoint(two, rpi.getSideLength(), rpi.getInclination() - 180);
+            this.pathVertices.add(three);
+            // organize the way points
+            organizeVertices(rpi.getWayPoints());
+            this.pathVertices.add(robot.getLocation());
+            // calculate the total distance
+            return calculateTotalPathLength();
+        }
     }
 
     /**
@@ -416,7 +418,19 @@ public class Simulator {
      * @return distance
      */
     private double calculateCircleDistance(CirclePathInput cpi) {
-        return 2 * Math.PI * cpi.getRadius();
+        if (cpi.getWayPoints().isEmpty()) {
+            generateCirclePath(cpi, robot.getLocation());
+            return 2 * Math.PI * cpi.getRadius();
+        } else {
+            Point circleCenter = Utils.calculatePoint(robot.getLocation(), cpi.getRadius(), cpi.getInclination());
+            // add vertices in 30 degree chunks
+            for (int i = 30; i <= 360; i += 30) {
+                this.pathVertices.add(Utils.calculatePoint(circleCenter, cpi.getRadius(), 180 + cpi.getInclination() - i));
+            }
+            organizeVertices(cpi.getWayPoints());
+            this.pathVertices.add(robot.getLocation());
+            return calculateTotalPathLength();
+        }
     }
 
     /**
@@ -426,7 +440,28 @@ public class Simulator {
      * @return distance
      */
     private double calculateFigureEightPath(FigureEightPathInput fepi) {
-        return (2 * Math.PI * fepi.getRadiusOne() + 2 * Math.PI * fepi.getRadiusTwo());
+        if (fepi.getWayPoints().isEmpty()) {
+            generateFigureEightPath(fepi, robot.getLocation());
+            return (2 * Math.PI * fepi.getRadiusOne() + 2 * Math.PI * fepi.getRadiusTwo());
+        } else {
+            Point closeCircleCenter = Utils.calculatePoint(robot.getLocation(), fepi.getRadiusOne(), fepi.getInclination());
+            Point farCircleCenter = Utils.calculatePoint(robot.getLocation(), fepi.getRadiusOne() * 2 + fepi.getRadiusTwo(), fepi.getInclination());
+            // go through the first half
+            for (int i = 30; i <= 180; i += 30) {
+                this.pathVertices.add(Utils.calculatePoint(closeCircleCenter, fepi.getRadiusOne(), 180 + fepi.getInclination() - i));
+            }
+            // add the far circle
+            for (int i = 360; i >= 0; i -= 30) {
+                this.pathVertices.add(Utils.calculatePoint(farCircleCenter, fepi.getRadiusTwo(), 180 + fepi.getInclination() - i));
+            }
+            // add the rest of the last circle
+            for (int i = 180 + 30; i < 360; i += 30) {
+                this.pathVertices.add(Utils.calculatePoint(closeCircleCenter, fepi.getRadiusOne(), 180 + fepi.getInclination() - i));
+            }
+            organizeVertices(fepi.getWayPoints());
+            this.pathVertices.add(robot.getLocation());
+            return calculateTotalPathLength();
+        }
     }
 
     /**
@@ -501,5 +536,44 @@ public class Simulator {
             this.pathVertices.add(Utils.calculatePoint(closeCircleCenter, fepi.getRadiusOne(), 180 + fepi.getInclination() - i));
         }
         this.pathVertices.add(startingPoint);
+    }
+
+    /**
+     * Organize the vertices based on the distance from one another.
+     *
+     * @param wayPoints way points to add to the path
+     */
+    private void organizeVertices(ArrayList<Point> wayPoints) {
+        for (int i = 0; i < wayPoints.size(); i++) {
+            double distance = Utils.distanceBetweenPoints(wayPoints.get(i), pathVertices.get(0));
+            distance = distance < 0 ? distance * -1 : distance;
+            int index = 0;
+            for (int j = 1; j < pathVertices.size(); j++) {
+                double temp = Utils.distanceBetweenPoints(wayPoints.get(i), pathVertices.get(j));
+                temp = temp < 0 ? temp * -1 : temp;
+                if (temp < distance) {
+                    index = j;
+                    distance = temp;
+                }
+            }
+            pathVertices.add(index + 1, wayPoints.get(i));
+        }
+    }
+
+    /**
+     * Calculates the total path length with or without the way points.
+     *
+     * @return distance
+     */
+    private double calculateTotalPathLength() {
+        double distance = 0.0;
+        double temp;
+        Point previousPoint = robot.getLocation();
+        for (int i = 0; i < pathVertices.size(); i++) {
+            temp = Utils.distanceBetweenPoints(previousPoint, pathVertices.get(i));
+            distance += temp >= 0 ? temp : -1 * temp;
+            previousPoint = pathVertices.get(i);
+        }
+        return distance;
     }
 }
