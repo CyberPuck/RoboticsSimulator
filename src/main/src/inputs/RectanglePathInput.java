@@ -24,8 +24,6 @@ public class RectanglePathInput implements RobotInput {
     private double rotationRate;
     // time to complete rectangle path
     private double time;
-    // index counter for the number of vertices the robot has visited
-    private int indiceCount;
 
     public RectanglePathInput(Point origin, double topLength, double sideLength, double inclination, double endOrientation, double rotationRate, double time) {
         this.origin = origin;
@@ -68,14 +66,6 @@ public class RectanglePathInput implements RobotInput {
 
     public double getTime() {
         return time;
-    }
-
-    public int getIndiceCount() {
-        return indiceCount;
-    }
-
-    public void setIndiceCount(int indicesCount) {
-        this.indiceCount = indicesCount;
     }
 
     @Override

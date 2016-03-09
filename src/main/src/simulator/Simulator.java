@@ -28,6 +28,8 @@ public class Simulator {
     private static double ROBOT_HEIGHT = 4;
     // every 100 ms recalculate the course to take
     private static double RECALCULATE_COURSE = 0.1;
+    // distance to start slowing down
+    private static double SLOW_DOWN_DISTANCE = 1.0;
     private double lastRecalculation;
     // handle on the data to move the robot
     private Robot robot;
@@ -112,7 +114,6 @@ public class Simulator {
                 generateRectanglePath(rpi, robot.getLocation());
                 robot.setRotationRate(rpi.getRotationRate());
                 speed = distance / rpi.getTime();
-                rpi.setIndiceCount(0);
                 break;
             case PATH_CIRCLE:
                 CirclePathInput cpi = (CirclePathInput) input;
@@ -124,7 +125,6 @@ public class Simulator {
                 generateCirclePath(cpi, robot.getLocation());
                 robot.setRotationRate(cpi.getRotationRate());
                 speed = distance / cpi.getTime();
-                cpi.setCurrentIndex(0);
                 break;
             case PATH_FIGURE_EIGHT:
                 FigureEightPathInput fepi = (FigureEightPathInput) input;
@@ -257,17 +257,29 @@ public class Simulator {
      */
     private void calculateRectangleMovement(RobotInput input, double deltaTime) {
         RectanglePathInput rpi = (RectanglePathInput) input;
-        if (rpi.getIndiceCount() == pathVertices.size() - 1 && Utils.isAtGoal(robot.getLocation(), pathVertices.get(rpi.getIndiceCount()))) {
+        if (pathIndex == pathVertices.size() - 1 && Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
             atGoal = true;
-        } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(rpi.getIndiceCount()))) {
+        } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
             // if we are at a vertex that is not the goal, set the local goal to the next index
-            rpi.setIndiceCount(rpi.getIndiceCount() + 1);
+            pathIndex++;
         }
-        double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(rpi.getIndiceCount()));
-        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
-        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
-        robot.setVelocity(new Point(xVel, yVel));
-        robot.setRotationRate(rpi.getRotationRate());
+        double distance = Utils.distanceBetweenPoints(robot.getLocation(), pathVertices.get(pathIndex));
+        System.out.println("Distance: " + distance);
+        distance = distance < 0 ? distance * -1 : distance;
+        if (distance <= SLOW_DOWN_DISTANCE) {
+            // if we are within 1 foot of the target slow down
+            double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+            double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed * 0.5;
+            double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1 * 0.5;
+            robot.setVelocity(new Point(xVel, yVel));
+            robot.setRotationRate(rpi.getRotationRate());
+        } else {
+            double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+            double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
+            double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
+            robot.setVelocity(new Point(xVel, yVel));
+            robot.setRotationRate(rpi.getRotationRate());
+        }
     }
 
     /**
@@ -278,16 +290,27 @@ public class Simulator {
      */
     private void calculateCircleMovement(RobotInput input, double timeDelta) {
         CirclePathInput cpi = (CirclePathInput) input;
-        if (cpi.getCurrentIndex() == pathVertices.size() - 1 && Utils.isAtGoal(robot.getLocation(), pathVertices.get(cpi.getCurrentIndex()))) {
+        if (pathIndex == pathVertices.size() - 1 && Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
             atGoal = true;
-        } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(cpi.getCurrentIndex()))) {
-            cpi.setCurrentIndex(cpi.getCurrentIndex() + 1);
+        } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
+            pathIndex++;
         }
-        double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(cpi.getCurrentIndex()));
-        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
-        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
-        robot.setVelocity(new Point(xVel, yVel));
-        robot.setRotationRate(cpi.getRotationRate());
+        double distance = Utils.distanceBetweenPoints(robot.getLocation(), pathVertices.get(pathIndex));
+        distance = distance < 0 ? distance * -1 : distance;
+        if (distance <= SLOW_DOWN_DISTANCE) {
+            // slow down
+            double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+            double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed * 0.5;
+            double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1 * 0.5;
+            robot.setVelocity(new Point(xVel, yVel));
+            robot.setRotationRate(cpi.getRotationRate());
+        } else {
+            double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+            double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
+            double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
+            robot.setVelocity(new Point(xVel, yVel));
+            robot.setRotationRate(cpi.getRotationRate());
+        }
     }
 
     private void calculateFigureEightMovement(RobotInput input, double timeDelta) {
@@ -297,11 +320,21 @@ public class Simulator {
         } else if (Utils.isAtGoal(robot.getLocation(), pathVertices.get(pathIndex))) {
             pathIndex++;
         }
-        double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
-        double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
-        double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
-        robot.setVelocity(new Point(xVel, yVel));
-        robot.setRotationRate(fepi.getRotationRate());
+        double distance = Utils.distanceBetweenPoints(robot.getLocation(), pathVertices.get(pathIndex));
+        distance = distance < 0 ? distance * -1 : distance;
+        if (distance <= SLOW_DOWN_DISTANCE) {
+            double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+            double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed * 0.5;
+            double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1 * 0.5;
+            robot.setVelocity(new Point(xVel, yVel));
+            robot.setRotationRate(fepi.getRotationRate());
+        } else {
+            double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
+            double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
+            double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
+            robot.setVelocity(new Point(xVel, yVel));
+            robot.setRotationRate(fepi.getRotationRate());
+        }
     }
 
     /**
@@ -315,16 +348,13 @@ public class Simulator {
      */
     private void updateRobot(double xVel, double yVel, double rotationRate, double timeDelta, Robot robot) {
         double angle = timeDelta * rotationRate + robot.getAngle();
-        System.out.println("angle of robot: " + angle);
         robot.setAngle(Utils.roundDouble(angle));
         // update velocities based on vehicle angle to the GRF
         Point vel = VelocityEquations.convertYawToGlobalFrame(new Position(new Point(xVel, yVel), robot.getAngle()));
-        System.out.println("Converted velocity: " + vel.toString());
         // calculate the new position data
         double newX = vel.getX() * timeDelta + robot.getLocation().getX();
         double newY = vel.getY() * timeDelta + robot.getLocation().getY();
         robot.setLocation(new Point(Utils.roundDouble(newX), Utils.roundDouble(newY)));
-//        System.out.println(robot.toString());
     }
 
     /**
@@ -402,7 +432,6 @@ public class Simulator {
         this.pathVertices.add(two);
         Point three = Utils.calculatePoint(two, rpi.getSideLength(), rpi.getInclination() - 180);
         this.pathVertices.add(three);
-        // TODO: Should we just use the starting location?
         this.pathVertices.add(startingLocation);
     }
 
@@ -414,8 +443,6 @@ public class Simulator {
      * @param startingPoint starting location
      */
     private void generateCirclePath(CirclePathInput cpi, Point startingPoint) {
-//        Point top = Utils.calculatePoint(startingPoint, cpi.getRadius() * 2, cpi.getInclination());
-//        this.pathVertices.add(top);
         Point circleCenter = Utils.calculatePoint(startingPoint, cpi.getRadius(), cpi.getInclination());
         // add vertices in 30 degree chunks
         for (int i = 30; i <= 360; i += 30) {
