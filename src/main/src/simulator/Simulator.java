@@ -101,7 +101,8 @@ public class Simulator {
                 if (!verifyPathCompletion(pi.getTime(), distance)) {
                     return false;
                 }
-                robot.setRotationRate(pi.getRotationRate());
+                double diff = pi.getEndOrientation() - robot.getAngle();
+                robot.setRotationRate(diff / pi.getTime());
                 speed = distance / pi.getTime();
                 break;
             case PATH_RECTANGLE:
@@ -247,13 +248,11 @@ public class Simulator {
             double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed * 0.5;
             double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1 * 0.5;
             robot.setVelocity(new Point(xVel, yVel));
-            robot.setRotationRate(pi.getRotationRate());
         } else {
             double angle = Utils.getAngle(robot.getLocation(), pathVertices.get(pathIndex));
             double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;
             double xVel = Math.sin(Math.toRadians(angle - robot.getAngle())) * this.speed * -1;
             robot.setVelocity(new Point(xVel, yVel));
-            robot.setRotationRate(pi.getRotationRate());
         }
     }
 
@@ -354,7 +353,7 @@ public class Simulator {
      * @param robot        Robot to have heading and location updated
      */
     private void updateRobot(double xVel, double yVel, double rotationRate, double timeDelta, Robot robot) {
-        double angle = timeDelta * rotationRate + robot.getAngle();
+        double angle = robot.getAngle() + timeDelta * rotationRate;
         robot.setAngle(Utils.roundDouble(angle));
         // update velocities based on vehicle angle to the GRF
         Point vel = VelocityEquations.convertYawToGlobalFrame(new Position(new Point(xVel, yVel), robot.getAngle()));
