@@ -214,8 +214,10 @@ public class Simulator {
      */
     private void calculateGeneralMovement(RobotInput input, double timeDelta) {
         GeneralInput gi = (GeneralInput) input;
-//        Point virtualEndPoint = Utils.calculatePoint(robot.getLocation(), 5, gi.getDirection());
-        Point virtualEndPoint = Utils.calculatePoint(gi.getStartLocation(), 1000000, gi.getDirection());
+        double distance = Utils.distanceBetweenPoints(gi.getStartLocation(), robot.getLocation());
+        distance = distance < 0 ? distance * -1 : distance;
+        Point virtualEndPoint = Utils.calculatePoint(gi.getStartLocation(), distance + 1, gi.getDirection());
+//        Point virtualEndPoint = Utils.calculatePoint(gi.getStartLocation(), 1000000, gi.getDirection());
 
         double angle = Utils.getAngle(robot.getLocation(), virtualEndPoint);
         double yVel = Math.cos(Math.toRadians(angle - robot.getAngle())) * this.speed;

@@ -140,7 +140,7 @@ public class PathCanvas {
             Point x2 = Utils.convertToPaneCoordinates(new Point(this.canvasCenter.getX() + 180, 0), this.canvasCenter);
             gc.strokeLine(x1.getX(), x1.getY(), x2.getX(), x2.getY());
             gc.setFill(Color.YELLOW);
-            gc.fillText("X-axis", 0, x1.getY());
+            gc.fillText("X-axis", 1, x1.getY() - 5);
         }
         if (this.canvasCenter.getX() - 180 < 0 && this.canvasCenter.getX() + 180 > 0) {
             //draw y axis
@@ -148,7 +148,7 @@ public class PathCanvas {
             Point y2 = Utils.convertToPaneCoordinates(new Point(0, this.canvasCenter.getY() + 360), this.canvasCenter);
             gc.strokeLine(y1.getX(), y1.getY(), y2.getX(), y2.getY());
             gc.setFill(Color.YELLOW);
-            gc.fillText("Y-axis", y1.getX(), 15);
+            gc.fillText("Y-axis", y1.getX() + 5, 15);
         }
     }
 
