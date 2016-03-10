@@ -268,11 +268,12 @@ public class SimulatorController implements Initializable {
         velocityY.setText("Velocity Y(ft/s): " + df.format(robot.getVelocity().getY()));
         velocityX.setText("Velocity X(ft/s): " + df.format(robot.getVelocity().getX()));
         rotationRate.setText("Rotation Rate(deg/s): " + df.format(robot.getRotationRate()));
-        direction.setText("Direction(deg): " + df.format(robot.getAngle()));
+        // make sure the direction stays in range 0 - 360
+        direction.setText("Direction(deg): " + df.format(robot.getAngle() % 360));
         position.setText("Position(ft): (" + df.format(robot.getLocation().getX()) + ", "
                 + df.format(robot.getLocation().getY()) + ")");
         double[] wheelRates = robot.getWheelRates();
-        wheels.setText("Wheels= One: " + df.format(wheelRates[0]) + ", Two: "
+        wheels.setText("Wheel: One: " + df.format(wheelRates[0]) + ", Two: "
                 + df.format(wheelRates[1]) + ", Three: " + df.format(wheelRates[2])
                 + ", Four: " + df.format(wheelRates[3]));
     }
@@ -285,7 +286,7 @@ public class SimulatorController implements Initializable {
     private void updateWheeledState(WheelInput wi) {
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.HALF_UP);
-        wheels.setText("Wheels= One: " + df.format(wi.getWheelOne()) + ", Two: "
+        wheels.setText("Wheel: One: " + df.format(wi.getWheelOne()) + ", Two: "
                 + df.format(wi.getWheelTwo()) + ", Three: " + df.format(wi.getWheelThree())
                 + ", Four: " + df.format(wi.getWheelFour()));
     }
@@ -297,7 +298,7 @@ public class SimulatorController implements Initializable {
         velocityY.setText("Velocity Y(ft/s): 0.0");
         velocityX.setText("Velocity X(ft/s): 0.0");
         rotationRate.setText("Rotation Rate(deg/s): 0.0");
-        wheels.setText("Wheels= One: " + 0.0 + ", Two: "
+        wheels.setText("Wheel: One: " + 0.0 + ", Two: "
                 + 0.0 + ", Three: " + 0.0
                 + ", Four: " + 0.0);
     }
@@ -311,7 +312,7 @@ public class SimulatorController implements Initializable {
         rotationRate.setText("Rotation Rate(deg/s): 0");
         direction.setText("Direction(deg): 0");
         position.setText("Position(ft): (0, 0)");
-        wheels.setText("Wheels= One: 0, Two: 0, Three: 0, Four: 0");
+        wheels.setText("Wheel: One: 0, Two: 0, Three: 0, Four: 0");
     }
 
     public Position getRobotPosition() {
